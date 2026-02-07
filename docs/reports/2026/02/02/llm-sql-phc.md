@@ -22,6 +22,38 @@ Here we propose several adjustments to the GGR algorithm that improve the
 output (moving it closer to the optimal solution) and also further improve the
 execution time.
 
+Algorithm improvements
+----------------------
+
+See code specification of Greedy Group Recursion (GGR) algorithm on page 5 of
+the [LLM-SQL] paper.
+
+At each recursive step, the GGR algorithm scans the table (lines 17–23) to find
+all distinct values with corresponding hit counts (lines 3–8). It then selects
+the highest-hit value `b_v` (with corresponding column `b_c`) and splits the
+table into two sub-tables - one with all the rows `R_v` containing `b_v` value
+in `b_c` column excluding the field where the value is located in, and another
+sub-table with the remaining rows. It then recurses on the two sub-tables (lines
+24-26) and calculates the total PHC as the sum of PHC of the sub-tables and
+contributions of `b_v` (line 28).
+
+### Recursion early termination when only distinct values are present
+
+If table scan tells that all values in the table are distinct (each appearing in
+exactly one row), the algorithm terminates early and returns the `PHC=0` of the
+table together with unmodified table:
+```text
+return 0, T
+```
+In other words, if the table cannot be optimized for hit count, the recursion
+stops and the original table is returned. The situation of a table with all
+distinct values can occur at the later stages of the recursion when only
+singleton values from the long tail are left. In this situation the recursion
+ends in one step.
+
+Like the other two termination conditions, this one outputs the optimal
+solution.
+
 Minor typos in equations
 ------------------------
 
