@@ -34,8 +34,21 @@ the highest-hit value `b_v` (with corresponding column `b_c`) and splits the
 table into two sub-tables - one with all the rows `R_v` containing `b_v` value
 in `b_c` column excluding the field where the value is located in, and another
 sub-table with the remaining rows. It then recurses on the two sub-tables (lines
-24-26) and calculates the total PHC as the sum of PHC of the sub-tables and
+24–26) and calculates the total PHC as the sum of PHC of the sub-tables and
 contributions of `b_v` (line 28).
+
+There are three cases when GGR algorithm can be _proven_ to achieve the optimal
+PHC output:
+1. Table contains only a single row. Then PHC is zero and the table is not
+   rearranged. (Lines 10–12.)
+2. Table contains only a single column. Then the table with sorted column values
+   is returned and PHC is trivially computed. (Lines 13–16.)
+3. Table contains one field `A` that functionally determines all other fields of
+   a table. Then GGR algorithm prioritizes groups of values in `A` due to the
+   accumulated hit count score (lines 3–8), capturing key correlations early and
+   producing the optimal reordering.
+
+All three cases also serve as recursion termination conditions.
 
 ### Recursion early termination when only distinct values are present
 
@@ -51,17 +64,36 @@ distinct values can occur at the later stages of the recursion when only
 singleton values from the long tail are left. In this situation the recursion
 ends in one step.
 
-Like the other two termination conditions, this one outputs the optimal
-solution.
+Like the other three termination conditions (case of a single row, case of a
+single column, and case of a full functional dependency of all columns), this
+one also outputs the optimal solution (with a zero PHC).
+
+We can say that this termination condition is a degenerate case of a full
+functional dependency of all columns.
+
+Also note that this termination condition does not improve the output but speeds
+up the recursion, significantly in some cases.
+
+[AI-Sys] paper also mentions this termination condition on line 11 of "(b)
+Evolved prefix-aware policy" in Figure 4, page 9. However, it is an important
+type of table condition that is worth mentioning separately.
+
+### Multiple ties in max hit count
+
+When scanning the table for distinct values and selecting the highest-hit
+value (lines 17–23), GGR algorithm selects the first value/column `b_v, b_c`
+that gets the `max_HC`. But what if there are multiple values ("ties") with the
+same `max_HC`?
+
 
 Minor typos in equations
 ------------------------
 
 ### Typo 1
 
-On page 3, the equation (2) should have `1<=c<=m` rather than `0<=c<m`, as it
-appears that everywhere else in the paper both rows and columns are counted from
-`1` (to `n` and `m` respectively).
+On page 3, the equation (2) should have `1 <= c <= m` rather than `0 <= c < m`,
+as it appears that everywhere else in the paper both rows and columns are
+counted from `1` (to `n` and `m` respectively).
 
 ### Typo 2
 
@@ -73,5 +105,5 @@ from value `v` of parent column `c` based on the table's Functional Dependency
 ```text
 tot_len = len(v)^2 + SUM_c'[len(v')^2]
 ```
-There is also no need to average `len(T[r,c'])` because values `v' = T[r,c']`
-are the same for all `r` in `R_v`. 
+There is also no need to average `len(T[r,c'])` over rows in `R_v` because all
+values `v' = T[r,c']` are the same for all `r` in `R_v`. 
