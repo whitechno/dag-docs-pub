@@ -310,9 +310,28 @@ b1   a2
 b2   a1
 b2   a3
 ```
-with `PHC = 4` (and `PHR = 4/10 = 40%`).
+with `PHC = 4` (and `PHR = 4/10 = 40%`). It achieves higher PHC because it
+preserves the "double" `b2, B` in the output.
 
 ### Column with K top hit counts
+
+There could be a case when some column `A` has a distinct value `a1` with max
+hit count higher than for any other column. This makes `a1, A` a proper choice
+for the GGR iteration. However, it could be that column `A`'s second-highest hit
+count value `a2` is also the second-highest hit count value in the entire table.
+It could be going like this to up to `K` distinct values in column `A` that are
+top highest hit count values in the entire table.
+
+This is actually a widespread case in practice when the low-cardinality metadata
+columns contain all top hit count distinct values.
+
+We can exploit cases like this by splitting the table into `K+1` sub-tables in
+one iteration rather than going through `K` separate iterations. In addition to
+fewer iterations, this approach also speeds up the sub-tables size reduction,
+especially during the first several iterations.
+
+Note that this adjustment does not improve the output optimality but has the
+potential to speed up the execution time.
 
 ### Ad-hoc functional dependency heuristics
 
