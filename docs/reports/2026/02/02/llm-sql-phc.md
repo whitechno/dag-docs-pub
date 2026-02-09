@@ -46,7 +46,8 @@ PHC output:
 3. Table contains one field `A` that functionally determines all other fields of
    a table. Then GGR algorithm prioritizes groups of values in `A` due to the
    accumulated hit count score (lines 3–8), capturing key correlations early and
-   producing the optimal reordering.
+   producing the optimal reordering. You can think of this as an extension of
+   #2 - a table with a single column.
 
 All three cases also serve as recursion termination conditions.
 
@@ -333,7 +334,7 @@ especially during the first several iterations.
 Note that this adjustment does not improve the output optimality but has the
 potential to speed up the execution time.
 
-### Ad-hoc functional dependency heuristics
+### Ad-hoc heuristics for functional dependency
 
 Minor typos in equations
 ------------------------
