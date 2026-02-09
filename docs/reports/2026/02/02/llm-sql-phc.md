@@ -195,8 +195,8 @@ the original GGR algorithm takes `N` iterations and outputs the solution with
 `PHC = N` (`PHR = N/8N = 1/8 = 12.5%`). The adjusted algorithm takes only one
 iteration and outputs the optimal solution with `PHC = 2N`
 (`PHR = 2N/8N = 1/4 = 25%`). This is a remarkable improvement in the output
-optimality (`Diff = 12.5%`), even though it is achieved for a specially crafted
-table.
+optimality (`Diff = 12.5%`) with a significant reduction of iterations, even
+though it is achieved for a specially crafted table.
 
 **Example 3**
 Consider a table with 10 rows, 2 columns `A` and `B`, and 3 tied distinct values
@@ -252,6 +252,65 @@ improvement in both the output optimality (`Diff = 5%`) and execution time
 (twice fewer iterations) for a specially crafted table.
 
 ### Multiple ties with max hit count: multiple most informative columns
+
+What if there are two or more columns with the same top count of distinct values
+with the max hit count?
+
+In this case, we might be good with arbitrary choice among those columns.
+However, there is a general preference for this kind of algorithms to be
+deterministic as much as possible (reduce the randomness of the output).
+Specifically, for GGR algorithm it means that the output (even if suboptimal)
+should be the same regardless of the order of rows and columns in the input
+table. This (increased) determinism might not necessarily improve the optimality
+of the output, but it can make the algorithm more robust and more predictable.
+
+Here we propose a tiebreaking strategy that not only increases the determinism
+but also has the potential to improve the output optimality.
+
+The tiebreaking strategy is based on choosing the column with the highest
+average hit count. The average hit count of a column is computed as the sum of
+hit counts of all distinct values divided by the total number of distinct
+values. The rationale for this choice is that the column with the highest
+average hit count is likely to be the most informative column and should be made
+the first choice in the recursion to prevent the fragmentation of its distinct
+values.
+
+It is quite easy to craft a simple example of a table where this strategy leads
+to a more optimal solution:
+```text
+A    B
+a1   b1
+a1   b1
+a1   b2
+a2   b1
+a3   b2
+```
+Both columns `A` and `B` have one distinct value - `a1` in `A` and `b1` in `B` -
+with the `max_HC = 2`. However, their average hit counts are different. Column
+`A` has 3 distinct values `a1, a2, a3` and its `Avg_HC = (2 + 0 + 0) / 3 = 2/3`.
+Column `B` has 2 distinct values `b1, b2` and its `Avg_HC = (2 + 1) / 2 = 3/2`.
+
+Selecting `a1, A` in the first iteration produces output
+```text
+A    B
+a1   b1
+a1   b1
+a1   b2
+a2   b1
+a3   b2
+```
+with `PHC = 3` (and `PHR = 3/10 = 30%`).
+
+Selecting `b1, B` in the first iteration produces the optimal solution
+```text
+B    A
+b1   a1
+b1   a1
+b1   a2
+b2   a1
+b2   a3
+```
+with `PHC = 4` (and `PHR = 4/10 = 40%`).
 
 ### Column with K top hit counts
 
