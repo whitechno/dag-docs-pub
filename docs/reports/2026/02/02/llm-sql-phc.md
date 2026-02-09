@@ -235,7 +235,7 @@ with `PHC = 7+3 = 10` (`PHR = 10/20 = 50%`).
 
 The adjusted algorithm takes 3 iterations and outputs the optimal solution
 ```text
-B
+B    A
 b1   a1
 b1   a1
 b1   a1
