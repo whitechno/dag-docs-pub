@@ -78,13 +78,184 @@ up the recursion, significantly in some cases.
 Evolved prefix-aware policy" in Figure 4, page 9. However, it is an important
 type of table condition that is worth mentioning separately.
 
-### Multiple ties in max hit count
+### Multiple ties with max hit count: select the most informative column
 
 When scanning the table for distinct values and selecting the highest-hit
 value (lines 17–23), GGR algorithm selects the first value/column `b_v, b_c`
 that gets the `max_HC`. But what if there are multiple values ("ties") with the
 same `max_HC`?
 
+[LLM-SQL] paper mentions this case on page 6: "when fields tie in HITCOUNT, GGR
+may be suboptimal, as it lacks the exhaustive search used by OPHR to resolve
+such ties".
+
+Here we propose several ways to treat tied max hit counts with improvement in
+output optimality and execution time.
+
+First, we consider the case when some columns have multiple ties and propose two
+adjustments to the algorithm:
+1. Among the columns with multiple ties, we select the column with the highest
+   number of distinct values with the max hit count. (We can call it the
+   "most informative" column.) E.g., if column `A` has 3 distinct values with
+   max hit count and column `B` has 2 distinct values with max hit count, we
+   select column `A`.
+2. Instead of splitting the table into two sub-tables and recursing on them, we
+   split the table into multiple sub-tables, one for each distinct value plus
+   the remaining rows.
+
+The first adjustment improves the output optimality, and the second adjustment
+improves the execution time.
+
+**Example 1**
+It is better illustrated by a simple example of a table with 4 rows and 2
+columns `A` and `B`. The table has 3 distinct values with the same max hit
+count: `a1` in column `A`, and `b1` and `b2` in column `B`. Also for simplicity,
+we assume that `max_HC = 1`. (With `len(a1) = len(b1) = len(b2) = 1` and `|R_a1| =
+|R_b1| = |R_b2| = 2`.)
+```text
+A    B
+a1   b1
+a1   b2
+a2   b1
+a3   b2
+```
+
+The original GGR algorithm selects `a1, A` to split the table into two
+sub-tables and outputs the original table:
+```text
+A    B
+a1   b1
+a1   b2
+a2   b1
+a3   b2
+```
+with `PHC = 1` (and `PHR = 1/8`).
+
+The adjusted algorithm selects `[b1, b2], B` to split the table into two
+sub-tables and outputs the optimal solution:
+```text
+B    A 
+b1   a1
+b1   a2
+b2   a1
+b2   a3
+```
+with `PHC = 2` (and `PHR = 1/4`).
+
+**Example 2**
+We can extend previous example to a table with 8 rows, 2 columns, and 6 distinct
+values with the same `max_HC = 1`: `a1, a2` in `A`, and `b1, b2, b3, b4` in `B`.
+```text
+A    B
+a1   b1
+a1   b2
+a2   b3
+a2   b4
+a3   b1
+a4   b2
+a5   b3
+a6   b4
+```
+
+The original GGR algorithm takes two iterations, selecting `a1, A` to split the
+table in first iteration, and `a2, A` to split the table in second iteration. It
+again outputs the original table:
+```text
+A    B
+a1   b1
+a1   b2
+a2   b3
+a2   b4
+a3   b1
+a4   b2
+a5   b3
+a6   b4
+```
+with `PHC = 2` (and `PHR = 2/16 = 1/8`).
+
+The adjusted algorithm takes only one iteration selecting `[b1, b2, b3, b4], B`
+to split the table into four sub-tables and outputs the optimal solution:
+```text
+B    A 
+b1   a1
+b1   a3
+b2   a1
+b2   a4
+b3   a2
+b3   a5
+b4   a2
+b4   a6
+```
+with `PHC = 4` (and `PHR = 4/16 = 1/4`).
+
+As a generalization of the previous examples, we can consider a table with `4*N`
+rows and two columns `A` and `B` with column `A` having `N` "doubles"
+(`a1,a2,...,aN`) and column `B` having `2*N` "doubles" (`b1,b2,...,b2N`). Then
+the original GGR algorithm takes `N` iterations and outputs the solution with
+`PHC = N` (`PHR = N/8N = 1/8 = 12.5%`). The adjusted algorithm takes only one
+iteration and outputs the optimal solution with `PHC = 2N`
+(`PHR = 2N/8N = 1/4 = 25%`). This is a remarkable improvement in the output
+optimality (`Diff = 12.5%`), even though it is achieved for a specially crafted
+table.
+
+**Example 3**
+Consider a table with 10 rows, 2 columns `A` and `B`, and 3 tied distinct values
+with the same `max_HC = 4`: `a1` in `A`, and `b1, b2` in `B`.
+```text
+A    B
+a1   b1
+a1   b1
+a1   b1
+a1   b2
+a1   b2
+a2   b1
+a3   b1
+a4   b2
+a5   b2
+a6   b2
+```
+
+The original GGR algorithm takes 6 iterations and outputs the solution
+```text
+A    B
+a1   b1
+a1   b1
+a1   b1
+a1   b2
+a1   b2
+
+B    A   
+b2   a4   
+b2   a5   
+b2   a6 
+b1   a2   
+b1   a3  
+```
+with `PHC = 7+3 = 10` (`PHR = 10/20 = 50%`).
+
+The adjusted algorithm takes 3 iterations and outputs the optimal solution
+```text
+B
+b1   a1
+b1   a1
+b1   a1
+b1   a2
+b1   a3
+b2   a1
+b2   a1
+b2   a4
+b2   a5
+b2   a6
+```
+with `PHC = 6+5 = 11` (`PHR = 11/20 = 55%`). Again this is a remarkable
+improvement in both the output optimality (`Diff = 5%`) and execution time
+(twice fewer iterations) for a specially crafted table.
+
+### Multiple ties with max hit count: multiple most informative columns
+
+### Column with K top hit counts
+
+### Ad-hoc functional dependency heuristics
 
 Minor typos in equations
 ------------------------
