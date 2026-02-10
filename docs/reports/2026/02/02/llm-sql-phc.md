@@ -434,4 +434,24 @@ from value `v` of parent column `c` based on the table's Functional Dependency
 tot_len = len(v)^2 + SUM_c'[len(v')^2]
 ```
 There is also no need to average `len(T[r,c'])` over rows in `R_v` because all
-values `v' = T[r,c']` are the same for all `r` in `R_v`. 
+values `v' = T[r,c']` are the same for all `r` in `R_v`.
+
+### Typo 3
+
+On page 5, in the "Algorithm 1 Greedy Group Recursion" code specification, line
+29: when prepending max group value `b_v` to `L_A[i]`, it should also include
+all values `b_vals` inferred from `b_c` by applying Functional Dependency (FD)
+rules. Line 29 should be changed to:
+```text
+L <- [[b_v] + b_vals + L_A[i] | for i in R_v] + L_B
+```
+
+`b_vals` should be computed in `HitCount` function with modified line 7:
+```text
+return tot_len * (|R_v| - 1), [c] + inferred_cols, inferred_vals
+```
+
+Then line 27 should be changed to
+```text
+C_HC, _, b_vals <- HitCount(b_v, b_c, T, FD)
+```
