@@ -334,7 +334,85 @@ especially during the first several iterations.
 Note that this adjustment does not improve the output optimality but has the
 potential to speed up the execution time.
 
-### Ad-hoc heuristics for functional dependency
+### Ad-hoc heuristics for correlated distinct values
+
+GGR algorithm takes full advantage of the table's Functional Dependency (FD)
+rules to reduce the search space. It has a double benefit of improving the
+output optimality and reducing the number of iterations. However, its usefulness
+is limited to only a table-wide set of constraints. But what if two distinct
+values in two columns happen to share the same rows?
+
+In other words, we can have a case where two distinct values `a, A` and `b, B`
+span the same rows in the table `R_a = R_b = R_ab`. In this case, we can apply
+the same technique as for FD rules and combine two groups `a, A` and `b, B` into
+a single two-column block `[(a,A),(b,B)]` spanning rows `R_ab` with a combined
+hit count of `(len(a)^2 + len(b)^2)*(|R_ab| - 1)`. It can be extended to any
+number of distinct values and columns as long as they all share the same rows.
+
+We can find all tuples of distinct values that share the same rows in the table
+by creating a hash table where the key is a hash of row indices and the value is
+a list of distinct values that share the rows. Only distinct values with more
+than one row should be added to the hash table. Hash table creation is done as
+part of a Table Statistics calculation that runs every iteration step.
+
+Similarly to FD rules, this technique improves the output optimality and reduces
+the number of iterations.
+
+Here is an example of a table where this technique can be applied:
+```text
+| A | B | C |
+|---|---|---|
+| a |   |   |
+| a |   |   |
+| a | b | c |
+| a | b | c |
+|   | b | c |
+```
+with `HC(a,A) = 3`, `HC(b,B) = HC(c,C) = 2`, `R_b = R_c = R_bc`, and
+`HC(b,B) + HC(c,C) > HC(a,A)`.
+
+GGR algorithm selects `a, A` to split the table and outputs
+```text
+| A |  | B | C |
+|---|  |---|---|
+| a |  |   |   |
+| a |  |   |   |
+| a |  | b | c |
+| a |  | b | c |
+
+| A | B | C |
+|---|---|---|
+|   | b | c |
+```
+with `PHC = 3 + 2 + 0 = 5` (`PHR = 5/15 = 33%`).
+
+Adjusted GGR algorithm selects `[(b,B),(c,C)]` block to split the table and
+outputs the optimal solution:
+```text
+| B | C |  | A |
+|---|---|  |---|
+| b | c |  | a |
+| b | c |  | a |
+| b | c |  |   |
+
+| A | B | C |
+|---|---|---|
+| a |   |   |
+| a |   |   |
+```
+with `PHC = 4 + 1 + 1 = 6` (`PHR = 6/15 = 40%`).
+
+In case of a tie, i.e., when `HC(b,B) + HC(c,C) = HC(a,A)`, we select the
+multi-column block.
+
+How really beneficial is this data-heuristics-driven algorithm adjustment in
+practice? Especially weighted by the complexity of implementation and additional
+computational cost of the hash table creation? The answer depends on the
+structure of the table. There are cases of the data sets with strong correlation
+between some distinct values. Also, as recursion iterations start processing
+distinct values with fewer rows, the probability of them sharing the same rows
+increases. As a general recommendation, it is worth considering this heuristic
+adjustment only if the table has a high correlation between distinct values.
 
 Minor typos in equations
 ------------------------
