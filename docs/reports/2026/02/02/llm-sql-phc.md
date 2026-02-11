@@ -1,6 +1,13 @@
 Optimizing LLM Queries: Comments and Suggestions
 ================================================
-February 2, 2026
+February 2, 2026 (Updated on February 11, 2026)
+
+This document had been moved to <https://github.com/whitechno/llm-sql-phc>
+repository which also contains the reference implementation of the GGR
+algorithm.
+
+Main references
+---------------
 
 Main publication:  
 [[LLM-SQL](https://arxiv.org/pdf/2403.05821)] "Optimizing LLM Queries in
