@@ -439,12 +439,13 @@ values `v' = T[r,c']` are the same for all `r` in `R_v`.
 ### Typo 3
 
 On page 5, in the "Algorithm 1 Greedy Group Recursion" code specification, line
-29: when prepending max group value `b_v` to `L_A[i]`, it should also include
+29: when prepending max group value `b_v` to `L_B[i]`, it should also include
 all values `b_vals` inferred from `b_c` by applying Functional Dependency (FD)
 rules. Line 29 should be changed to:
 ```text
-L <- [[b_v] + b_vals + L_A[i] | for i in R_v] + L_B
+L <- [[b_v] + b_vals + L_B[i] | for i in R_v] + L_A
 ```
+(Also note that line 29 mixed up `L_B` and `L_A` variables.)
 
 `b_vals` should be computed in `HitCount` function with modified line 7:
 ```text
