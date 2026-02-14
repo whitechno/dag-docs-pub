@@ -167,6 +167,7 @@ RLHF setup used for language models.
 | Action             | Single environment action $a_t$          | A completion $y$ (a sequence of tokens) sampled from $\pi_\theta(\cdot\mid x)$                   |
 | Reward granularity | Often per-step / fine-grained            | Usually response-level (bandit-style) over the full completion                                   |
 | Horizon            | Multi-step episode ($T>1$)               | Often single-step ($T=1$), though multi-turn can be modeled as longer-horizon                    |
+
 Table: Key differences between standard RL and RLHF for language models.  
 {#tbl:rl-vs-rlhf}
 :::
