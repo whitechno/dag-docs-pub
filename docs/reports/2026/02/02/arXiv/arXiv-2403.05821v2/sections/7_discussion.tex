@@ -1,0 +1,166 @@
+\section{Discussion} 
+% \accheng{discussion or limitations?}
+% \shu{@Audrey: removing subsections, and just have short sections on paragraph}
+% \shu{Some additional discussions we want to have: different prompt length, different GPU types, different models (reference the VLDB reviewer comments)}
+% Our techniques for optimizing LLM queries have been pragmatically motivated: we consider straightforward optimizations that apply broadly to most LLM inference systems and relational databases. 
+We consider straightforward optimizations that apply broadly to most LLM inference systems and relational databases. In this section, we outline future research directions to enhance LLM inference in relational analytics further.
+% that can extend the current capabilities of optimizing SQL queries involving LLM invocations. 
+% Our discussion is organized into three subsections: distributed cache and request routing, cost estimation for LLM invocations, and semantic de-duplication. These directions are critical to improving the scalability of database systems with LLM invocations. 
+
+% \accheng{not sure about this term} \simon{maybe the reverse: ... scalability of database systems with LLM invocations}, ensuring that the benefits of LLM integration can be realized more widely.
+% achieved across multiple computational environments. 
+
+% \joey{We don't leverage this decode length knowledge but it could be a big opportunity for a future version of this paper. I wonder if we want to mention that in the future work. }
+
+% \subsection{Column Reordering and Row Sorting} 
+% \label{sec:reordering-future}
+% Our column reordering and row sorting algorithms leverage straightforward, practical heuristics to efficiently identify shared prefixes. We can further extend these algorithms in future work by adopting a finer-grained approach. For instance, instead of maintaining a fixed order of columns for all rows in a table, we can consider different column orderings for subsets of rows to potentially enable higher token hit rates.
+
+% To do so, one potential strategy would be to iteratively determine column orders for each group of rows that share a value in a designated ``pivot'' column. Once an order is established for a group, we can exclude these rows from subsequent iterations, thereby reducing the complexity and focusing on determining the orders of the remaining rows. This recursive approach would allow us to progressively refine the column order to enhance the cache hit rate without giving up computational efficiency. Moreover, we plan to introduce a pruning mechanism for columns that consistently show negligible impact for prefix sharing. By excluding these columns from the reordering process, we can further reduce the computational overhead of this technique. %and potentially further optimize the overall performance of the system. 
+
+% before show potential for optimizing cache efficiency through intelligent data arrangement. 
+% However, the current approach, which maintains a fixed order of columns for all data rows, may not work well for all datasets. In our future work, we aim to refine the algorithm by adopting a more fine-grained approach that considers unique value-based column ordering for each data segment.  
+
+% One potential strategy involves an iterative process where, for each group of rows sharing a unique value in a designated "pivot" column, we determine an optimal column ordering. Once an order is established for a group, we exclude these rows from subsequent iterations, thereby reducing the complexity and focusing on remaining data subsets. This recursive approach allows for progressively refining the data structure to maximize cache hit rates and computational efficiency. Moreover, we plan to introduce a pruning mechanism for columns that consistently show negligible impact on cache efficiency. By excluding these columns from the reordering process, we can reduce computational overhead and potentially further optimize the overall performance of the system. 
+
+% \subsection{Prefix Caching: Opportunities}
+% \subsubsection{Decode Length Knowledge} 
+% While our work focuses on memory management for input prompts, output decoding also has a significant impact on performance. In particular, there are potential performance benefits with guided decoding in the analytics setting. Guided decoding, also known as structured generation or controlled generation, is a popular method to deterministically enforce a schema on the output of LLM \cite{guidance, sglang, outlines, lmql, aici}. Since guided decoding involves computing a large intermediate state, it does not typically employ batching, hurting GPU utilization. In the relational analytics scenario, we can utilize our knowledge of the output schema and decoding length to construct the output constraint ahead of time. In many cases, we can skip tokens that are known a priori and perform batching to improve utilization.
+% \simon{Shu I think this paragraph is broken}
+% \shu{We can skip this}
+
+
+% on the optimizing the input process of the data in LLM, decoding the output is equally important factor to consider. There are many opportunities in applying guided decoding in relational analytics settings. Guided decoding, also termed structured generation or controlled generation, is a popular method to deterministically enforce a schema on the output of LLM \cite{guidance, sglang, outlines, lmql, aici}. The typical method of guided decoding involves computing a large finite state machine over the token space to constrain the tokens to be allowed for sampling. This process typically does not batch, hurting GPU utilization.
+
+
+
+% \shu{@simon add the constrained decoding and some opportunities with batching here}
+% \asim{can maybe add a small section here to discuss "very large" tables leading to long prompts, and say it is unclear how this impacts our algorithm performance and overall runtime. however, we can also clarify that for such a table it would be standard practice to only pass in a few columns to the LLM}
+\paragraph{Batch-Aware Reordering.} \label{sec:smarter_reordering}
+While column reordering and row sorting can improve cache hit rates, they don't account for how requests in a batch are processed in parallel during LLM inference. Some systems \cite{tgi} do not support prefix sharing within the same batch. For example, processing requests in the sequence $[1,1,1][2,2,2][3,3,3]$ leads to six cache misses, as each prefix ($1,2,3$) is recomputed in the same batch. However, reordering to $[1,2,3][1,2,3][1,2,3]$ reduces cache misses to three. To address this, we propose a batch-aware reordering strategy. This strategy should include a warm-up phase to pre-load the cache with diverse prefixes expected to be reused in subsequent batches and should be aware of inference batch size.% The algorithm sorts prefixes by frequency and arranges them across batches to ensure each batch contains distinct prefixes, thereby reducing cache misses significantly.
+% ensure maximum cache utilization due to how 
+% \begin{itemize}
+%     \item Since inference occurs simultaneously for all requests in a batch, prefixes cannot be shared within the same batch.
+%     \item Consider a sequence of requests $[1,1,1][2,2,2][3,3,3]$. None of these prefixes benefit from being cached because each distinct prefix ($1,2,3$) is computed multiple times with the same batch. As a result, there are six cache misses on this workload.
+%     \item However, if we instead reorder these requests according to the sequence $[1,2,3][1,2,3][1,2,3]$, we observe benefits from using the prefix cache---$1, 2, 3$ are computed and cached after the first batch, allowing them to be reused in subsequent batches. Thus, there are only three cache misses on this series of requests.
+% \end{itemize}
+
+% The constraints of parallel batch computation necessitate a \textit{warm-up phase} that loads the cache with prefixes that will reused in subsequent batches. To further increase cache hit rate, we ...\accheng{shu, can you summarize the high-level idea of the alg in 1-2 sentences?}
+% % e develop an algorithm to further increase cache hit rate while also ensuring we can run the largest batch size possible to fully utilize the GPU compute and memory capacity.
+
+% \begin{itemize}
+%     \item First, we sort all prefixes based on descending frequency. 
+%     \item Then, we fill batches with distinct prefixes based on the sorted order.
+%     \item Once all requests involving a given prefix have completed, we replace this prefix as we serve further requests (with different prefixes) following our sorted order.
+
+%     \item For the example above with request prefixes $\{1,1,1,2,2,2,3,3,3\}$, our algorithm would construct batches $[1,2,3][1,2,3][1,2,3]$, which maximizes cache hit rate.
+%     \item More complex example: reference Table \ref{tab:cache-state-comparison-warmup}.
+    
+% \end{itemize}
+
+% \begin{table}[!t]
+%     \centering
+%     \begin{tabular}{c|c|c|c|c}
+%         \multicolumn{1}{c|}{T} & \multicolumn{2}{c|}{Naive Reordering} & \multicolumn{2}{c}{Better Reordering} \\ \hline
+%         & Keys accessed & Cache state & Keys accessed & Cache state \\ \hline
+%         1 & ${\color{red}1, 1, 1}$ & - & ${\color{red}1, 2, 3}$ & - \\ \hline
+%         2 & - & $1$ & - & $1, 2, 3$ \\ \hline
+%         3 & ${\color{red}2, 2, 3}$ & $1, 2, 3$ & $1, 2, 3$ & $1, 2, 3$ \\ \hline
+%         4 & - & $1, 2, 3$ & - & $1, 2, 3$ \\ \hline
+%         5 & $3, 3, 3$ & $1, 2, 3$ & $1, 3, 3$ & $1, 2, 3$ \\ \hline
+%     \end{tabular}
+%     \vspace{0.5em}
+%     \caption{Comparison of cache state of different input orderings for Section 3.4: three requests of 1, two requests of 2, four requests of 3. Better ordering can reduce the cache misses by half.} 
+%     \label{tab:cache-state-comparison-warmup}
+% \end{table}
+
+% \shu{Future work; put it before related work; bsection about each of the possible future extension: http://www.bailis.org/papers/bolton-sigmod2013.pdf}
+% \accheng{have we discussed these with a prof yet?}
+% \simon{I think it is a very natural to claim this}
+% \accheng{as in, is there something specific about batch analytics + the distributed setting we want to mention? the text currently seems to apply to LLM inference systems in general}
+% \accheng{go back to calculations for 100GB so want to distribute but this is hard
+% reiterate that we're opening a new area}
+\paragraph{Distributed Cache and Request Routing.}
+On large-scale datasets, we need to distribute the inference workload over many machines to enable queries to be completed in a reasonable amount of time. However, distributed KV caching is challenging; we need to ensure that requests with similar or identical prefixes are directed to the same machine. As such, balancing load over different machines with varying cache contents will be a critical objective. 
+
+%RAG queries bring additional complexities since the KV cache must store not only LLM prefixes but also embeddings and associated retrieved contents, which may be distributed across nodes.
+
+% Our current system has demonstrated potential for improving performance through request formulation and prefix caching for LLM on a single machine, tailored specifically for relational analytics tasks. However, deploying such systems in real-world scenarios often involves distributed computing environments where queries are processed across multiple nodes \cite{spotserve}. 
+
+% In a distributed environment, maintaining cache locality is important. We want to ensure that requests with similar or identical prefixes are directed to the node where those prefix KVs are cached. The challenge compounds when dealing with RAG queries. Here, the cache not only contains the LLM prefixes but also can be the embeddings and associated retrieved contents, where may be distributed across nodes. Optimizing cache locality in this context both means LLM internal KV cache locality and also the data locality associated with query processing. 
+
+% In addition, we want to ensure that no single node becomes a bottleneck. Our request routing should distribute both the computational load and data storage in a manner that prevents any single node from being overwhelmed. This requires real-time monitoring and adaptive request distribution strategies that can react to the cache access patterns and specific query demands. 
+
+
+% Future work should focus on the development of distributed LLM cache management strategies that optimize these factors. This could involve techniques for intelligent request routing based on cache content locality, thereby leveraging local cache hits to minimize LLM computation. For RAG queries, where embeddings can potentially be stored across different nodes, it is also essential to consider the locality of retrieved contents to reduce data transfer times. 
+
+% \subsection{Cost Estimation}
+% \accheng{what makes LLM workloads interesting is that we can have decode constraints so we can predict what the responses will be like} \accheng{could drop this if nothing unique}
+% Our system utilizes predicate push-down techniques to reduce the number of LLM invocations within SQL queries, focusing primarily on local execution scenarios. However, in many real-world scenarios, LLMs are not run locally but are accessed via remote endpoints \cite{openai-pricing}, and there can be different types of LLM models invoked in the query.
+
+% Future research should aim at developing cost estimation models that account for the types of models that are used, and the complexities of remote LLM executions. This involves assessing factors such as network latency and data transfer costs, which are particularly relevant when LLMs are deployed across different geographical locations. Moreover, understanding the computational load of different LLMs and how they interact with SQL queries is essential for precise cost modeling.
+
+% Building on this, there is a compelling need for development on a more intelligent SQL optimizer.  
+
+\paragraph{Semantic Deduplication.}\label{sec:semantic_dedup}
+We can extend our exact deduplication technique to filter out more data by implementing rule-based methods. Specifically, we can leverage NLP pre-processing techniques that remove case sensitivity (e.g. ‘Apple’ and ‘apple’) and noise (e.g. ‘<Apple>’ and ‘Apple’) as well as apply stemming and lemmatization (e.g. ‘running’, ‘ran’, ‘runs’ ), spelling correction (e.g. ‘mitake’ vs. ‘mistake’), and stop word removal (e.g. remove ‘a’, ‘the’, etc.). These could be implemented as hard constraints (optionally specified by the user) to reduce the number of LLM invocations without impacting query accuracy since the equivalence of text is specified via the given rules. We can deduplicate even more aggressively by identifying semantically similar rows. For example, "I like this restaurant" and "I love this place" have the same semantic meaning and will likely produce identical output under an LLM sentiment analysis task, so we can send only one of these inputs.
+%As such, sending only one of these inputs to LLM for processing should be sufficient for most purposes. 
+% While there has been previous work on statistically bounding the accuracy of inference for neural networks~\cite{} \accheng{and other settings?}, this is an open problem for LLMs.  \simon{I don't need we need to open to this direction? Added SemDeDup}
+% One possible direction is to evaluate token similarity within the LLM to identify semantically equivalent requests. We are also looking forward to bringing in methods in training dataset de-duplication such as SemDeDup \cite{semdedup} for production workload processing.
+% We could provide different thresholds for the user to specify desired query accuracy, similar to techniques used in neural network queries over video~\cite{noscope}. \accheng{others have explored bounding statistical settings but it's an open problem for LLM}
+% \accheng{token level similarity }
+
+
+% \simon{
+% A natural extension to this work is to de-duplicate semantically similar rows to reduce computation. For example, de-duplicating "I like this restaurant" and "I love this place" for a sentiment analysis task because they have the same semantic meaning and the output will be identical.
+
+% Importantly, we believe the de-duplication should not affect accuracy of LLM generation. This means the final output should be exactly the same as if it is processed with original batch of rows. Therefore, we see the future work to leverage rule based methods instead of embedding based similarity search. 
+
+% For example, the rules can include using \textit{DISTINCT} for exact de-duplication, removing case sensitivity (e.g. ‘Apple’ and ‘apple’), removing noise (e.g. ‘<Apple>’ and ‘Apple’), stemming and lemmatization (e.g. ‘running’, ‘ran’, ‘runs’ ), noun normalization (e.g. ‘USA’ and ‘United States’ ), spelling correction (e.g. ‘mitake’ vs. ‘mistake’), and stop word removal (e.g. remove ‘a’, ‘the’, etc.). 
+
+% Furthermore, being aware of the tokenizer's behavior can helo further de-duplication. For example, while \textit{\_hi} (with white-space) and \textit{hi} (without white-space) are two different tokens, they are semantically equivalent.
+% }
+
+
+% We choose to avoid affecting the accuracy of query results.
+
+% Hard Rules: 
+% \textbf{Solution} 
+% \begin{itemize}
+%     \item Exact deduplicate with \textit{DISTINCT} before input to external UDF 
+%     \item Deduplicate with hard rules for entity resolution datasets 
+%     \begin{itemize}
+%         \item Case sensitivity: E.g. ‘Apple’ and ‘apple’ 
+%         \item Noise removal: E.g., ‘<Apple>’ and ‘Apple’
+%         \item Stemming and lemmatization: E.g., ‘running’, ‘ran’, ‘runs’ 
+%         \item Normalization: E.g., ‘USA’ and ‘United States’ 
+%         \item Word correction: E.g., ‘mitake’ vs. ‘mistake’
+%         \item Stop word removal: E.g., remove ‘a’, ‘the’, etc.
+%     \end{itemize}
+%     \item TODO: token-level deduplication and workload shaping 
+% \end{itemize}
+
+% And semantic duplicates
+% \textbf{Prefix Cache}
+% \begin{enumerate}
+%     \item Multi-tenant queries (even larger batch)
+%     \item Distributed setup: caching and routing to different cores based on locality 
+%     \item Optimize sub-hits 
+%     \item Advanced cost estimation on different models as input to LLM 
+% \end{enumerate}
+% \textbf{Deduplication}
+% \begin{enumerate}
+%     \item Can say that provide an interface for users to specify those hard rules according to their heuristics 
+%     \item Left semantic deduplication for future work 
+% \end{enumerate}
+
+% \textbf{More TODOs (relevant directions)}
+% \begin{itemize}
+%     \item When SQL queries involve joins with each side using different LLMs, understanding the computational costs of these models is crucial for optimizing query execution
+%     \begin{itemize}
+%         \item E.g. if we have two LLMs, LLM-A (less expensive) and LLM-B (more expensive), the join type (left-join, right-join, inner-join) impacts the efficiency and cost
+%         \item Ideally, the more expensive model (LLM-B) should process fewer rows to minimize costs
+%         \item The order of join and choice of model should be decided based on some factors like size of datasets, and complexity of tasks they perform 
+%     \end{itemize}
+%     \item Different model choices affect the cost model 
+% \end{itemize}

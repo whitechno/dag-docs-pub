@@ -1,0 +1,103 @@
+% \newpage
+\section{System Architecture}
+
+% Our work investigates a collection of optimizations enacted to enable LLM integration to SQL queries. Specifically, our optimizations enable both a cost-effective way to leverage LLM capabilities while reducing the latency bottleneck. In this section we discuss the specific design choices made in implementing our system to enable the queries discussed above.
+
+% \subsection{Queries and Goal}
+% \shu{I think for this query section put it more like as NoScope describes, talk about high level how does this query work (how would users write such SQL queries with UDF), I think detailed in types of queries can just be mentioned briefly but the overall structure of queries need to be explained first, and what does our \SYS/ do }
+% \subsubsection{Single LLM Calls}
+% Our most basic queries involved a single LLM UDF invocation from within the SQL query, either for projection or filtering. Specific query examples are shown in Figure \ref{fig:single-invoke}. Experiments were run varying the number of unique prefixes along with average prefix length.
+
+% \begin{figure}
+%     \centering
+%     \begin{minted}{sql}
+%         -- Rotten Tomatoes Movies --
+%         --- Projection ---
+%         SELECT LLM("Recommend movies for the user 
+%             based on their review of the following movie. Below is a description of the movie followed by the user review.", r.review_content, m.movieInfo) AS recommendation
+%         FROM reviews r
+%         JOIN 
+%             movies m ON r.rotten_tomatoes_link = m.rotten_tomatoes_link
+
+%         --- Filtering ---
+%         SELECT r.reviewer_name
+%         FROM reviews r
+%         WHERE
+%             LLM("Analyze the sentiment of the following review. Answer with only 'Positive', 'Negative', or 'Neutral'.", r.reviewText) = 'Negative'
+            
+%         -- Amazon Digital Music --
+%         --- Projection ---
+%         SELECT 
+%             LLM("Did the following review for the product match the quality indicated in the  following product description?", r.reviewText, m.description) AS matching_quality
+%         FROM 
+%             reviews r
+%         JOIN 
+%             metadata m ON r.asin = m.asin
+%     \end{minted}
+%     \caption{SQL Example: Single LLM invocation.}
+%     \label{fig:single-invoke}
+% \end{figure}
+
+
+% \subsubsection{Multi-LLM Calls}
+% In the multi-invocation queries, both a projection and a filter are done using two separate LLM invocations allowing analysis on only a specific subsection of the data. Here, one LLM call is used to leverage the model's filtering ability on unstructured columns (e.g. using sentiment analysis) and the other is used for the main query. Examples of this can be found in Figure \ref{fig:multi-invoke}
+
+% \begin{figure}
+%     \centering
+%     \begin{minted}{sql}
+%         -- Rotten Tomatoes Movies --
+%         SELECT LLM("Recommend movies for the user 
+%             based on their review of the following movie. Below is a description of the movie followed by the user review.", r.review_content, m.movieInfo) AS recommendation
+%         FROM
+%             Movies m
+%         JOIN
+%             Reviews r ON r.rotten_tomatoes_link = m.rotten_tomatoes_link
+%         WHERE
+%             LLM("Sentiment on the {Text}", r.review_content) = 'Positive'
+%         -- Amazon Digital Music --
+%         SELECT 
+%             LLM("Did the following review for the product match the quality indicated in the following product description?", r.reviewText, m.description) AS matching_quality
+%         FROM
+%             reviews r
+%         JOIN 
+%             metadata m ON r.asin = m.asin
+%         WHERE
+%             LLM("Sentiment on the {Text}", r.reviewText) = 'Negative
+%     \end{minted}
+%     \caption{SQL Example: Multiple LLM invocations.}
+%     \label{fig:multi-invoke}
+% \end{figure}
+
+% \subsubsection{Single RAG}
+% RAG style queries are performed by embedding the contexts found within RAG datasets and performing similarity search on query questions before selecting relevant contexts to feed to the LLM invocation for analysis. Examples of these types of queries are shown in Figure \asim{TODO: insert figure} 
+
+
+
+% \subsubsection{Multihop-RAG}
+% In a similar flavor to traditional RAG queries, the multiple LLM invocation structure is leveraged to be able to run queries on multihop RAG datasets with multiple rounds of prompting the model with different contexts and/or questions. An example of this type of query can be found in Figure \ref{fig:rag}
+
+% \begin{figure}
+%     \centering
+%     \begin{minted}{sql}
+%         -- Single Invocation --
+%         SELECT LLM("Answer the question given the   
+%             following context", s.question, s.context)
+%         FROM squad s
+%         -- Multihop Invocation --
+%         [insert query here]
+%     \end{minted}
+%     \caption{SQL Example: RAG LLM invocations.}
+%     \label{fig:rag}
+% \end{figure}
+
+% \subsubsection{Different SQL Operators}
+% Results of LLM invocations can also be used in aggreagating SQL expressions (such as AVG or SUM), and our benchmark includes these types of queries. Examples are shown in Figure \ref{fig:sql_operators}. 
+
+% \subsection{Components}
+% \shu{Implementation and technical details; Should have overview first; I think instead of subsubsection, using textbf will be better}
+% \subsubsection{UDF} Our systems side optimizations are implemented in PySpark \asim{TODO: cite pyspark here} with a user defined function (UDF) implemented to handle invocations to the language model based on a batch of input queries. This UDF is responsible for input construction given a system prompt and column values along with output post-processing. Our datasets are read into PySpark dataframes and query scripts are also implemented using PySpark. Together, these scripts were implemented in 2.5k lines of Python code. 
+
+% \subsubsection{SQL Optimizer} Within Pyspark, we perform smart SQL query optimizations to improve performance of our queries, including UDF pull-up (as this function cost is non-deterministic) along with push-down of non LLM filter operators. \asim{TODO: rewrite this section with proper details once this has been thoroughly implemented and fleshed out}
+
+% \subsubsection{Model serving}
+% Our experiments were run using vLLM to host a model locally. Modifications were made to enable prefix cache eviction and swapping during the course of inference for our queries which had many unique prefixes. 

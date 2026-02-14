@@ -1,0 +1,49 @@
+\vspace{-1em}
+
+\section{Background and Motivation}
+\label{sec:motivation}
+This section provides a brief overview of the inference process and the key components of the LLM architecture.
+
+\textbf{LLM inference.} 
+LLMs are made up of autoregressive Transformer models~\cite{attention-is-all-you-need}, which generate text token by token until a termination token or a length limit is reached. LLM inference consists of two stages: (i) the prefill stage, where the model processes the input prompts, and (ii) the decoding stage, where it generates output sequentially, as each token depends on all previously generated tokens through a chain of conditional probabilities.
+LLM inference engines (e.g., vLLM \cite{vllm}, TGI \cite{tgi}, TensorRT-LLM \cite{trt-llm}) typically batch requests continuously \cite{orca-continous-batching} to improve throughput. 
+The intermediate computed state for all tokens involved is stored in memory.
+This token state is cached as key and value vectors in the \textit{key-value (KV) cache}, consuming up to 800KB per token for a 13B Model \cite{vllm}. 
+A typical request (involving 2,000 tokens) can require up to 1.6 GB of memory. 
+Despite batching (up to 32 requests), inference remains compute-intensive, with current speeds limited to ~2,000 tokens/s per GPU, making LLM performance a bottleneck for many analytical tasks.
+
+
+\textbf{Prompt KV cache.}
+Efficient KV cache management is critical for high LLM serving throughput.
+Recent work improves cache utilization by reusing tokens across requests with shared prefixes~\cite{sglang}.
+For example, if two requests share a \textit{prefix} in prompts, the first will already have performed some computation on the input tokens and cached results in the KV cache during the prefill phase. 
+The subsequent request can then reuse these cached values, avoiding redundant computation of the shared tokens.
+% The subsequent request can thus directly reuse these values for further inference without having to recompute the shared tokens. \amog{should RadixAttention be cited here for prompt caching?}
+
+
+\textbf{Improving KV cache hit for analytics workloads}.
+Real-world relational databases often exhibit diverse repetitive data patterns. 
+Columnar storage systems like C-Store and Parquet~\cite{stonebraker2018c} exploit repeated values across fields for compression, while techniques like run-length encoding (RLE), multi-relational data mining, and correlation analysis~\cite{lemire2011reordering, multirelation,correlation} leverage diverse data relationships to optimize query execution. 
+Relational queries also create data groupings based on access patterns. 
+Techniques such as database cracking and multi-dimensional clustering (MDC)~\cite{craking,mdc}, including Delta Lake Z-order~\cite{deltalake}, reorganize data based on query patterns to optimize performance.
+
+These structural repetitive patterns present an opportunity for \textit{prefix KV cache} sharing in an LLM query.
+In our setting, an LLM is invoked once per row in a relational table, resulting in a batch of model requests from a single LLM query. Since the full table structure and content are known in advance, we can reorder these requests to maximize shared prefixes and reduce redundant computation during inference. Our goal is to maximize the \textit{prefix hit count} -- the sum of the length of token prefixes reused from the KV cache. 
+
+% Given an LLM query (where an LLM is applied row-wise over a relational table), and the full structure and content of the table are known, we can reorder the requests associated with this query to maximize shared prefixes and reduce redundant computation. 
+% Given an LLM query where an LLM is invoked row-wise (each as one request) over a relational table, and the full table content is known in advance, we can reorder the requests to maximize prefix reuse and reduce redundant computation.
+% Our goal is to maximize the \textit{prefix hit count} -- the sum of the length of token prefixes reused from the KV cache. 
+
+% Given an LLM query where LLM can be invoked multiple times over each row of the table, and the structure and data of the table it touches, we can rearrange the requests associated with this query to maximize shared prefixes. Overall, our goal is to maximize the \textit{prefix hit count}, or the sum of the length of prefixes that can be shared in the KV cache. 
+
+% Similarly, multi-relational data mining~\cite{} and correlation analysis~\cite{} leverage data relationships to optimize query execution. 
+% Additionally, relational queries often filter or access different fields, leading to implicit data groupings based on access patterns. Database cracking~\cite{} and multi-dimensional clustering (MDC)~\cite{}, including Delta Lake Z-order~\cite{}, reorganize data dynamically to improve query performance. 
+
+\textit{Our Approach: Request Reordering.} We leverage table information to enhance the KV cache hit rate. Specifically, we introduce algorithms that reorder requests of an LLM query and fields within each request to maximize prefix sharing. Our algorithm leverages functional dependencies and table statistics to reduce runtime while finding near-optimal orderings that maximize prefix hit count.
+% Given an LLM query that invokes and that we know information about the structure and data of the table it touches, we can rearrange requests to maximize shared prefixes. Overall, our goal is to maximize the \textit{prefix hit count}, or the sum of the length of prefixes that can be shared in the KV cache. 
+
+
+% Given information about the structure and data of the full set of requests and, critically, the ability to rearrange the requests before execution, requests can be arranged to maximize prefix KV cache reuse during inference. 
+% Overall, we want to maximize the \textit{prefix hit count}, or the sum of the length of prefixes that can be shared in the KV cache. 
+
+%

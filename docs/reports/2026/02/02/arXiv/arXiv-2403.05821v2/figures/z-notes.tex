@@ -1,0 +1,279 @@
+There is a rich history of integrating machine learning models with the database for improved performance. In large part, past work has focused on how to optimize the \textit{training} process. For instance, many techniques have been developed to update models with the arrival of new data~\cite{}. In this setting, the database is a part of the training pipeline
+
+There are decades of research on bringing machine learning into the database. For instance, ...
+For the most part this work has focused on how to optimize the \textit{training} process using a database system.
+
+Integrating LLMs into the database represents a paradigm shift from previous work. In this setting, we must consider how to optimize in-context learning and \textit{inference} with database systems. Rather than scanning and querying over large batches of data for training, inference applies specific functions over a defined set of data.
+
+
+LLM background: why LLMs are expensive
+
+We leverage the unique properties of LLMs to optimize these queries.
+
+LLMs provide a convenient mechanism to process strings in a database.  
+
+To enable complex data-intensive applications, the database community has expended considerable efforts in integrating machine learning models into data systems for improved performance. In large part, the focus of previous work has been on \textit{model training}. For instance, MauveDB~\cite{mauvedb} presents an early example of how to support models in the presence of frequent updates to data.
+In recent years, research has expanded to also consider model deployment, serving, and management~\cite{velox}. The complex problems of providing low latency, serving at large scale, and managing integrated pipelines have been studied in detail~\cite{}.
+
+Specifically, we assume that LLM requests are generated as a part of a SQL query over data stored in a relational database.
+
+This process continues until the model outputs a termination token. As such, this sequential generation process requires that all tokens be stored in memory. 
+
+A LLM stores all this state in the \textit{KV cache}, which represents the primary bottleneck for serving throughput. Since each request is processed sequentially,  However, there is a delicate tradeoff between processing larger batch sizes and overfilling the KV cache as tokens are generated during inference. 
+
+and does not leverage query structure present in batch analytics to achieve higher throughput.
+
+Invoking a model in such a way present many opportunities for inference optimization. 
+
+At a high level, the task of language modeling is to model the probability of a list of tokens:  LLMs compute the joint probability over the whole sequence as the product of conditional probabilities (a.k.a. autoregressive decomposition~\cite{}). 
+
+Until the model outputs a termination token, this generation continues sequentially, and 
+
+Intuitively, the larger a batch that the LLM can process, the higher the serving throughput it observes. However, the LLM must ensure the batch size is not too large---all tokens for each request must fit in the available memory. Thus, balancing the tradeoff between memory and compute is the critical challenge for LLM inference today.
+
+storing all the tokens to process [1] request requires, on average, 
+
+% \accheng{talk about inference process and then cache}
+% \accheng{talk about prefill as well}
+% \accheng{just talk about prefix prompts}
+% \accheng{separate section for background
+
+% then have a section for opportunities in batch analytics: reordering, deduplication, and cost-optimization
+
+% use a way to have list of them stand out more: here are the things that are new, make sure they don't miss it
+% }
+
+intelligent memory management is crucial for LLM inference today. Currently, state-of-the-art accelerators have [X]GB of RAM, of which 65\% of this memory must be allocated for the model weights~\cite{}. The remaining roughly 30\% is used to serve requests and how effectively this memory is utilized determines serving throughput.
+
+recent work proposes \textit{memory sharing} to avoid storing the same \textit {system prompts} \accheng{just say prefix}, which are descriptions of the task including instructions and example inputs and outputs. A LLM user typically provide a system prompt along with task input (i.e., data) to form the prompt of a request. S 
+
+\accheng{batch analytics key difference: reordering and other optimizations}
+
+
+the database with knowledge of what data will be processed before inference.
+
+batch analytics with LLMs presents many opportunities for optimizations since the database has access to the full set of queries before they are processed by the LLM.
+
+\textbf{Opportunities with batch analytics.}
+
+challenges for database systems: namely, how to 
+
+% Advancements in LLMs have significantly expanded the capabilities of natural language processing, offering unique opportunities for integrating LLMs with database systems to enhance batch analytics. However, this integration introduces several challenges that must be addressed to fully leverage the potential of LLMs in this context. 
+With the integration of LLMs into database systems, there are several key challenges for improving  We highlight the opportunities in batch analytics that are not exploited by online LLM inference systems or 
+
+The rise of LLMs presents new challenges in optimizing for in-context learning and inference.  such optimizations and propose of range of new techniques for inference.
+
+and typically adopt a simple eviction policy, such as [LRU]~\cite{}. \shu{LRU is probably fine, but they process the requests in sequence (no reordering, etc.)}
+
+
+% tokens are produced based on the the product of conditional probabilities over the whole sequence.
+
+% Since language has a natural sequential ordering, the task of language modeling is also serial: an LLM produces tokens based on the the product of conditional probabilities over the whole sequence. As a result, the LLM can only generate new tokens one by one for each request since the process depends on all the previous tokens in that sequence. 
+% \accheng{add figure from vLLM talk}
+
+\accheng{only sharing during prefill, not decoding?}
+
+do not consider requests until they have arrived
+\begin{itemize}
+    \item Existing systems automatically admit every request into the KV cache and evict only when the cache runs out of space since they do not know what requests will be made a priori.
+    \item In the offline setting, batch queries enumerate exactly when prefixes should be loaded into and removed from cache. \accheng{not admitting things saving writing to GPU memory, evicting proactively in a batch (more efficient)}
+    \item Preemptively reducing the cache can free up memory for other LLM computations. \accheng{what is memory used for?}
+\end{itemize}
+
+In current systems, the default execution of batch queries with LLMs in FIFO order can result in significant underutilization of the KV cache. 
+\begin{itemize}
+    \item Online inference systems make no assumptions about future requests and process requests in arrival order. 
+    \item In contrast, batch workloads provide full information about what requests need to be processed, and this can be used to maximize reuse of shared prefixes.
+    \item Furthermore, batch queries operate over structured data, offering additional opportunities for memory management at the record and row level. For instance, [grouping together requests that all share the same field...] \accheng{shu: add example here}
+    \item Existing inference engines~\cite{} do not leverage this knowledge to make better caching decisions, leading to premature eviction of useful data or unnecessary retention of unused prefixes.
+\end{itemize}
+
+an oracular scheduling algorithm that ensures we only cache prefixes that lead to future hits ... \accheng{update text}
+
+has enabled the increased use of complex analytics tasks at unprecedented scale. 
+
+LLMs are here to stay and will have a growing impact.
+\begin{itemize}
+    \item Advances in LLM are reshaping the current landscape of natural language processing 
+    \item Diverse range of applications, including QA, chat applications, and mix of others 
+\end{itemize}
+
+, which represent a rapidly growing workload as developers apply these models to the enormous corpus of text data stored in relational systems today. 
+
+the effectiveness of support services for customer service requests. Such queries will become increasingly common as LLMs are integrated into data-intensive applications.
+
+Existing systems  %\shu{currently even they receive a large batch of requests, they do no special processing with it and process it sequentially}
+
+% \accheng{Jump straight into problem
+% LLM query example
+
+% Explain tokens are many KB, scope for how much state is used
+
+% Why do we need to batch stuff? because of autoregressivve nature, to utilize full capacity of hardware
+% Balance between memory + compute is critical challenge
+% Existing systems optimize in online setting but in SQL query, we have full knowledge of offline batch
+% Prior work in DB-ML has looked at data flow workflows but none of this addressed strong order data-dependence; tradeoff between memory and CPU
+
+% Highlight key differences of LLM
+
+% Some figures would be nice (vLLM talk)
+
+% A little more explanation about inference process
+% }
+
+% \shu{Following are my prefix background}
+% \textbf{Introduction} 
+% \begin{itemize}
+%     \item The application of LLMs in processing batch workloads reveals patterns in data access and request structuring. 
+%     \item A commonality across many query workloads is the shared prefixes within the inputs to the LLM.
+%     \item These prefixes can take various forms, such as prompts (i.e. questions asked across many rows) or common database fields that recur across multiple records. 
+%     \item This repetition present an opportunity for optimization, especially considering the computational cost and time associated with processing large volumes of data through LLMs. 
+%     \item The identification and reuse of these shared prefixes enables faster and more efficient LLM processing model 
+% \end{itemize} 
+% \textbf{Prefix Cache Background}
+% \begin{itemize}
+%     \item Prefix caching is an approach to optimize the performance of LLMs by caching the KV values associated of previously computed prefixes in GPU memory. 
+%     \item When new request arrives with a prefix that matches a cached entry, the LLM can bypass the initial computation steps, directly retrieved the stored result for the prefix. 
+%     \item This reduces the computational overhead for frequent or repetitive inputs, leading to faster response times. 
+% \end{itemize}
+
+% \subsection{Queries and Goals}
+% \todo{Maybe put the example here, and put the goals similar to the NoScope paper} \accheng{if we make this clear in intro, not sure we need this here}
+
+% \accheng{Just talk about opportunities; existing engines are too basic---just say existing engines not designed to do offline inference
+
+% optimizing batch analytics--we create new opportunities by knowing the workload info
+% }
+% \todo{when should we introduce the goals? of low latency?} \accheng{in the intro} \shu{Reference the Velox paper, maybe have an example application and the most naive solution}
+
+% , which existing online inference systems are not designed to leverage.
+% We highlight the challenges in improving end-to-end latency for SQL queries that invoke LLMs that are not addressed by online LLM serving systems.
+%or existing techniques that optimize other machine learning models for databases. 
+
+% a reordering algorithm that operates at the row and column level for input data to ensure that shared prefixes only need to be stored in cache once. Our strategy provides \textit{optimal} cache hit rate for a given workload.
+% We also provide cache admission and eviction algorithms to ensure we only cache prefixes for as long as they benefit future requests.
+
+% \accheng{is this true?}
+% , including the structured nature of our data and access to all queries before execution,
+
+% Limited Cache Reuse and Inefficient Request Formulation
+%suboptimal cache usage. 
+% A significant challenge is the inherent inefficiency in how batch requests are formulated, leading to minimal reuse of cached computations of prefixes. 
+% \begin{itemize}
+%     \item LLM is an order-sensitive UDF  
+%     \item Structured data contain some information about characteristics of batch workloads (e.g. which fields are shared the most, etc.) 
+% \end{itemize}
+
+% \textit{Our Approach: Formulate Request with Reordering} We propose formulating the requests by strategically manipulating the order of input data.  
+% \begin{itemize}
+%     \item This can be done by ordering records and ordering fields within rows. 
+%     \item This approach maximizes cache reuse by ensuring that requests with common prefixes are processed sequentially, thus enhancing the cache hit rate. 
+% \end{itemize}
+
+% \textbf{Suboptimal Cache Management}
+% Existing cache management strategies of LLM inference engines (e.g. vLLM, SGLang) are not tailored to the unique demands of batch workloads. 
+% \begin{itemize}
+%     \item Fail to make informed decisions about prefix caching for offline workloads, leading to premature eviction of useful data or unnecessary retention of unused prefixes. 
+%     \item This mismanagement results in inefficient memory usage and increased processing times. 
+% \end{itemize}
+  
+% \textit{Our Approach: Batch-Aware Cache Scheduling} Leveraging the structured nature of our reshaped workload, we can make informed decisions on cache admission and eviction. 
+% \begin{itemize}
+%     \item This proactive strategy ensures optimal memory usage and minimizes the need for additional processing when there is not enough memory. 
+% \end{itemize}
+
+% \subsubsection{\todo{@Audrey} Explaination of Continuous Batching?}
+% Continuous batching, also referred to as dynamic batching or iteration-level scheduling, is an method designed to enhance the efficiency of LLM inference. 
+% \begin{itemize}
+%     \item Traditional batching process requests in bulk, leading to delays as each requests waits for the entire batch to be processed. 
+%     \item In contrast, continuous batching operates on a more granular level, handling tasks at the iteration stage. 
+%     \item As soon as one iteration is completed, completed requests are removed, and new ones are added, allowing new requests to be processed after just a single iteration instead of waiting for a whole batch cycle. 
+% \end{itemize}
+% The presence of duplicate data elements and the lack of intelligent query optimization when invoking external UDFs like LLMs lead to redundant computations and inefficient execution strategies. 
+% \begin{itemize}
+%     \item Duplicate inputs are not processed before passing into these expensive UDFs. 
+%     \item Traditional SQL optimizers are not equipped to handle the nuances of LLM inference, resulting in costly and time-consuming query processing.
+% \end{itemize}
+
+% \textit{Our Approach: Deduplication and SQL Optimizations}
+% We address these challenges by implementing deduplication strategies with a set of hard rules and informing SQL optimizers of the expensive UDF calls. 
+% \begin{itemize}
+%     \item Hard rules: identify and eliminate redundant data before LLM invocation
+%     \item SQL optimizers: recognize the cost of LLM calls, allowing for the prioritization of cheaper operations. 
+%     This not only reduces the computational load but also ensures that the most expensive operations are invoked only when necessary, leading to more efficient query execution overall.
+%     \item \shu{Shall we make a case for those hard rules}
+% \end{itemize}
+
+% \textbf{Lack of Workload Optimization}
+
+% \begin{itemize}
+% \item Batch workloads present unique opportunities for optimization that are not adequately exploited by current systems. 
+% \item The potential for formulating requests to maximize cache reuse and enhance GPU utilization remains largely untapped.
+% \item The absence of efficient workload shaping mechanisms, such as record-level and row-level reordering, hampers the ability to optimize prefix caching and reduce latency.
+% \end{itemize}
+
+% \textbf{High Computational and Monetary Costs} 
+% \begin{itemize}
+%     \item Naive execution of LLMs on large datasets can be prohibitively expensive, both in terms of computation and cost. 
+%     \item Traditional SQL query optimizers are not designed to account for the cost characteristics of LLM invocations, leading to inefficient query execution plans. 
+% \end{itemize}
+
+% \textbf{Inefficient Cache Utilization}
+% \begin{itemize}
+% \item Current prefix cache management systems are primarily optimized for online, real-time processing. They lack the global scheduling awareness necessary for efficient batch workload processing, resulting in suboptimal cache hits and unnecessary recomputations.
+% \item The existing cache management strategies do not effectively utilize the knowledge of batch workloads' structure, leading to premature eviction of useful prefixes or caching of unnecessary ones.
+% \end{itemize}
+
+
+% \textbf{Formulating Request}
+% \textbf{Knowledge of Entire Batch for Scheduling}
+% \textbf{Invoke Less: Cost-aware SQL Execution and Dedup}
+
+% in a SQL query can lead to redundant computation: there are opportunities to reduce latency by minimizing the number of calls to the LLM.
+% not processing duplicate queries and minimizing the number of LLM calls that need to be made.
+\begin{itemize}
+    \item 
+   \item 
+   \item 
+    % LLM inference is usually the most expensive part of a SQL query, and this should be accounted for by traditional SQL optimizers.
+\end{itemize}
+
+\begin{itemize}
+    \item We deduplicate prefixes before invoking the LLM.
+    \item We adapt natural language processing techniques to identify redundant data before LLM invocation. 
+\end{itemize}
+
+\begin{itemize}
+    \item 
+    \item 
+\end{itemize}
+
+\accheng{in the same batch for our implementation}
+
+\accheng{focus on the reordering}
+
+These applications then leverage the LLM to perform data analysis, etc...
+
+\begin{itemize}
+    \item 
+    \item 
+    \item 
+    % End-to-end latency \accheng{of the entire query} is the key metric for measuring LLM performance.
+    % \item LLM is usually the bottleneck
+    % \item LLM inference is typically bottlenecked on memory: requests are processed in batches and all requests (as well as their generated responses)  \accheng{introduce prefix and KV}
+    % \item At a high level, LLM inference occurs sequentially for each request for which the model generates words as tokens one by one. For higher throughput, existing systems batch together requests. Crucially, all input prompts (i.e., \textit{prefixes}) and generated tokens must fit in memory within the key-value (KV) cache that stores tokens as key and value vectors.
+    \item 
+    \item 
+    % \item Online systems admit all prefixes into the cache and evict once it is full.
+\end{itemize}
+
+We apply a variety of NLP preprocessing techniques to dedpulicate queries \textit{without} affecting accuracy of the end result. \accheng{just say we do exact, approximate for later}
+    \item 
+    \item     
+% \end{itemize}
+
+% There has been explosive interest in large language models (LLMs) across a range of different fields. LLMs provide general-purpose comprehension and generation of natural language, enabling a range of new applications and workloads that process textual data. To invoke LLMs, a growing class of applications query these models on structured data stored in relational systems. 
+
+% \ion{that lead to redundant LLM invocations.}
+
+\ion{and caching previous results}

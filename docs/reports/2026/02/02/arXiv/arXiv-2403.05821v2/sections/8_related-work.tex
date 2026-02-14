@@ -1,0 +1,46 @@
+\section{Related Work}
+
+Our optimizations build on recent work in LLM inference as well as prior work integrating machine learning and data management. We describe several major related areas below.
+
+% \textbf{Outline}
+% \begin{enumerate}
+%     \item Existing pipeline tools
+%     \begin{enumerate}
+%         \item Langchain
+%         \item Llamaindex
+%     \end{enumerate}
+%     \item Throughput optimized LLM inference
+%     \begin{enumerate}
+%         \item FlexGen
+%         \item vLLM
+%     \end{enumerate}
+%     \item Vector DB papers
+% \end{enumerate} 
+
+% \noindent \textbf{Text2SQL.} LLM usage in Text2SQL tasks, where an LLM generates SQL queries given a natural language prompt, has been increasingly explored in recent work ~\cite{gao2023texttosqlempoweredlargelanguage}\cite{zhang2024benchmarkingtexttosqlcapabilitylarge}. While this task involves LLM inference on tabular data, it is distinct from our setting of optimizing LLM operators that are called within SQL queries.  Future work may explore Text2SQL where an LLM generates a SQL query that itself contains LLM operators. %\asim{shu/amog: review this}
+
+% \noindent \textbf{Model pipeline tools.} LLM toolkits, which have grown rapidly in popularity, provide users with the ability to stitch model pipelines together from basic abstractions. Among these, LangChain \cite{langchain} and LlamaIndex \cite{llamaindex} have seen the most usage. LangChain's framework allows for convenient abstractions for different parts of the LLM serving stack and also enables users to ``batch'' multiple requests into a model. However, this is accomplished through basic thread parallelism and without any model optimizations applied to handle the series of queries found in a typical analytics workload.  \amog{Replace this with Text2SQL? Model pipeline tools should be combined with Inference-optimized system section. And I wouldn't realy consider LlamaIndex and LangChain to be model pipeline tools.} \asim{agreed this can be removed now I think}
+% \accheng{so this is more basic than vLLM? what's the relation to our work?} \simon{This can be taken out, but I think these actually are more high level LLM workflow tool that can benefit from this work. Think an ORM to a DB.}
+\vspace{-0.5em}
+\noindent \textbf{Inference-optimized systems.} There has been a recent rise of dedicated systems for LLM inference, including FasterTransformer \cite{faster-transformers}, Orca \cite{orca-continous-batching}, vLLM \cite{vllm}, and FlexGen \cite{flexgen}. Our work builds upon prior work investigating high-throughput LLM inference and continuous batching for model serving. However, past systems focus on the online setting and make no assumptions about the requests sent to the LLM. In contrast, we leverage full workload information from batch queries to improve performance significantly.
+
+% vLLM \cite{} introduces a system for efficient memory management during serving, which is relevant to our problem scenario with potentially large batches of queries. Specifically, our system relies on vLLM's scheduler and utilizes parallel decoding in a continuous batching strategy. Furthermore, the system processes requests in the order they arrive to the model engine. This was something we believe can be improved in an analytics setting, where the order of outputted responses is less critical, and smarter execution planning can be done within the model to reuse computation with common prefixes. 
+
+% FlexGen \cite{} applies both offloading and quantization to efficiently serve large models on limited gpu space with high throughput. However, trade-offs are made for the system assuming a set of latency-insensitive tasks. Our goal was to create a unified abstraction to augment analytics with LLM capabilities while still preserving the ability to make fast, one-off queries on both tabular and unstructured data. 
+\vspace{-0.5em}
+\noindent \textbf{Prefix Sharing.} Recent work explores developing memory-efficient GPU kernels that perform inference while leveraging shared prefixes. %to compute LLM attention leveraging shared prefix. 
+SGLang's RadixAttention \cite{sglang}, Hydragen \cite{hydragen}, and Cascade Inference \cite{cascade-inference} all implement optimized kernels. Our work heavily leverages these kernels to enable prefix sharing while delivering higher throughput as compared to traditional attention kernels \cite{flash-attention}. % \shu{try reducing this}
+% \accheng{unclear how these kernels are different from other kernels. what are the other kernels? how does our work leverage these kernels?} \simon{I cited the baseline kernels. This section is to claim we are not on the same track as these work by building on top of the.} achieve memory saving
+
+% \shu{DBML}
+\vspace{-0.5em}
+\noindent \textbf{LLMs in Relational Data Analytics} 
+% \accheng{Ralf and Velox citation} \simon{done}
+% There is extensive work on integrating machine learning models with analytics~\cite{noscope,blazeit,prob-pred}. MADLib~\cite{madlib} is one example of many works that have focused on designing systems to train complex models on large datasets. Recent works such as Velox explore online serving using data management systems~\cite{velox}, and Ralf optimizes machine learning feature maintenance in data pipeline ~\cite{ralf-feature-store}. \amog{The works above don't seem very related to our work at all. Systems for training models, or feature stores are unrelated.} 
+% There has been prior work on frameworks to run ML models or LLMs as operators on relational data. Systems like Spark MLlib\cite{sparkmllib}, and SystemML\cite{systemml} However, these past works did not specifically address large language models with extremely high computational costs and unique architectural properties, such as the KV cache. As such, LLMs offer many new optimization opportunities in the context of analytics.
+There are many systems that support calling LLMs as operators on relational data, spanning from production database vendors like Databricks \cite{databricks-ai-functions}, Google BigQuery \cite{google-bigquery-llm} and AWS Redshift \cite{aws-redshift-llm} to programming frameworks like LOTUS \cite{lotus}. While these works provide APIs for running LLMs over relational data, they do not specifically explore data reordering optimizations to maximize KV cache hits. NoScope~\cite{noscope}, BlazeIt~\cite{blazeit}, and Probabilistic Predicates~\cite{prob-pred} propose approximating expensive ML model calls with less expensive models for approximate query processing, but this can reduce query accuracy, and does not take advantage of the unique opportunities for KV cache reuse in LLM inference.
+
+% 
+% Blending advancement of machine learning with database technologies is not new. For example, both MADLib \cite{madlib} and Velox \cite{velox} adds model training and inference as part of analytic workflow. However, the past literature focus on classical machine learning algorithms such as linear regression and K-means clustering. Large language models are a lot more expensive to compute and have interesting properties related to prefix sharing. Therefore, LLMs open up new opportunities to for relational operator optimization such as sorting and better cost estimation. \simon{this paragraph is poorly written, someone plz rewrite it}
+
+% \accheng{Joey/Matei, is there other related work we should be citing?} \matei{approximate queries with ML in SQL: NoScope, BlazeIt, Probabilistic Predicates}

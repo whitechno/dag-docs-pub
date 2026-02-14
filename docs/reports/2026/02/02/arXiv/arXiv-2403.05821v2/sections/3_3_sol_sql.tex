@@ -1,0 +1,37 @@
+\section{SQL Optimizations}
+Traditionally, relational databases employ cost-based query optimizers to enhance the performance of requests. These optimizers analyze query structures and operators to minimize data accesses and computational overheads. We extend these optimizers to account for LLM operators costs so that they can find query plans that minimize LLM invocations.
+
+% \accheng{what is our solution exactly? how do we actually account for the cost? are we gonna move this section to the implementation?}
+% \shu{We should probably ask this. Traditional UDF cost estimation is hard, cardinality estimation is also hard; we only consider simple push-down predicates scenario. Are we going to make the claim that LLM UDF is definitely more expensive than the other operators?}
+
+\subsection{LLM Operator Costs}
+% We let SQL optimizers to be aware of expensive invocations of these external functions. 
+We augment cost estimation for the external functions that are used to invoke LLMs.
+Currently, LLMs are most commonly accessed via UDFs. For instance, Databricks offers an \texttt{ai\_query}() function that allows users to call a model endpoint~\cite{databricks-aiquery}. Similarly, Amazon Redshift enables uses to LLM calls via UDF functions~\cite{aws-redshift-llm}. We estimate LLM costs based on the token length of the input and estimated decode length over requests. In most cases, LLM invocations are significantly more expensive than other query operators, so these calls are pulled up in the query plan. 
+
+% \accheng{based on token length of the input and estimated decode length over requests? In most cases, LLM invocations are significantly more expensive than other query operators (Section~\ref{sec}), so these calls are pulled up in the query plan.}
+
+% In the context of traditional SQL query optimization, the execution order of operations is crucial for efficient data retrieval and processing. SQL optimizers typically analyze query structures and reordering operations such as joins, selections, and projections to minimize data access and computational overhead. However, when integrating external UDF like LLM, the SQL optimizer needs to be aware of the external UDF cost. 
+
+As an example of how LLM operator costs affect query planning, consider the query provided earlier in Figure \ref{fig:filter} as an example. Without accounting for LLM inference costs, a naive execution might call the UDF on every row in the table before applying the filter \textit{c.Timestamp > '2023-10-01'}. This would lead to unnecessary LLM invocations and could significantly increase overall execution time. A better execution strategy would be to apply the filter before invoking the LLM UDF, thereby reducing the dataset size that the LLM processes. This optimization would also benefit other query operators, such as joins. In general, the optimizer will pull up LLM calls as much as possible since these tend to be the most expensive parts of the query.
+
+
+% Our solution involves pushing down cheaper operators and pushing up expensive LLM calls as much as possible, and let 
+
+\begin{figure}
+    \centering
+    \begin{mdframed}[linecolor=black, linewidth=.5pt]
+
+    \begin{minted}[fontsize=\small]{sql}
+-- Selection, Projection 
+SELECT u.UserID
+FROM Users u
+JOIN Comments c ON u.CommentID = c.CommentID
+WHERE
+    LLM("{Few_shot_examples}, sentiment on the {Text} is", c.Text) = 'Negative' 
+    AND c.Timestamp > '2023-10-01'
+    \end{minted}
+    \end{mdframed}
+    \caption{SQL Example with one LLM and one non-LLM filter. The order in which these filters are applied affects the end-to-end query execution time.}
+    \label{fig:filter}
+\end{figure}

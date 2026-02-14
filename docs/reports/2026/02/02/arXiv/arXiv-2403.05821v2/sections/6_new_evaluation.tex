@@ -1,0 +1,745 @@
+\vspace{-0.5em}
+
+\section{Evaluation}
+\label{sec:evaluation}
+In this section, we evaluate the effectiveness of our optimizations within a constructed benchmark suite of queries. We aim to answer the following questions: 
+\vspace{-1em}
+
+\begin{enumerate}\setlength{\itemsep}{-1.5pt}
+    \item How does our request reordering optimization impact query latency and costs across different LLM query types and datasets? 
+    \item How does the request reordering algorithm influence LLM accuracy for different models?
+    \item What is our algorithm solver time, and how does that compare to end-to-end query latency? 
+\end{enumerate}
+
+\vspace{-1em}
+
+\subsection{Evaluation Benchmark}
+\label{sec:queries}
+Given the lack of standard benchmarks for LLM queries, we construct a benchmark suite to represent real-world data retrieval and processing tasks (Sec~\ref{subsec:dataset}). 
+We define a range of query types (Sec~\ref{subsec:llmqueries}) over datasets from various sources to assess the impact of LLMs in relational analytics.
+
+
+\subsubsection{Datasets}
+\label{subsec:dataset}
+\begin{table}[ht]
+\centering
+% \footnotesize
+\small
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}cccccl}
+\toprule
+Dataset & \( n_{\text{rows}} \) & \( n_{\text{fields}} \) & \( \text{input}_{\text{avg}} \)  & \( \text{output}_{\text{avg}} \) & \text{Query Type} \\ 
+\midrule
+Movies & 15000 & 8 & 276 & $\{2, 29, 16, 2\}$ & T1-T4 \\ 
+Products & 14890 & 8 & 377 & $\{3, 107, 62, 2\}$ & T1-T4\\
+BIRD & 14920 & 4 & 765 & $\{2, 43\}$ & T1, T2 \\ 
+PDMX & 10000 & 57 & 738 & $\{2, 72\}$ & T1, T2\\
+Beer & 28479 & 8 & 156 & $\{2, 38\}$ & T1, T2\\ 
+SQuAD & 22665 & 5 & 1047 & {11} & T5\\
+FEVER & 19929 & 5 & 1302 & {3} & T5\\ 
+% gsm & X & 1536 & 400 \\
+\bottomrule
+\end{tabular*}
+\caption{Datasets: $n_{\text{rows}}$ and $n_{\text{fields}}$ denote the number of rows and fields, respectively. $\text{input}_{\text{avg}}$ and $\text{output}_{\text{avg}}$ represent average input and output token lengths. Query Type is detailed in Sec~\ref{subsec:llmqueries}. Since $\text{input}_{\text{avg}}$ remains consistent across query types, we report a single overall average, while $\text{output}_{\text{avg}}$ varies, with each bracketed value corresponding to a specific query type.} %\shu{@asim: add output token length for movies and products here}}
+\label{tab:dataset}
+\vspace{-1em}
+\end{table}
+% \shu{OpenAI --> create a dataset with prefix or repeating fields (run it, and simulated thing --> analyze)}
+
+% \begin{table}[ht]
+% \centering
+% % \footnotesize
+% \begin{tabular}{ccccl}
+% \toprule
+% Dataset & \( n_{\text{rows}} \) & \( n_{\text{fields}} \) & \( \text{input}_{\text{avg}} \)  & \( \text{output}_{\text{avg}} \) \\
+% \midrule
+% Movies & 14890 & 8 & 276 & \{29, 2\} \\ 
+% Products & 15000 & 8 & 377 & \{107, 3\} \\
+% BIRD & 14920 & 4 & 765 & \{43, 2\} \\ 
+% PDMX & 10000 & 57 & 738 & \{72, 2\} \\
+% Beer & 28479 & 8 & 156 & \{38, 2\} \\ 
+% SQuAD & 22665 & 5 & 1214 & {11} \\
+% FEVER & 19929 & 5 & 1047 & {13} \\ 
+% % gsm & X & 1536 & 400 \\
+% \bottomrule
+% \end{tabular}
+% \vspace{-0.5em}
+% \caption{Dataset Configurations.}
+% \label{tab:dataset}
+% % \vspace{-1em}
+% \end{table}
+
+% We subselect the top xx of 15000 rows and 8 different fields from this dataset. % The schema of this dataset includes  the fields of interest for this dataset is shown in Table \ref{tab:products_schema}. %We show part of the schema with fields of interest in Table \ref{tab:movies_schema}. % This dataset consists of 28749 rows which we use for our experiments. % We use a deduplicated labeled dev set of Fever consisting of 22,862 claims. The Wikipedia dataset contains over 5 million passages.We select the "Handmade Products" category in our experiments.
+
+We build our benchmark suite on 7 commonly used recommendation and natural language processing datasets, shown in Table~\ref{tab:dataset}. These datasets vary in the number of rows, fields, average input/output token lengths, and appropriate query types (Sec~\ref{subsec:llmqueries}). 
+The datasets include Rotten Tomatoes Movie Reviews (Movies)~\cite{rotten-tomatoes-movies-dataset}, Amazon Product Reviews (Products)~\cite{amazon-product-review-dataset}, BIRD~\cite{li2024can}\footnote{We use Posts and Comments table joined by PostID from the BIRD dataset.}, Public Domain MusicXML (PDMX)~\cite{pdmx}, RateBeer Reviews (Beer)~\cite{ratebeer}, Stanford Question Answering Dataset (SQuAD)~\cite{squad-dataset}, and Fact Extraction and Verification (FEVER)~\cite{fever}. Details on the fields are in the Appendix~\ref{appendix:fields}.
+
+% \textit{Rotten Tomatoes Movie Reviews (Movies)}~\cite{rotten-tomatoes-movies-dataset} contains critic reviews and movie metadata from Rotten Tomatoes. 
+% \textit{Amazon Product Reviews (Products)}~\cite{amazon-product-review-dataset} includes "Handmade Products" user reviews and item metadata collected from Amazon in 2023.  
+% \textit{BIRD}~\cite{} is a Text2SQL benchmark across multiple domains; we use Posts and Comments table from Codebase Community domain.
+% \textit{Public Domain MusicXML (PDMX)}~\cite{} consists of MusicXML files from MuseScore, containing diverse multitrack symbolic music with song metadata.
+% \textit{RateBeer Reviews (Beer)}~\cite{} is a beer reviews dataset including reviews about product and user information, followed by ratings of different aspects of beer. 
+% \textit{Stanford Question Answering Dataset (SQuAD)}~\cite{squad-dataset} is a reading comprehension dataset consisting of questions posed by crowdworkers on Wikipedia articles. Each question includes a context—a text span from the corresponding passage.
+% \textit{Fact Extraction and Verification (FEVER)}~\cite{fever} contains claims generated by altering sentences from Wikipedia passages, classified by human annotators as either Supports, Refutes, or NotEnoughInfo if the claims are factually correct based on the Wikipedia passages. Details on the field configuration of each dataset are provided in Appendix~\ref{}.
+\vspace{-0.5em}
+
+\subsubsection{LLM Queries}\label{subsec:llmqueries}
+% Our query benchmark suite is designed to explore the full spectrum of \sys's capabilities, incorporating a broad range of query types and use cases:
+% \vspace{8pt}
+
+Our evaluation consists of 16 queries across 5 query types corresponding to different real-world use cases, as shown in Table~\ref{tab:dataset}. 
+We discuss each query type below and provide details on queries for each dataset in Appendix~\ref{appendix:queries} and ~\ref{appendix:fields}. 
+
+% We include 5 projection queries across the Movies, Products, BIRD, PDMX, and Beer datasets.
+
+\textbf{\textit{(T1) LLM filter.}} Filter queries mimic SQL \texttt{WHERE} clauses and use LLMs to categorize data. This query type illustrates typical use cases in sentiment analysis, categorization, and content filtering.
+Given their binary or categorical focus, these queries often yield short outputs (e.g., "Yes" or "No"). We construct five filter queries spanning all datasets except for SQuAD and FEVER. \newline 
+\textbf{\textit{(T2) LLM projection.}} Projection queries use LLMs to summarize or interpret specific table field(s), similar to a SQL \texttt{SELECT} statement. 
+% It reflects common tasks such as using LLMs for table summarization and interpretation based on certain data fields. 
+These tasks typically produce longer outputs due to the descriptive nature of the results. We construct five projection queries spanning all datasets except SQuAD and FEVER. \newline 
+% The LLM processes and analyzes information to meet specific criteria, such as 
+% We include 5 filtering queries across the Movies, Products, BIRD, PDMX, and Beer datasets.
+\textbf{\textit{(T3) Multi-LLM invocation.}} Multi-LLM queries involve sequential LLM calls (e.g., a filter followed by a projection), supporting tasks like multi-step data processing and combining insights. 
+% , such as a projection following a filter. It represents advanced analytical tasks, such as combining different data insights or performing sequential data filterings. 
+Output lengths vary by task but generally mix short and long responses.
+We construct two example multi-LLM invocation queries on Movies and Products datasets. \newline 
+%  and addresses scenarios in which several layers of data processing or analysis are required
+% We include 2 multi-invocation queries on the Movies and Products datasets.
+\textbf{\textit{(T4) LLM aggregation.}} 
+Aggregation queries incorporate LLM outputs into aggregate functions, like averaging sentiment scores given by LLMs for individual reviews. These tasks usually generate concise numeric outputs for analysis (e.g., ratings of 1 to 5), resulting in shorter output lengths similar to filter queries. We construct two example aggregation queries on Movies and Products datasets. \newline 
+% Aggregation queries use LLM-generated outputs in aggregate function, such as averaging sentiment scores from individual reviews, crucial for deriving insights from texual data. 
+% Since these tasks often yield numerical outputs for aggregation, they also typically have short output token length, e.g. ratings from 1 to 5. 
+\textbf{\textit{(T5) Retrieval-augmented generation (RAG)}.} RAG queries involve fetching external knowledge as context, such as retrieving relevant document segments before generating answers. We evaluate FEVER and SQuAD datasets, fetching 4 contexts for FEVER and 5 contexts for SQuAD for question answering.
+
+% is a selection query with an additional step to fetch external knowledge as context for a given question from a VectorDB. It simulates use cases where queries need to pull in relevant information from external sources, such as document databases or knowledge graphs, to provide comprehensive answers. We include 2 RAG queries on the FEVER and SQuAD datasets, fetching K=4 contexts for FEVER and K=5 contexts for SQuAD during augmentation.
+
+% For example, one such query could use LLMs to assign sentiment scores to individual reviews and then aggregate these scores to calculate an average sentiment for overall customer feedback. This query type is essential for tasks that need to extract insights from complex textual data. We include 2 aggregation queries on the Movies and Products datasets. %clear, actionable overview 
+
+\begin{figure*}[tbp]
+     \centering
+     \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        % \includegraphics[width=\textwidth]{figures/products_runtimes_e2e.pdf}
+        \includegraphics[width=\textwidth]{figures/MLSys_Figures/dataset_runtimes_comparison_Q2.pdf}
+        \caption{Filter Queries}
+        \label{fig:filter-q}
+    \end{subfigure}
+    \hfill 
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        % \includegraphics[width=\textwidth]{figures/movies_runtimes_e2e.pdf}
+        \includegraphics[width=\textwidth]{figures/MLSys_Figures/dataset_runtimes_comparison.pdf}
+        \caption{Projection and RAG Queries}
+        \label{fig:selection-rag}
+    \end{subfigure}
+    % \shu{prefix recompute overhead, save memory, batch size gets larger; prefix has many requests, output token shrinks}
+    \vspace{-1em}
+    \caption{End-to-end Result (Filter, Selection, RAG): Our optimizations Cache (\greedy) achieve 1.5 -- 3.4$\times$ speed-up in end-to-end runtime over caching without reordering (Cache (Original)), and 1.8 -- 3.8$\times$ over No Cache baseline. }
+    \label{fig:q1q5}
+    \vspace{-1.3em}
+\end{figure*}
+
+
+
+
+% recompute + batch size (only help for decode throughput) 
+% decode is memory bound, 2 requests in a batch v.s. 10 requests in a batch, decode step 
+% 10 requests in a batch total throughput will be much higher (decode)
+% batch size --> decode throughput 
+% decode 2, batch size benefits 
+
+% 2) decode token too short, more memory to put mroe prefix 
+% decode throughput benefits reduce, or prefix 
+
+% movies, products prompt is short, decode short, memory to put more prefix 
+
+% Compute overhead (cache more in memory), recompute reduces 
+
+% A -> B reduce: decode throughput benefits shrink, output token shrinks 
+
+% recompute benefits (decode two times), B - compute brings benefitgs 
+% A: generae make it slow, A - batch size similar (not too much overhead)
+% Prefill benefits: generate more, amortized the benfit
+% A: batch size similar (generate more, benefits amortized), output 少了, benefit 没了，batch size larger, decode多一步赚一点 
+% batch size一样的，decode越长，throughput saturate 到decode，relative performance变小
+% prefill快一点
+% hit 多，prompt也场，batch size倍数差的不多（hit rate差很多，batch size差两倍）
+    
+
+
+% This query leverages external knowledge bases for enhanced LLM processing, enriching LLM queries with broader context. 
+
+% \asim{we don't need this anymore due to dataset info table right?} We run Q1-Q5 on the Amazon Product Reviews and Rotten Tomatoes Movie Reviews datasets and Q6 on SQuAD and FEVER. We evaluate Q1-Q5 on around 15,000 rows of the Movies and Products datasets. For Q6, we evaluate roughly 20,000 questions/claims for both SQuAD and FEVER, where each question retrieves \textit{K=3} contexts to augment its answer. 
+
+
+\vspace{-0.5em}
+\subsubsection{Evaluation Setup}
+
+
+% We also report the prefix hit rate as the ratio of prefix tokens served from the KV cache and the input token length. 
+\textbf{Metrics} We evaluate \textit{end-to-end query latency} for each LLM query. We also measure the \textit{monetary cost} of using OpenAI and Anthropic endpoints. Additionally, we hand-label a subset of the LLM filter queries to evaluate the reordering implications for query \textit{accuracy}. \newline 
+\textbf{Models} We run setups shown in Table~\ref{tab:dataset} using Meta Llama-3-8B-Instruct ~\cite{llama3}. For RAG queries, we use Alibaba-NLP/gte-base-en-v1.5~\cite{li2023towards} to embed the context and use Facebook Similarity Search Library (FAISS)~\cite{johnson2019billion} for context retrieval. We also run Llama-3-70B-Instruct~\cite{llama3} for LLM Filter queries. For cost results, we evaluate with OpenAI GPT-4o-mini and Anthropic Claude 3.5 Sonnet.  \newline 
+\textbf{Hardware} We evaluate Llama-3-8B-Instruct on a single NVIDIA L4 GPU (GCP g2-standard-4) with 24GB of GPU Memory. We also run a larger model Llama-3-70B-Instruct on 8xL4 GPUs (GCP g2-standard-48). For OpenAI and Anthropic cost experiments, we utilize their API endpoints. \newline 
+% on a g2-standard-48 GCP instance (48vCPUs, 192GB RAM) with an NVIDIA L4 GPU accelerator. 
+% \textbf{Setup} We run our evaluations on a g2-standard-48 GCP instance (48vCPUs, 192GB RAM) with an NVIDIA L4 GPU accelerator. 
+% We use the instruction tuned variant of Meta's LLaMA-3 model with 8B parameters~\cite{llama3}, with an additional experiment on a g2-standard-96 GCP instance (96vCPUs, 384GB RAM) using the 70B parameter model discussed in \ref{sec:modelablation}. 
+% We use vLLM~\cite{vllm} as our model serving engine. For RAG queries, we use a GTE embedding model, Alibaba-NLP/gte-base-en-v1.5~\cite{li2023towards}, to embed the context and use Facebook Similarity Search Library (FAISS) ~\cite{johnson2019billion} to store these context embeddings into an index. 
+\textbf{Baselines} Our algorithm (\textit{Cache (GGR)}) is compared against two baselines: one without prompt caching (\textit{No Cache}) and another with caching enabled but without reordering (\textit{Cache (Original)}). We do not evaluate the optimal prefix hit recursion algorithm (Sec~\ref{sec:optimal}) as it is infeasible over large tables (e.g., solving a 10-row table takes several minutes). 
+The algorithm runtime far exceeds the LLM inference time for larger tables for the optimal algorithm. 
+% This metrics reflects latency speed-up from LLMs.
+
+% \begin{figure*}[tbp]
+%      \centering
+%      \begin{subfigure}[b]{0.48\textwidth}
+%         \centering
+%         % \includegraphics[width=\textwidth]{figures/movies_runtimes_e2e.pdf}
+%         \includegraphics[width=\textwidth]{figures/MLSys_Figures/dataset_runtimes_comparison.pdf}
+%         \caption{Selection (Q1) and RAG (Q5) Query}
+%         \label{fig:movies-runtimes}
+%     \end{subfigure}
+%     % \hfill
+%     % \begin{subfigure}[b]{0.48\textwidth}
+%     %     \centering
+%     %     % \includegraphics[width=\textwidth]{figures/products_runtimes_e2e.pdf}
+%     %     \includegraphics[width=\textwidth]{figures/MLSys_Figures/dataset_runtimes_comparison_Q2.pdf}
+%     %     \caption{Filter (Q2) Query}
+%     %     \label{fig:products-runtimes}
+%     % \end{subfigure}
+
+%     %\vspace{-2em}
+%     \caption{End-to-end Result: Our optimizations (Cache (\greedy + Dedup + SQL Opt)) achieve 2.1 - 3.0$\times$ on Movie Dataset and 2.2 - 2.8$\times$ speed-up on Product Dataset over Cache with FIFO ordering (Cache(FIFO)). \shu{merge all results into a single large graph}}
+%     \label{fig:runtimes}
+% \end{figure*}
+
+% \begin{figure}[ht]
+%     \centering
+%     \includegraphics[width=0.45\textwidth]{figures/SIGMODfigures/rag.pdf}
+%     \caption{End-to-end Result: Our optimizations, Cache (\greedy + Dedup + SQL Opt), achieve 2.2$\times$ on SQuAD Dataset and   2.1$\times$ speed-up on FEVER Dataset over Cache with FIFO ordering (Cache (FIFO)).} %\shu{These bars are too wide, need to narrow it a bit; change Cache (GGR) caption to Cache (GGR + Dedup + SQL Opt)}}
+%     \label{fig:rag-runtimes}
+% \end{figure}
+
+
+\vspace{-0.5em}
+
+\subsection{End-to-End Benchmark Results}
+\label{sec:end-to-end}
+
+
+%\shu{Needs to add a few words about: why do we not evaluate the \optimal algorithm}
+\textbf{\textit{Overview}}. Fig~\ref{fig:q1q5} and Fig~\ref{fig:q3q4} show the end-to-end latency results of our techniques on LLM filter, projection, multi-LLM invocation, aggregation, and RAG queries with the Llama-3-8B-Instruct model on a single L4. Our evaluation shows that our approach can achieve 1.5 to 3.4$\times$ speedup over Cache (Original) and 1.8 to 3.8$\times$ speedup over No Cache across 16 queries. 
+We discuss the evaluation for each query type in detail as below.
+% As baselines, we show the results of not using the KV cache for prefixes (No Cache) and caching without any reordering (Cache (Original)). We also measure the impact of caching with our algorithm detailed in Algorithm \ref{alg:greedy}, denoted as Cache (\greedy).  
+
+% For example, solving for the optimal ordering with the \optimal algorithm takes several minutes for a 10-row table. \asim{last two sentences can potentially be cut for space}
+
+% and measure it without and with additional optimizations, such as deduplication and SQL optimization (i.e., Cache (\greedy+Dedup+SQL Opt))
+\vspace{-0.5em}
+\noindent \textbf{\textit{LLM filter.}} 
+This query type uses an LLM operator to filter rows, often producing concise outputs of only a few tokens (see Table~\ref{tab:dataset}). Examples include question-answering tasks limited to 'Yes' or 'No' responses, or sentiment labels like 'Positive,' 'Negative,' or 'Neutral.' 
+We construct five such queries on the datasets shown in Fig~\ref{fig:filter-q}. 
+Our Cache (\greedy) approach achieves a 2.1 -- 3.8$\times$ speed-up over No Cache by caching repeated prefixes from system prompts and input data. 
+Cache (Original) with prompt caching enabled can achieve a modest speedup of 1.03 -- 1.9$\times$ over No Cache by reusing instruction prompts and repeated values from the default input table. 
+For queries with short decode stages, the primary benefit of prompt caching is the saved prefill computations. 
+Our Cache (\greedy) algorithm further reduces end-to-end latency by 1.8 -- 3.0$\times$ over Cache (Original) through reordering rows and fields in the input table to maximize prefix reuse. 
+% The main performance gain of prompt caching for this type of query where decode stage is short comes from saving the prefill computations. 
+
+Most review datasets, such as Movies, Products, and BIRD, contain highly distinct values in the first few default fields due to the joining of reviews with metadata tables.
+For instance, these tables often begin with a \texttt{review\_content} field. 
+Our algorithm prioritizes fields with repeated values, like \texttt{description} and \texttt{product\_title}, leading to a 57 -- 74\% increase in prefix hit rates and a 2.5 -- 3$\times$ speed-up over the original ordering. 
+PDMX is a dataset containing 57 fields with many unique, lengthy text entries. In this dataset, our algorithm raises the hit rate from an initial 12\% to 57\%, resulting in a 1.8$\times$ reduction in end-to-end latency. This lower speed-up is due to the nature of long input and 43\% of cache miss from this dataset even for Cache (GGR).
+The Beer dataset contains some duplicated values in early fields like \texttt{review/profileName} and Cache (Original) can achieve an initial hit rate of 50\%. Cache (\greedy) can further increase the hit rate by an additional 30\% to reach 80\% and achieve a 2$\times$ speedup.
+
+\vspace{-0.5em}
+\noindent \textbf{\textit{LLM projection.}} 
+This query type applies the LLM to the selected
+data for a specific task, producing longer outputs ranging from 29 to 107 tokens (see Table~\ref{tab:dataset}). 
+For example, LLMs can be used to summarize the positive aspects of movies leading to favorable ratings in the Movies dataset.
+As shown in Fig~\ref{fig:selection-rag}, for datasets except for SQuAD and FEVER (i.e. RAG queries), Cache (GGR) achieves 2.4$\times$ to 3.7$\times$ speed-up over No Cache, and 1.5$\times$ to 3.4$\times$ speed-up over Cache (Original). 
+Notice that as the output token length increases, query execution time across all baselines also grows. 
+In cases where the decode stage dominates, benefits from prefill caching are less pronounced, leading to smaller relative performance gains than with LLM Filter queries with shorter output length. 
+However, for datasets like BIRD and PDMX, which contain long strings, prompt caching saves memory during the decode stage, making the speedup more noticeable with longer decode times.
+
+% Table~\ref{tab:dataset} reveals that our selection queries have the longest average output length from 38 to 107 tokens across datasets. With more output tokens, the decoding stage of LLM inference becomes a larger proportion of the end-to-end latency, during which prefix caching is irrelevant. As a result, although BIRD (765) and PDMX (738) have similar average input tokens, our methods achieve higher speed-up on BIRD, where the average output length is 43 tokens, as opposed to 72 tokens for PDMX. Additionally, datasets that result from a joined table of reviews and movies, products, or BIRD produce significantly more redundancy and more caching opportunities (e.g., the same movie description applies to multiple reviews) with higher speed-up.
+
+\begin{figure}[t!]
+    \centering
+    \includegraphics[width=0.95\columnwidth]{figures/MLSys_Figures/dataset_runtimes_comparison_Q3_Q4.pdf}
+    \vspace{-1em}
+    \caption{End-to-end Result (Multi-LLM Invocation, Aggregation): Our optimizations Cache (\greedy) achieve 1.7 - 2.8$\times$ speed-up over Cache (Original), and 2.7 - 3.7$\times$ speed-up over No Cache. }
+    \label{fig:q3q4}
+
+\end{figure}
+
+% \begin{table}[t!]
+% \small
+% \begin{tabularx}{\columnwidth}{l@{\hskip 4pt}c@{\hskip 4pt}c@{\hskip 4pt}c@{\hskip 4pt}c@{\hskip 4pt}c@{\hskip 4pt}c@{\hskip 4pt}c}
+% \toprule
+% \textbf{Method} & \textbf{Movies} & \textbf{Products} & \textbf{BIRD} & \textbf{PDMX} & \textbf{Beer} & \textbf{FEVER} & \textbf{SQuAD} \\
+% \midrule
+% \textbf{Original}  & 34.6            & 26.7              & 10.4          & 11.8          & 49.9          & 11.2           & 11.0 \\
+% \textbf{GGR}    & 85.7            & 83.3              & 84.8          & 56.6          & 80.1          & 67.4           & 69.7 \\
+% \bottomrule
+% \end{tabularx}
+
+% \vspace{-0.5em}
+% \caption{Comparison of PHR (\%) averaging across query types for Naive and GGR across datasets.}
+% \label{tab:algoresults_simplified}
+% \end{table}
+
+\begin{table}[t!]
+\footnotesize
+\setlength{\tabcolsep}{6pt} % Adjust column separation
+\begin{tabularx}{\columnwidth}{l@{\hskip 2pt}c@{\hskip 2pt}c@{\hskip 2pt}c@{\hskip 2pt}c@{\hskip 2pt}c@{\hskip 2pt}c@{\hskip 2pt}c}
+\toprule
+\textbf{Method} & \textbf{Movies} & \textbf{Prods.} & \textbf{BIRD} & \textbf{PDMX} & \textbf{Beer} & \textbf{FEVER} & \textbf{SQuAD} \\
+\midrule
+\textbf{Original}  & 35\%            & 27\%               & 10\%           & 12\%          & 50\%           & 11\%           & 11\%  \\
+\textbf{GGR}    & 86\%             & 83\%               & 85\%           & 57\%           & 80\%           & 67\%           & 70\%  \\
+\bottomrule
+\end{tabularx}
+
+\caption{PHR (\%) of LLM Filter and RAG queries for Original and GGR, which achieves 30 -- 75\% higher hit rates.}
+\label{tab:hit-rate}
+
+\end{table}
+
+
+
+% From this improvement, the simulated cost savings are 39\% and 79\% under OpenAI and Anthropic's pricing models respectively.
+% \vspace{-0.5em}
+% \caption{With solver overhead of less than 15 seconds across all datasets, GGR achieves up to 74\% PHR improvements. From this improvement, the simulated cost savings are 39\% and 79\% under OpenAI and Anthropic's pricing models respectively.}
+% \label{tab:algoresults}
+% \end{table}
+
+
+
+
+% and KV cache with FIFO ordering. \asim{these speedups are over no KV cache, not KV cache with FIFO}%\accheng{update names} 
+% These significant speed-ups result from the sharing of large prefixes. We observe significant savings by avoiding recomputation on these longer prefixes. The No Cache baseline constructs a prompt for each row in the table and thus sends as many prompts to the LLM as there are rows in the table. No computation is saved by the model itself, and as a result, this method incurs the highest query runtime for each of our queries. 
+% We benchmark against this method with our optimizations. 
+
+% This makes sense, as Q1 was run with the longest instruction prompt for the LLM, including few-shot examples for how to answer the question asked. The total length of this prompt was 172 tokens in the Movie dataset and 141 tokens in the Product dataset. As a result, due to prefix caching, a lot of LLM recomputation is saved, as visible in the speedup from Naive to Cache(Naive). From there, cache token hits are magnified by our reordering optimizations, which brings us the remaining speedup.
+
+% We analyze the impact of our optimizations in detail on the Movie dataset. Cache (FIFO) provides a 1.6$\times$ speedup over No Cache since we can now reuse computed tokens for the instruction prompt. Our Cache (\greedy) algorithm ensures that the \textit{movie\_info} column is ordered first and groups requests with similar prefixes together to achieve a further speed-up of 2.0$\times$. Standard techniques like deduplication and SQL optimizations have minimal impact on this query type over the datasets we use. This is because the \textit{review\_content} column contains few duplicates (only 99 rows can be deduplicated), and this query does not include a filter clause. Thus, our ultimate speedup using Cache \greedy and deduplication is 3.7$\times$ over Naive and 2.3$\times$ over Cache (FIFO).
+
+
+% Analyzing the Movie dataset results in detail, we see speedup with each optimization introduction. 
+% \begin{enumerate}
+%     \item The naive method constructs a prompt for each row in our table using the columns inputted to the UDF, and thus inputs 15,000 prompts to the LLM. No computation is saved by the model itself, and as a result this method incurs the highest query runtime.
+%     \item Adding FIFO prefix caching provides X$\times$ speedup, as computation is saved caching the instruction prompt.
+%     \item To make the caching more effective, we reorder our columns to be able to cache \textit{movie\_info} as well, and sort our rows by this column to make use of caching locality. With this technique, we achieve a further Y$\times$ speedup.
+%     \item Our final optimizations include deduplication of inputs to the LLM and SQL filter optimization. The latter does not apply to Q1 as no filter clause is present. Because \textit{review\_content} is included as part of the prompt in this query, there are only a few (~100 rows) that are  deduplicated, and speedup is marginal.   
+% \end{enumerate}
+
+% Our optimizations achieve similar improvements on the Product dataset. Cache (FIFO) improves query latency by 1.6$\times$ over the No Cache baseline. Cache (\greedy) achieves much higher speed-ups by mostly ordering the \textit{description} column first. This column contains many longer prefixes shared across different user reviews. Consequently, we achieve a 3.4$\times$ speedup over the No Cache baseline and a 2.2$\times$ speedup over Cache (FIFO). Like the Movie dataset, deduplication and filter reordering have less impact on this query type, so Cache (\greedy+Dedup+SQL Opt) achieves a 2.3$\times$ speedup over Cache (FIFO) overall. 
+% There is no filter clause, and the \textit{text} column of user reviews contains many unique values. 300 rows are deduplicated, leading to a 2.3$\times$ speedup over only our caching techniques.
+
+% The Product dataset results show similar improvement with each optimization.
+% \begin{enumerate}
+%     \item Adding FIFO prefix caching improves query latency only 1.1x over naive. This is significantly less speedup than in the Movie dataset, and is because the suffix length dominates the prompt token length. Specifically, the Fig\ref{tab:example-alg-values} shows the average token length of the \textit{reviewText} and \textit{desccription} input columns to be 381.54 and 282.56 tokens respectively. The prompt token length itself is only 141 tokens, so even when caching it, the majority of the LLM input must be recomputed.
+%     \item Reordering mitigates the previous issue by allows us to also cache the \textit{description} column with the system prompt. Rows are sorted by this column to make use of caching locality. With this technique, we achieve a 1.7$\times$ speedup over the naive method and 1.5$\times$ speedup over naive caching.
+%     \item Similar to the Movie dataset, the deduplication and SQL filter optimizations have less profound impact in this scenario. No filter cluase is present and \textit{reviewText} is mostly unique. Nonetheless, roughly 2000 rows are deduplicated leading to a further 1.4$\times$ speedup over only caching with reordering. 
+% \end{enumerate}
+
+% \accheng{missing explanation of why we achieve these wins. need to mention cache hit rate results and if the other two optimizations make a difference}
+
+
+
+% \shu{not accurate, but do one experiments; evidence and claim, take the text repeat itself K times, or select subset of FEVER that is long (duplicating it, double it, or select subset that's long), make the documents bigger, or only large documents; results with API models, subset of the things, API things have some limitations (1024), upfront all the things we run; one server with Llama, and one section on commercial }
+
+% In the Movie dataset, Cache (FIFO) provides up to 1.9$\times$ speed-up over No Cache since the former saves computation by caching the instruction prompt. Cache (\greedy) provides a further speed-up of 2.1$\times$ by increasing prefix sharing.
+% The \textit{review\_content} column has few duplicates, so deduplication has minimal impact. On the other hand, SQL optimizations demonstrate significant performance benefits (e.g., 1.4$\times$ improvement over Cache (\greedy)) because the execution order between the non-LLM and the LLM filter impacts query latency. Pushing the non-LLM filter down first results in only 10,461 rows being passed to the LLM after the first filter (\textit{review\_type} == ``Fresh'') out of the total 15,008 rows in the table.
+
+% Each optimization introduction introduces overall speedup in query latency. 
+
+% In the Movie dataset, ...
+% \begin{enumerate}
+%     \item Adding FIFO prefix caching provides 1.7$\times$ speedup over naive, as computation is saved caching the instruction prompt.
+%     \item Column and row reordering of our inputs provides further 1.6$\times$ speedup. We cache \textit{movie\_info} alongside the instruction prompt and sort our rows by this column to make use of caching locality.
+%     \item Our final optimizations include deduplication of inputs to the LLM and SQL filter optimization. Once again \textit{review\_content} is included as part of the prompt in this query so few prompts are  deduplicated to the LLM. However, Q2 contains both a non-LLM and an LLM filter, the order of execution of which impacts query latency. Pushing the non LLM filter down means that only 10000 rows are passed in to the LLM after the first filter (\textit{review\_type} == ``Fresh'') out of the entire 15000 row table. This results in 1.7$\times$ improvement over caching with reordering. 
+% \end{enumerate}
+
+% For the Product dataset, Cache (FIFO) provides a 1.8$\times$ speedup over the No Cache baseline. For Cache (\greedy), we order \textit{description} as the first column and cache it alongside the instruction prompt to increase the cache hit rate. For deduplication, the \textit{text} column has few duplicates, so this optimization has limited impact. Our SQL optimization enables us to push down the non-LLM filter so that only 11,994 rows out of the 15,059 are passed to the LLM after the first filter (\textit{rating} == 5.0). As a result, we achieve 1.4$\times$ improvement over only caching.
+
+% In the Product dataset ... 
+% \begin{enumerate}
+%     \item Adding FIFO prefix caching provides 1.3$\times$ speedup over naive, as computation is saved caching the instruction prompt.
+%     \item Column and row reordering of our inputs provides further 1.6$\times$ speedup over FIFO caching. We cache \textit{movie\_info} alongside the instruction prompt and sort our rows by this column to make use of caching locality.
+%     \item Our final optimizations include deduplication of inputs to the LLM and SQL filter optimization. Once again \textit{review\_content} is included as part of the prompt in this query so few prompts are  deduplicated to the LLM. This query contains both a non-LLM and an LLM filter so the order of execution of these filters greatly impacts query latency. Pushing the non LLM filter down means that only 8874 rows are passed in to the LLM after the first filter (\textit{verified} == True) out of the entire 15000 row table. This results in 2.2$\times$ improvement over caching with reordering. 
+% \end{enumerate}
+
+% With reordering, we bring down the latency v.s. no reordering by X \%. With our SQL optimization techniques, we make sure that we apply the other filter condition first to reduce amount of inputs passed into LLM, then apply the LLM filter on reduced number of rows. We show that by pushing down cheaper predicates, we achieve a further 1.8$\times$ speedup on the Movie dataset and 2.78$\times$ on the Product dataset over only caching and reordering inputs.  \accheng{explain any difference between the two datasets or if no differences, why}
+
+% For evaluation, we perform a query with constrained output to filter on based on the review and description columns as context for both datasets. \accheng{why mention constrained output here if we already mention earlier?}
+
+% \sys is able to achieve X.Y$\times$ speedup in the Movie dataset and X.Y$\times$ in the Product dataset on filter queries. 
+% \begin{enumerate}
+%     \item Q2 uses the LLM as a filter. 
+%     \item Non-LLM condition for both dataset, and LLM condition for both \shu{@asim}
+%     \item Specifically, for Movie dataset we filter {add}, and for Product dataset we filter {add}
+% \end{enumerate}
+
+\vspace{-0.5em}
+\noindent \textbf{\textit{Multi-LLM invocation.}} This query type combines Filter and Selection operations, beginning with an initial LLM filter (e.g., selecting positive reviews), followed by an LLM summarization of the filtered table. 
+Applied to the Movies and Products datasets, as shown in Fig~\ref{fig:q3q4}, Cache (\greedy) achieves a 2.7$\times$ and 2.8$\times$ speedup over the No Cache baseline for Movies and Products, respectively. Compared to Cache (Original), Cache (\greedy) attains a speedup of 1.7$\times$ and 2.2$\times$. The relative speedup compared to Cache (Original) reduces for both datasets compared to Filter and Projection queries. This is because the first LLM invocation for filtering is over distinct reviews for sentiment analysis, so Cache (Original) and Cache (\greedy) performance will be similar, reducing the overall benefits. For Movies, this number reduces from 2.5$\times$ to 1.7$\times$ as the first invocation accounts for nearly half the query time; while for Products, the second invocation on Projection dominates runtime due to long decode output length (i.e., around 107), so we can still see 2.2$\times$ speed-up over Cache (Original).
+
+% We integrate two queries of this type on the Movies and Products datasets as illustrated in Fig~\ref{fig:q3q4}. Our Cache (GGR) demonstrates a 2.7$\times$ and 2.8$\times$ speedup over the No Cache baseline for Movies and Products, respectively. 
+% Additionally, compared with Cache (Original), Cache (GGR) achieves a speedup of 1.7$\times$ and 2.2$\times$ for each dataset. 
+
+% For sentiment analysis in the first LLM invocation, sharing opportunities are limited due to mostly distinct reviews, reducing the speedup gain of Cache (GGR) over Cache (Original) for the Movies dataset, where this step accounts for nearly half the query time. In the Products dataset, however, the second invocation dominates runtime due to long decode output length (i.e. around 107). Overall, our approach demonstrates significant end-to-end latency improvements across complex query patterns involving both LLM filtering and summarization.
+
+% For this query, an initial LLM Filter operation of sentiment analysis over user reviews has few sharing opportunities besides instruction prompts, because reviews are mostly distinct. As a result, the overall relative speed-up of Cache (GGR) over Cache (Original) reduces on the Movies dataset, where the runtime for this first invocation is nearly half the total query time. In the Products dataset, however, the second invocation dominates the runtime, so adding the first invocation for sentiment analysis does not affect speed-up substantially. 
+% Our evaluation of these queries confirms that even while orchestrating complex patterns of analysis, including both LLM filtering and projection steps, our methods show notable end-to-end latency improvements.
+% For the Movie dataset, Cache (FIFO) provides 2.0$\times$ improvement over the No Cache baseline. Cache (\greedy) provides 1.7$\times$ improvement over Cache (FIFO). Our SQL optimization significantly impacts latency (2.4$\times$ speed-up over FIFO caching and 4.8$\times$ over no caching) for this query type. Since the non-LLM filter selects roughly 5,000 rows, as detailed in the previous query analysis, we significantly reduce the number of LLM invocations. 
+
+% For the Product dataset, Cache (FIFO) provides a 1.9$\times$ speedup over No Cache. Our optimizations of Cache (\greedy + Dedup + SQL Opt) provide a further 2.2$\times$ speed-up, leading to a total speedup of 4.2$\times$ over the No Cache baseline. 
+
+% The primary latency improvement in the Q3 experiments once again comes from the SQL filter optimization. 
+
+% Movies
+% \begin{enumerate}
+%     \item FIFO caching provides 1.7$\times$ improvement over naive method.
+%     \item This query is essentially a combination of Q1 and Q2, so speedup is similar along with the causes for speedup.
+%     \item Reordered caching provides 1.4$\times$ improvement over FIFO caching.
+%     \item Applying SQL filter optimization provides an additional 1.3$\times$ speedup over caching with reordering.
+% \item Filter chosen was same as Q2: \textit{review\_type == ``Fresh''}
+%     \item Non LLM filter has a selectivity ratio of 0.7.
+% \end{enumerate}
+
+% Products
+% \begin{enumerate}
+%     \item FIFO caching provides 1.5$\times$ improvement over naive method.
+%     \item Reordered caching provides an additional 1.3 $\times$ improvement over FIFO caching.
+%     \item Applying SQL filter optimization provides an additional 2.2$\times$ speedup over caching with reordering. The filter selected was the same as Q2: \textit{verified == True}.
+%     \item Non LLM filter has a selectivity ratio of 0.7.
+% \end{enumerate}
+
+% \begin{enumerate}
+%     \item We construct the multiple invocation queries by first 
+%     \item Next, a projection invocation to LLM is performed similar to Q1.
+% \end{enumerate} 
+
+\vspace{-0.5em}
+\noindent \textbf{\textit{LLM aggregation.}} This query type uses \texttt{AVG} operator to aggregate the sentiment score on the reviews column with additional columns provided as context. We achieve a 3.5$\times$ speed-up in the Movies dataset and a 3.7$\times$ speed-up in the Products dataset over the No Cache baseline. We also achieve 2.5$\times$ speed-up on Movies and 2.8$\times$ speed-up on Products over Cache (Original). The results of this query type are similar to filtering query results, as the average output length is similar.
+
+% For the Movie dataset, we group by \textit{movie\_title} and average over the LLM sentiment score output. For the Product dataset, we group by \textit{parent\_asin} and average over the LLM sentiment score output. 
+ 
+% For the Movie dataset, Cache (FIFO) provides a 1.8$\times$ speed-up over the No Cache baseline. Cache (\greedy) generates an additional 2.2$\times$ speed-up over Cache (FIFO) since the \textit{movie\_info} columns contain many shared values. Like Q1, there is no LLM-filter clause and few duplicates in the \textit{review\_content} column, so not much extra benefit is achieved with these optimizations. As a result, the query latency improvement with all optimizations is 3.6$\times$ over no caching.
+
+% For the Product dataset, Cache (FIFO) leads to a 1.6$\times$ speed-up over the No Cache baseline, and Cache (\greedy) brings a 2.2$\times$ speed-up over Cache (FIFO). Like Q1, the \textit{description} column is cached with the instruction prompt. There are marginal deduplication benefits with roughly 300 rows being removed, and the ultimate speedup is 3.6$\times$ over no caching.
+
+% \begin{enumerate}
+%     \item We use the AVG operator to aggregate an average sentiment score on the reviews column with the description column provided as context.
+%     \item For Movie dataset, we group by \textit{movie\_title} and average over the LLM sentiment score output.
+%     \item For Product dataset, we group by \textit{asin} and average over the LLM sentiment score output. 
+% \end{enumerate}
+% The results of this query are similar to that of Q1, as the same columns are passed in to the LLM with an instruction prompt of similar length. Specifically, the length of the instruction prompt was 166 tokens in the Movie dataset and 112 tokens in the Product dataset.
+
+% Movies
+% \begin{enumerate}
+%     \item FIFO caching provides us with 1.9$\times$ speedup over the naive method as we cache the instruction prompt.
+%     \item Reordered prefix caching adds an additional 1.8$\times$ speedup over FIFO caching, since the \textit{movie\_info} columns can be sorted on and cached. 
+%     \item Like Q1, there is no SQL optimization to be made here and few duplicates because of the \textit{review\_content} column. As a result, the query latency is nearly identical to reordered caching. 
+% \end{enumerate}
+
+% Products
+% \begin{enumerate}
+%     \item FIFO caching leads to 1.4$\times$ speedup over the naive method as we cache the instruction prompt.
+%     \item Reordered prefix caching brings 1.5$\times$ speedup over FIFO caching. Similar to Q1, the \textit{description} column is cached with the instruction prompt. 
+%     \item Marginal deduplication benefits can be seen with a 1.1$\times$ improvement over reordered prefix caching with deduplication, with roughly 2000 rows being deduplicated from the original input.
+% \end{enumerate}
+% \noindent \textbf{\textit{Q5: LLM Projection (Entire Table).}} We run a projection query for all seven columns for the Movies dataset and all eight columns from the Products dataset as detailed in Section~\ref{llmqueries}. We achieve a 3.7$\times$ speedup over the No Cache baseline on the Movie dataset and a 3.9$\times$ speedup on the Product dataset.
+
+% For the Movie dataset, Cache (FIFO) gets 1.4$\times$ speedup over No Cache baseline. For this query, we provide hints of functional dependencies to our algorithm, such as the \textit{`rotten\_tomatoes\_link'}, \textit{`movie\_info'}, and \textit{`movie\_title'} columns. These columns are grouped as they have one-to-one dependencies, so this is an FD for our algorithm. Cache (\greedy) provides a further 2.5$\times$ speedup over Cache (FIFO). It is unlikely to have exact duplicate values across seven columns, so speedup from adding deduplication is minimal. Thus, our final speedup is 3.7$\times$ over No Cache and 2.6$\times$ over Cache (FIFO). For the Product dataset, the columns of \textit{`product\_title'} and \textit{`asin'} have one-to-one dependencies, which serve as the input of the FD to our algorithm. Results on this dataset show that Cache (FIFO) is 1.5$\times$ faster than the No Cache baseline. From here, Cache (\greedy) achieves an extra 2.5$\times$ speedup over Cache (FIFO). The final speedup of our algorithm is 3.9$\times$ over No Cache and 2.6$\times$ over Cache (FIFO). 
+% \begin{itemize}
+%     \item We run a projection query using 7 columns from the Movies dataset and 8 columns from the Products dataset as detailed in \ref{llmqueries}.
+%     \item Movies
+%     \begin{itemize}
+%         \item Cache (FIFO) gets 1.4$\times$ speedup over No Cache baseline.
+%         \item Cache (\greedy) gets further 2.5$\times$ speedup over Cache (FIFO).
+%         \item The functional dependencies here are the 'rotten\_tomatoes\_link', 'movie\_info', and 'movie\_title' columns. These are grouped together.
+%         \item Not likely to deduplicate exact values across 7 columns, so speedup from adding deduplication is minimal.
+%         \item Final speedup is 3.7$\times$ over No Cache and 2.6$\times$ over Cache (FIFO). 
+%     \end{itemize}
+%     \item Products
+%     \begin{itemize}
+%         \item Cache (FIFO) gets 1.5$\times$ speedup over No Cache baseline.
+%         \item Cache (\greedy) gets further 2.5$\times$ speedup over Cache (FIFO).
+%         \item Few duplicate values across columns.
+%         \item Final speedup is 3.9$\times$ over No Cache and 2.6$\times$ over Cache (FIFO). 
+%     \end{itemize}
+% \end{itemize}
+
+\vspace{-0.5em}
+\noindent \textbf{\textit{RAG.}} This query is performed on a table of questions and the top four to five supporting evidence items extracted from the FEVER and SQuAD datasets. Cache (GGR) achieves a 1.9$\times$ speed-up on both FEVER and SQuAD over the No Cache baseline. We also achieve a 1.8$\times$ speed-up on FEVER and 1.7$\times$ on SQuAD over Cache (Original). 
+In this experiment, we embed all supporting contexts for a question/claim into a vector index. We perform a K-nearest neighbor search on the vector index for each question to fetch relevant contexts.
+At runtime, we apply our \greedy algorithm to the table of questions and contexts to maximize cache hits. Cache (\greedy) can achieve 56 -- 59\% prefix hit rate improvements over Cache (Original), as multiple questions might share similar contexts, and Cache (\greedy) can rearrange contexts to maximize prefix reuse. 
+% Table~\ref{tab:dataset} highlights that the average input token length for these queries is much longer than our other queries: 1047 tokens in SQuAD and 1214 tokens in FEVER.
+% Furthermore, as unique fields appear first in the dataset ('question' in SQuAD and 'claim' in FEVER), the original ordering achieves cache reuse only for the shared system prompt instruction prompt, making speed-ups similar over No Cache and Cache (Original). 
+
+% As a result, the overall PHR is lower in these datasets than the recommendation and reviews datasets.
+% For the SQuAD dataset, Cache (FIFO) results in a 1.6$\times$ improvement over No Cache. Cache (\greedy) improves this further with 1.3$\times$ over Cache (FIFO). In this dataset, deduplication yields significant benefits because of the duplicated evidence lists, with only 9,561 prompts passed into the LLM after deduplication. Thus, the final speedup is 2.2$\times$ over Cache (FIFO) and 3.5$\times$ over No Cache.
+
+% For the FEVER dataset, Cache (FIFO) provides a 1.3$\times$ speedup over No Cache. Cache (\greedy) presents a further 1.9$\times$ speedup over Cache (FIFO). Roughly 3,000 out of 20,000 prompts are deduplicated. Thus, the final speedup is 2.1$\times$ over Cache (FIFO) and 2.7$\times$ over No Cache.
+
+
+% \noindent \textbf{Prefix Hit Rate.} We also measure the prefix hit rate (\%) for Cache (Original) and Cache (\greedy) for the query types in Table~\ref{tab:algoresults}. This metric represents the ratio of tokens that can be served from the KV cache over all tokens in the input prompt. It indicates the effectiveness of the KV cache and is directly correlated with latency performance. Across queries, Cache (\greedy) provides between a 1.7-12.3$\times$ prefix hit rate improvement over Cache (Original). 
+
+
+
+% \begin{figure}[t!]
+%      \centering
+%      \begin{subfigure}[b]{0.48\columnwidth}
+%         \centering
+%         \includegraphics[width=\textwidth]{figures/SIGMODfigures/movies_hr.pdf}
+%         \caption{Movie Dataset}
+%         \label{fig:cdf_size}
+%     \end{subfigure}
+%     \hfill
+%     \begin{subfigure}[b]{0.48\columnwidth}
+%         \centering
+%         \includegraphics[width=\textwidth]{figures/SIGMODfigures/products_hr.pdf}
+%         \caption{Product Dataset} 
+%         \label{fig:cdf_freqs}
+%     \end{subfigure}
+%     \label{fig:cachehitrate}
+%     \caption{Cache Hit Rate Ablation. We illustrate the cache hit rate improvements achieved by Cache (\greedy) compared to Cache (FIFO), showing up to a 46\% increase on both the Product dataset and Movie datasets.}
+% \end{figure}
+% \begin{figure}[t!]
+%     \centering
+%     \includegraphics[width=0.8\columnwidth]{figures/MLSys_Figures/phr.pdf}
+%     \label{fig:cachehitrate}
+%     \caption{Cache Hit Rate Ablation. We illustrate the cache hit rate improvements achieved by Cache (\greedy) compared to Cache (FIFO), showing up to a 75\% increase across datasets.}
+% \end{figure}
+% Fig~\ref{fig:modelablation} shows the latency results of our techniques on LLM filter queries with the Llama-3-70B-Instruct model on 8xL4(24GB), demonstrating a 1.9 - 3.3$\times$ speedup compared to Cache (Original).
+\vspace{-0.5em}
+\textbf{Results on Different Model Sizes} Fig~\ref{fig:modelablation} shows the evaluation of our Cache (\greedy) method compared with Cache (original) on filtering queries, using Llama-3-70B-Instruct with 70B parameters. We run this model on an 8$\times$L4 instance with tensor parallelism and measure the end-to-end query latency. Cache (\greedy) achieves 1.9$\times$ to 3.3$\times$ speed-up under this setup, showing a trend similar compared to the Llama-3-8B model. We evaluate the larger model accuracy on LLM Filter queries in Sec~\ref{sec:accuracy}. We also show results for the smaller 1B model in Appendix~\ref{appendix:models}.
+% Although end to-end runtime is slower for this model than the 8B parameter model, Cache (\greedy) still achieves between 1.9$\times$ and 3.3$\times$ speed-up over Cache (Original).
+
+
+ 
+% \asim{is there anything else we want to say about this ablation?}
+\begin{figure}[t!]
+    \centering
+    \includegraphics[width=0.9\columnwidth]{figures/MLSys_Figures/dataset_runtimes_tensor_parallel.pdf}
+    \vspace{-1em}
+    \caption{Cache (GGR) is able to achieve 1.9 -- 3.3$\times$ speed-up over Cache (Original) for filter queries on Llama3-70B.}
+    \label{fig:modelablation}
+    \vspace{-2em}
+\end{figure}
+
+\input{evaluation/table}
+\vspace{-0.5em}
+
+\subsection{Cost Savings on Proprietary API Endpoints}
+% 
+This section evaluates the cost efficiency of our \greedy algorithm with closed models that support prompt caching. 
+For OpenAI, cached prompts are offered at a 50\% discount compared to uncached prompts.  
+Anthropic beta prompt caching~\cite{anthropicpromptcaching} requires users to manually specify prompts to cache. Writing to the cache costs 25\% more than the base input token price for any given model while using cached content costs only 10\% of the base rate. We evaluate OpenAI GPT-4o-mini and Anthropic Claude 3.5 Sonnet, using their pricing models in our cost calculations.\footnote{GPT-4o-mini charges \$0.075/1M tokens for cached tokens versus \$0.15/1M tokens for uncached tokens.}\footnote{Claude 3.5 Sonnet standard input tokens are priced at \$3 per million tokens, cache writes at \$3.75 per million, and cache reads at \$0.30 per million tokens.}
+
+% GPT-4o-mini charging \$0.075/1M cached tokens versus \$0.15/1M uncached tokens.
+% Claude 3.5 Sonnet standard input tokens priced at \$3/1M tokens, cache writes at \$3.75/1M tokens, and reads from the cache at \$0.30/1M tokens. 
+
+% We assess the impact of our Cache (GGR) algorithm when employing closed models that support caching. We examine caching policies implemented by OpenAI and Anthropic. OpenAI’s caching policy stores the longest prefix of a previously computed prompt, beginning at 1,024 tokens and increasing in increments of 128 tokens \cite{openaipromptcaching}. GPT-4o-mini applies a reduced rate for cached tokens at \$0.075 per million tokens, while uncached tokens are priced at \$0.15 per million tokens. Anthropic’s beta caching policy requires users to specify prompts to write to cache manually. Standard non-cache related input tokens are \$3/1MTok, while writing to the cache with Anthropic is \$3.75/1MTok and reading from cache is \$0.30/1MTok. \cite{anthropicpromptcaching}. % \shu{remove TPS results, just keep costs. } \asim{how did we get these numbers? need to cite}. . %This caching approach can reduce latency by up to 80\% and costs by 50\%, accounting for the additional charge on cached tokens \cite{}
+% This naive method reflects the behavior of current systems, which neither reuse nor reorder rows or columns. 
+
+% We compare reordering with \greedy against the original table order. 
+
+\begin{table}[h!]
+\centering
+\small
+\renewcommand{\arraystretch}{1.2} % Increase row height (default is 1.0)
+
+\begin{tabular}{c c c c c c}
+\hline
+\textbf{Dataset} & \textbf{Model} & \textbf{Method} & \textbf{PHR (\%)} & \textbf{Cost (\$)} & \textbf{Savings (\%)} \\
+\hline
+\multirow{4}{*}{FEVER} 
+& \multirow{2}{*}{4o-mini} & Original & 0.0   & 0.81  & -     \\
+&                              & GGR      & 62.2  & 0.55 & 32\%  \\
+\cline{2-6}
+& \multirow{2}{*}{Sonnet} & Original & 0.0   & 5.49  & -     \\
+&                                & GGR      & 30.6  & 4.33  & 21\%  \\
+% \hline
+% \multirow{4}{*}{SQuAD} 
+% & \multirow{2}{*}{4o-mini} & Original & 0 & 0 & 0 \\
+% &                              & GGR      & 0 & 0 & 0 \\
+% \cline{2-6}
+% & \multirow{2}{*}{Sonnet} & Original & 0 & 0 & 0 \\
+% &                                & GGR      & 0 & 0 & 0 \\
+\hline
+\end{tabular}
+\caption{OpenAI and Anthropic Costs: cache hit rate (HR\%), cost, and savings comparison of GGR over Original for GPT-4o-mini and Claude 3.5 Sonnet in FEVER.}
+\label{tab:cost_comparison}
+
+\end{table}
+
+\begin{table}[t!]
+\centering
+\small
+\begin{tabularx}{\columnwidth}{l@{\hskip 20pt}c@{\hskip 20pt}c@{\hskip 8pt}c@{\hskip 20pt}c@{\hskip 8pt}c}
+\toprule
+\multirow{2}{*}{\textbf{Dataset}} & \multicolumn{2}{c}{\small \textbf{PHR (\%)}} & \multicolumn{2}{c}{\small \textbf{Est. Cost Savings (\%)}} \\
+\cmidrule(lr){2-3} \cmidrule(lr){4-5}
+                  & \small Original & \small GGR & \small OpenAI & \small Anthropic \\ 
+\midrule
+\textbf{Movies}  & 34.6          & 85.7         & 31            & 73              \\ 
+\textbf{Products}& 26.7          & 83.3         & 33            & 73              \\ 
+\textbf{BIRD}    & 10.4          & 84.8         & 39            & 79              \\ 
+\textbf{PDMX}    & 11.8          & 56.6         & 24            & 48              \\ 
+\textbf{Beer}    & 49.9          & 80.1         & 20            & 55              \\ 
+\textbf{FEVER}   & 11.2          & 67.4         & 30            & 60              \\ 
+\textbf{SQuAD}   & 11.0          & 69.7         & 31            & 63              \\ 
+\bottomrule
+\end{tabularx}
+
+\vspace{-0.5em}
+\caption{Estimated cost savings: across datasets using PHR from Sec~\ref{sec:end-to-end} and OpenAI and Anthropic's pricing model. }
+\label{tab:algoresults}
+\vspace{-1.75em}
+\end{table}
+% Our estimates are based on the assumption that automatic prefix caching is enabled for prefixes of all sizes.
+Since both OpenAI and Anthropic require a minimum prefix length of 1,024 tokens for caching, we duplicate each field value five times, approximating a more realistic dataset with detailed conversations and descriptions.
+We select the FEVER dataset for its long input length and use 1000 rows from this dataset. 
+For Anthropic experiments, we specify cache write for only the first 1,024 tokens per request as a conservative assumption, as Anthropic does not support automatic prefix detection. 
+
+We evaluate \greedy reordering on two tables submitted to the OpenAI and Anthropic APIs (each row is a request): one reordered with \greedy and one in the original row and field order. 
+Table~\ref{tab:cost_comparison} shows that \greedy achieves 32\% cost savings with GPT-4o-mini and 21\% savings with Claude 3.5 Sonnet. 
+The hit rate in OpenAI for \greedy-reordered table is 62.2\%, closely matching the hit rate (i.e., 67\%) measured from our previous experiment in Table~\ref{tab:hit-rate}. 
+Original ordering receives no cached tokens with 0\% cache hits, as the shared prefix does not meet the 1,024-token minimum.
+The Anthropic cache hit rate is around 30.6\%, two times lower than the OpenAI hit rate due to our conservative caching threshold. 
+
+Assume that in the future, automatic prefix caching is enabled and prompts can be cached at arbitrary token lengths. We use the hit rate numbers collected from our previous experiments in Table~\ref{tab:hit-rate} to simulate cost-saving ratios achievable by GGR, compared to the original unordered algorithm. \greedy yields 20 to 39\% cost savings under the OpenAI pricing model and up to 79\% cost savings with Anthropic.
+
+% Notice that original orderings get 0 cached tokens because the prefix matched length is less than 1024. 
+% Anthropic cost savings are 21\%, which is because we conservatively cache just the first 1024 tokens of each row, as automatic prefix detection and caching are not enabled in the API. This is a pessimistic assumption. 
+
+% We select the FEVER dataset due to its longest average input length. We select 1000 rows of this dataset containing the most frequently appearing evidence fields for our experiments. For Anthropic experiments, we conservatively cache just the first 1024 tokens of each row, as automatic prefix detection and caching are not enabled in the API. This is a pessimistic assumption. 
+
+
+
+% With GPT-4o-mini, \greedy achieves x\%-15\% cost savings. Using Anthropic's pricing model, our Cache (\greedy) optimization achieves x\%-21\% cost savings. FEVER has significantly more cost benefits than SQuAD due to the %single token output constraints for FEVER. \joey{here is another way to say the next line.}
+% to the query asking for a 1 word answer.
+% As both vendors price output tokens at a premium and caching applies only to input tokens, a higher ratio of input to output tokens increases cost savings. Our cost and hit rate improvements on Anthropic are notable despite only caching the first 1024 tokens, and represent a lower bound on achievable cost savings under the mentioned model.
+
+% \joey{Can we add back the discussion on projected savings if the 1024 token limit were dropped?  Would we argue for vendors to offer this?}
+
+
+% \amog{update the column headers in the table to be explicit about simulated pricing.}
+% \amog{Clarify that this is using the same pricing *model* as OpenAI and Anthropic, but these are not the actual pricing results for these specific datasets as there is a minimum cache token length that's required. For datasets with longer text fields this would generalize.} 
+%Table~\ref{tab:performance_comparison_openai} and \ref{tab:performance_comparison_anthropic} show the calculated cost savings for each dataset including estimated input token cost savings for Cache (Original) and Cache (\greedy) using OpenAI's and Anthropic's cost model for prompt caching. We use our calculated $PHR$ as the percentage of cached input tokens and $1 - PHR$ as the percentage of uncached input tokens, and compute cost using these values according to each vendor's pricing model for cached vs uncached input tokens. OpenAI provides a 50\% discount for cached input tokens with GPT-4o cached input tokens priced at \$1.25/1MTok as opposed to \$2.50/1MTok for uncached tokens. The same pricing difference applies to GPT-4o-mini, with \$0.075/1MTok and \$0.15/1MTok for cached and uncached input tokens respectively. Using OpenAI's pricing model, our Cache (\greedy) optimization achieves 20\%--39\% cost savings across datasets.  
+
+%Anthropic's pricing model is more nuanced, with \$3/1MTok for standard input tokens, \$3.75/1MTok for cache writes, and \$0.30/1MTok for cache reads. Thus, after a single cache write, future cached tokens can be 90\% cheaper than uncached input tokens. Using Anthropic's pricing model, our Cache (\greedy) optimization achieves 48\%--79\% cost savings across datasets. 
+%\shu{write in paragraph, no bullet points. for any paragraphs like this with one or two sentences more than a line just rephrase and make it shorter} 
+% As \greedy alters the prompt field order, we evaluate its impact on LLM query accuracy using LLM Filter queries (see Sec~\ref{subsec:llmqueries}) across datasets and an RAG query of FEVER. 
+
+\vspace{-0.5em}
+\subsection{Impact of Reordering on Accuracy} \label{sec:accuracy}
+As \greedy order alters the input prompt to the LLM, we assess the impact this has on query accuracy using LLM Filter queries (Sec~\ref{subsec:llmqueries}) with constrained output. We also evaluate a RAG query of FEVER, excluding SQuAD due to its open-ended questions. 
+FEVER includes ground-truth labels for all records, while 100 rows from other datasets are manually labeled. Using statistical boostrapping~\cite{bootstrapping}, we perform 10K runs, sampling with replacement on each run to obtain a  distribution of accuracy results. Accuracy experiments are conducted with Llama-3-8B-Instruct, Llama-3-70B-Instruct, and GPT-4o models, measured as the percentage of exact matches between the LLM output and the ground truth labels. 
+
+% while for other datasets, we randomly sample 100 rows and manually label them with ground truth answers.  For all datasets, we employ statistical bootstrapping \cite{bootstrapping}, performing 10,000 bootstrap runs where, on each bootstrap, we sample a new dataset from the original with replacement and calculate the accuracy on this sample. This gives us a distribution of accuracy across all 10,000 runs. We run our accuracy experiments using the Llama-3-8B-Instruct, Llama-3-70B-Instruct, and GPT-4o models, measuring accuracy as the percentage of exact matches between the LLM output and the ground truth labels. 
+
+% Our evaluation includes LLM filter queries from Sec~\ref{subsec:llmqueries} for all datasets and a RAG query with the FEVER dataset. We omit SQuAD for this experiment since it contains open-ended questions. FEVER already contains ground truth labels for all 22,665 records, but for the other datasets, we randomly sample 100 rows and manually label them with the ground truth answers. 
+
+% In the FEVER dataset, given a claim and four pieces of evidence, the LLM is asked to determine if the claim is factually correct, outputting SUPPORTS, REFUTES, or NOT ENOUGH INFO, for which the dataset already contains ground truth labels for all 22,682 rows.
+% We select the Movie and FEVER datasets for our experiment.The LLM outputs either "Yes" or "No" on whether a movie is suitable for kids given movie\_info and review\_description fields. We run the experiment with two fields (Movies) and seven fields (Movies-Full) For the Product dataset, we run Q5 from Section~\ref{llmqueries} on the Fever Dataset.
+
+
+
+In Fig~\ref{fig:accuracy}, we plot the accuracy distributions across the bootstrap runs and the relative difference in median accuracy of \greedy versus original ordering. The accuracy distribution of \greedy ordering is within 5\% accuracy of the original ordering, with the only exception being FEVER with Llama-3-8B, where the ordering with \greedy performs 14.2\% \emph{better} than the original. This is due to the \greedy algorithm places the ``claim'' field at the end of the prompt instead of at the beginning, which Llama3-8B prefers. However, the same behavior does not hold for the larger models. Overall, we can see that larger models like Llama-3-70B and GPT-4o are within 5\% of accuracy difference compared with original ordering and are more robust to field reordering.
+
+\vspace{-0.2em}
+\subsection{Algorithm Overhead} %\asim{this title is a bit confusing/vague}
+% \begin{table}[t!]
+% \footnotesize
+% \setlength{\tabcolsep}{6pt} % Adjust column separation
+% \begin{tabularx}{\columnwidth}{cc}
+% \toprule
+% \textbf{Solver Time (s)}  \\
+% \textbf{Solver time (s)}  3.3  & 4.5  & 1.2 & 12.6  & 8.0           & 5.6          & 4.5 \\
+% \bottomrule
+% \end{tabularx}
+
+% \vspace{-0.5em}
+% \caption{PHR (\%) of LLM Filter and RAG queries for Original and GGR. GGR achieves 30 - 75\% higher hit rates than the original ordering. }
+% \label{tab:algosolvertimes}
+% \end{table}
+
+
+
+% \subsubsection{Algorithm Overheads}
+\begin{table}[t!]
+\vspace{1em}
+\centering
+\footnotesize
+\renewcommand{\arraystretch}{1.1} % Increase row height (default is 1.0)
+
+\begin{tabular}{c}
+\hline
+\multicolumn{1}{c}{\textbf{Solver Time (s)}} \\
+\begin{tabular}{ccccccc}
+Movies & Products & BIRD & PDMX & Beer & FEVER & SQuAD \\
+\hline
+3.3 & 4.5 & 1.2 & 12.6 & 8.0 & 5.6 & 4.5 \\  % Replace with actual times
+\hline
+\end{tabular} \\
+\hline
+\end{tabular}
+\vspace{-0.1em}
+\caption{\greedy Solver time (s): \greedy runs under 15 seconds for datasets with up to 30K rows and 57 fields.}
+\label{tab:algosolvertimes}
+\vspace{-2em}
+\end{table}
+\textbf{Latency} Table~\ref{tab:algosolvertimes} shows the average overheads of \greedy across datasets, using a row recursion depth of four and column recursion depth of two, or an early stopping threshold of 0.1M hit count. In all cases, \greedy runs in under 15 seconds -- less than 0.01\% of LLM query runtimes. \newline 
+\textbf{Memory} \greedy only requires the input table $T$ ($n$ rows, $m$ columns) touched by the query to be loaded into memory. Recursive splitting reduces table size at each step, keeping total memory usage at $O(n \times m)$, aside from minimal stack and temporary variable overhead.
+% Table~\ref{tab:algosolvertimes} shows the \greedy algorithm overheads averaging across queries for each dataset. \greedy is run on each dataset with termination thresholds of four columns and two rows (recursion stops once a specified depth is exceeded row-wise or column-wise). We also have an early stopping threshold of 100000 for the hit-count score and stop recursion if the max hit-count score across values is less than this score, falling back to an ordering approximated by table statistics. Our solver overhead is minimal, running in under 15 seconds for all our experiment datasets. This is less than 0.01\% of the actual runtime of the LLM queries.
+
+% The longest solver time is for PDMX with 57 columns due to the linear scanning in each recursive step used to calculate value counts, which increases in complexity with the number of columns. The percentage of the end-to-end runtime attributed to the solver is under 1\% for every dataset.
+
+
+
+\input{evaluation/e2e_runtimes}
+\input{evaluation/rag_e2e_runtimes}
+
+
+% \subsubsection{Llama3-70B results} \label{sec:modelablation}
+% Fig~\ref{fig:modelablation} shows evaluation of our methods using a larger model Llama-3-70B-Instruct. We run this model using a tensor parallel configuration for vLLM across 8 L4 instances. Although end-to-end runtime is slower for this model than the 8B parameter model, Cache (\greedy) still achieves between 1.9$\times$ and 3.3$\times$ speed-up over Cache (Original). \asim{is there anything else we want to say about this ablation?}
+
+% \subsubsection{Impact of Algorithm Parameter}
+
+% \subsubsection{Impact of KV Cache Size}
+% \begin{table}[H]
+% \centering
+% \small
+% \begin{tabularx}{\columnwidth}{l@{\hskip 4pt}c@{\hskip 4pt}c@{\hskip 4pt}c@{\hskip 4pt}c}
+% \toprule
+% \textbf{Algorithm} & \textbf{Latency (s)} & \textbf{TPS} & \textbf{Cache Hit Rate (\%)} & \textbf{Costs (\$)} \\
+% \midrule
+% GGR   & 0.77 & 11268 & 70.6 & 0.065 \\
+% Naive & 0.94 & 9198 & 0.0 & 0.10 \\
+% \bottomrule
+% \end{tabularx}
+% \caption{OpenAI GPT-4o mini performance comparison of GGR and naive method in terms of Average Latency, TPS (Tokens per Second), Cache Hit Rate, and Cost. The experiment utilized the FEVER dataset and selected the 100 longest prompts. GPT-4o-mini applies a reduced rate for cached tokens at \$0.075 per million tokens, while uncached tokens are priced at \$0.15 per million tokens.}
+% \label{tab:performance_comparison_openai}
+% \end{table}
+
+% \begin{table}[H]
+% \centering
+% \small
+% \begin{tabular}{cccccc}
+% \hline
+% \textbf{Model} & \textbf{Method} & \textbf{HR (\%)} & \textbf{Cost (\$)} & \textbf{Savings (\%)} \\
+% \hline
+% \multirow{2}{*}{GPT-4o-mini} 
+% & Original     & 0.0          & 0.10      & -\\
+% & GGR       & 70.6         & 0.065     & 35\%\\
+% \hline
+% \multirow{2}{*}{Claude Sonnet} 
+% & Original     & 0.0 & 5.49 & -\\
+% & GGR       & 30.6 & 4.33 & 21\%\\
+% \hline
+% \end{tabular}
+% \caption{Performance comparison of GGR and original method regarding cache hit rate (HR\%) and Cost for GPT-4o-mini and Claude-3.5-Sonnet on the FEVER dataset. We achieve 21\% cost savings on Anthropic and x\% cost savings on OpenAI using \greedy.}
+% \label{tab:performance_comparison}
+% \vspace{-1em}
+% \end{table}

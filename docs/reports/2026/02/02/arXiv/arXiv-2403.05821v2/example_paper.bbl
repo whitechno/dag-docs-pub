@@ -1,0 +1,219 @@
+\begin{thebibliography}{41}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[aws()]{aws-redshift-llm}
+{L}arge {L}anguage {M}odels for sentiment analysis with {A}mazon {R}edshift {M}{L} ({P}review) | {A}mazon {W}eb {S}ervices --- aws.amazon.com.
+\newblock \url{https://aws.amazon.com/blogs/big-data/large-language-models-for-sentiment-analysis-with-amazon-redshift-ml-preview/}.
+\newblock [Accessed 01-03-2024].
+
+\bibitem[dat()]{databricks-ai-functions}
+{A}{I} {F}unctions on {D}atabricks --- docs.databricks.com.
+\newblock \url{https://docs.databricks.com/en/large-language-models/ai-functions.html}.
+\newblock [Accessed 01-03-2024].
+
+\bibitem[goo()]{google-bigquery-llm}
+{L}{L}{M} with {V}ertex {A}{I} only using {S}{Q}{L} queries in {B}ig{Q}uery | {G}oogle {C}loud {B}log --- cloud.google.com.
+\newblock \url{https://cloud.google.com/blog/products/ai-machine-learning/llm-with-vertex-ai-only-using-sql-queries-in-bigquery}.
+\newblock [Accessed 01-03-2024].
+
+\bibitem[ant(2024)]{anthropicpromptcaching}
+Prompt caching with claude.
+\newblock \url{https://www.anthropic.com/news/prompt-caching}, 2024.
+
+\bibitem[gem(2024)]{gemini}
+Context caching.
+\newblock \url{https://ai.google.dev/gemini-api/docs/caching?lang=python}, 2024.
+
+\bibitem[lla(2024)]{llama3}
+Apr 2024.
+\newblock URL \url{https://ai.meta.com/blog/meta-llama-3/}.
+
+\bibitem[Armbrust et~al.(2015)Armbrust, Xin, Lian, Huai, Liu, Bradley, Meng, Kaftan, Franklin, Ghodsi, and Zaharia]{spark-sql}
+Armbrust, M., Xin, R.~S., Lian, C., Huai, Y., Liu, D., Bradley, J.~K., Meng, X., Kaftan, T., Franklin, M.~J., Ghodsi, A., and Zaharia, M.
+\newblock Spark sql: Relational data processing in spark.
+\newblock In \emph{Proceedings of the 2015 ACM SIGMOD International Conference on Management of Data}, SIGMOD '15, pp.\  1383–1394, New York, NY, USA, 2015. Association for Computing Machinery.
+\newblock ISBN 9781450327589.
+\newblock \doi{10.1145/2723372.2742797}.
+\newblock URL \url{https://doi.org/10.1145/2723372.2742797}.
+
+\bibitem[Armbrust et~al.(2020)Armbrust, Das, Sun, Yavuz, Zhu, Murthy, Torres, van Hovell, Ionescu, {\L}uszczak, et~al.]{deltalake}
+Armbrust, M., Das, T., Sun, L., Yavuz, B., Zhu, S., Murthy, M., Torres, J., van Hovell, H., Ionescu, A., {\L}uszczak, A., et~al.
+\newblock Delta lake: high-performance acid table storage over cloud object stores.
+\newblock \emph{Proceedings of the VLDB Endowment}, 13\penalty0 (12):\penalty0 3411--3424, 2020.
+
+\bibitem[Chase(2022)]{langchain}
+Chase, H.
+\newblock {LangChain}, October 2022.
+\newblock URL \url{https://github.com/langchain-ai/langchain}.
+
+\bibitem[Chen et~al.(2012)Chen, Zhang, Liu, Poon, and Wang]{mdc}
+Chen, T., Zhang, N.~L., Liu, T., Poon, K.~M., and Wang, Y.
+\newblock Model-based multidimensional clustering of categorical data.
+\newblock \emph{Artificial Intelligence}, 176\penalty0 (1):\penalty0 2246--2269, 2012.
+
+\bibitem[D{\v{z}}eroski(2003)]{multirelation}
+D{\v{z}}eroski, S.
+\newblock Multi-relational data mining: an introduction.
+\newblock \emph{ACM SIGKDD Explorations Newsletter}, 5\penalty0 (1):\penalty0 1--16, 2003.
+
+\bibitem[Gim et~al.(2024)Gim, Chen, seob Lee, Sarda, Khandelwal, and Zhong]{promptcache}
+Gim, I., Chen, G., seob Lee, S., Sarda, N., Khandelwal, A., and Zhong, L.
+\newblock Prompt cache: Modular attention reuse for low-latency inference, 2024.
+\newblock URL \url{https://arxiv.org/abs/2311.04934}.
+
+\bibitem[He \& McAuley(2016)He and McAuley]{amazon-product-review-dataset}
+He, R. and McAuley, J.
+\newblock Ups and downs: Modeling the visual evolution of fashion trends with one-class collaborative filtering.
+\newblock In \emph{Proceedings of the 25th International Conference on World Wide Web}, WWW '16, pp.\  507–517, Republic and Canton of Geneva, CHE, 2016. International World Wide Web Conferences Steering Committee.
+\newblock ISBN 9781450341431.
+\newblock \doi{10.1145/2872427.2883037}.
+\newblock URL \url{https://doi.org/10.1145/2872427.2883037}.
+
+\bibitem[Huggingface(2023)]{tgi}
+Huggingface.
+\newblock {Text Generation Inference}, 2023.
+\newblock URL \url{https://huggingface.co/docs/text-generation-inference/en/index}.
+
+\bibitem[Idreos et~al.(2007)Idreos, Kersten, Manegold, et~al.]{craking}
+Idreos, S., Kersten, M.~L., Manegold, S., et~al.
+\newblock Database cracking.
+\newblock In \emph{CIDR}, volume~7, pp.\  68--78, 2007.
+
+\bibitem[Ilyas et~al.(2004)Ilyas, Markl, Haas, Brown, and Aboulnaga]{correlation}
+Ilyas, I.~F., Markl, V., Haas, P., Brown, P., and Aboulnaga, A.
+\newblock Cords: Automatic discovery of correlations and soft functional dependencies.
+\newblock In \emph{Proceedings of the 2004 ACM SIGMOD international conference on Management of data}, pp.\  647--658, 2004.
+
+\bibitem[Johnson et~al.(2019)Johnson, Douze, and J{\'e}gou]{johnson2019billion}
+Johnson, J., Douze, M., and J{\'e}gou, H.
+\newblock Billion-scale similarity search with {GPUs}.
+\newblock \emph{IEEE Transactions on Big Data}, 7\penalty0 (3):\penalty0 535--547, 2019.
+
+\bibitem[Juravsky et~al.(2024)Juravsky, Brown, Ehrlich, Fu, Ré, and Mirhoseini]{hydragen}
+Juravsky, J., Brown, B., Ehrlich, R., Fu, D.~Y., Ré, C., and Mirhoseini, A.
+\newblock Hydragen: High-throughput llm inference with shared prefixes, 2024.
+
+\bibitem[Kang et~al.(2017)Kang, Emmons, Abuzaid, Bailis, and Zaharia]{noscope}
+Kang, D., Emmons, J., Abuzaid, F., Bailis, P., and Zaharia, M.
+\newblock Noscope: optimizing neural network queries over video at scale.
+\newblock \emph{Proc. VLDB Endow.}, 10\penalty0 (11):\penalty0 1586–1597, aug 2017.
+\newblock ISSN 2150-8097.
+
+\bibitem[Kwon et~al.(2023)Kwon, Li, Zhuang, Sheng, Zheng, Yu, Gonzalez, Zhang, and Stoica]{vllm}
+Kwon, W., Li, Z., Zhuang, S., Sheng, Y., Zheng, L., Yu, C.~H., Gonzalez, J., Zhang, H., and Stoica, I.
+\newblock Efficient memory management for large language model serving with pagedattention.
+\newblock In \emph{Proceedings of the 29th Symposium on Operating Systems Principles}, SOSP '23, pp.\  611–626, New York, NY, USA, 2023. Association for Computing Machinery.
+\newblock ISBN 9798400702297.
+\newblock \doi{10.1145/3600006.3613165}.
+\newblock URL \url{https://doi.org/10.1145/3600006.3613165}.
+
+\bibitem[Lemire \& Kaser(2011)Lemire and Kaser]{lemire2011reordering}
+Lemire, D. and Kaser, O.
+\newblock Reordering columns for smaller indexes.
+\newblock \emph{Information Sciences}, 181\penalty0 (12):\penalty0 2550--2570, 2011.
+
+\bibitem[Lewis et~al.(2021)Lewis, Perez, Piktus, Petroni, Karpukhin, Goyal, Küttler, Lewis, tau Yih, Rocktäschel, Riedel, and Kiela]{retrieval-augmented-generation}
+Lewis, P., Perez, E., Piktus, A., Petroni, F., Karpukhin, V., Goyal, N., Küttler, H., Lewis, M., tau Yih, W., Rocktäschel, T., Riedel, S., and Kiela, D.
+\newblock Retrieval-augmented generation for knowledge-intensive nlp tasks, 2021.
+
+\bibitem[Li et~al.(2024)Li, Hui, Qu, Yang, Li, Li, Wang, Qin, Geng, Huo, et~al.]{li2024can}
+Li, J., Hui, B., Qu, G., Yang, J., Li, B., Li, B., Wang, B., Qin, B., Geng, R., Huo, N., et~al.
+\newblock Can llm already serve as a database interface? a big bench for large-scale database grounded text-to-sqls.
+\newblock \emph{Advances in Neural Information Processing Systems}, 36, 2024.
+
+\bibitem[Li et~al.(2023)Li, Zhang, Zhang, Long, Xie, and Zhang]{li2023towards}
+Li, Z., Zhang, X., Zhang, Y., Long, D., Xie, P., and Zhang, M.
+\newblock Towards general text embeddings with multi-stage contrastive learning.
+\newblock \emph{arXiv preprint arXiv:2308.03281}, 2023.
+
+\bibitem[Long et~al.(2024)Long, Novack, Berg-Kirkpatrick, and McAuley]{pdmx}
+Long, P., Novack, Z., Berg-Kirkpatrick, T., and McAuley, J.
+\newblock Pdmx: A large-scale public domain musicxml dataset for symbolic music processing, 2024.
+\newblock URL \url{https://arxiv.org/abs/2409.10831}.
+
+\bibitem[Lu et~al.(2018)Lu, Chowdhery, Kandula, and Chaudhuri]{prob-pred}
+Lu, Y., Chowdhery, A., Kandula, S., and Chaudhuri, S.
+\newblock Accelerating machine learning inference with probabilistic predicates.
+\newblock In \emph{Proceedings of the 2018 International Conference on Management of Data}, SIGMOD '18, pp.\  1493–1508, New York, NY, USA, 2018. Association for Computing Machinery.
+\newblock ISBN 9781450347037.
+
+\bibitem[McAuley et~al.(2012)McAuley, Leskovec, and Jurafsky]{ratebeer}
+McAuley, J., Leskovec, J., and Jurafsky, D.
+\newblock Learning attitudes and attributes from multi-aspect reviews, 2012.
+\newblock URL \url{https://arxiv.org/abs/1210.3926}.
+
+\bibitem[NVIDIA(2023{\natexlab{a}})]{faster-transformers}
+NVIDIA.
+\newblock {Faster Transformer}, 2023{\natexlab{a}}.
+\newblock URL \url{https://github.com/NVIDIA/FasterTransformer}.
+
+\bibitem[NVIDIA(2023{\natexlab{b}})]{trt-llm}
+NVIDIA.
+\newblock {TensorRT LLM}, 2023{\natexlab{b}}.
+\newblock URL \url{https://github.com/NVIDIA/TensorRT-LLM}.
+
+\bibitem[OpenAI()]{openai-pricing}
+OpenAI.
+\newblock {P}ricing --- openai.com.
+\newblock \url{https://openai.com/pricing}.
+\newblock [Accessed 01-03-2024].
+
+\bibitem[Pang \& Lee(2005)Pang and Lee]{rotten-tomatoes-movies-dataset}
+Pang, B. and Lee, L.
+\newblock Seeing stars: Exploiting class relationships for sentiment categorization with respect to rating scales.
+\newblock In \emph{Proceedings of the ACL}, 2005.
+
+\bibitem[Patel et~al.(2024)Patel, Jha, Guestrin, and Zaharia]{lotus}
+Patel, L., Jha, S., Guestrin, C., and Zaharia, M.
+\newblock Lotus: Enabling semantic queries with llms over tables of unstructured and structured data, 2024.
+\newblock URL \url{https://arxiv.org/abs/2407.11418}.
+
+\bibitem[Rajpurkar et~al.(2016)Rajpurkar, Zhang, Lopyrev, and Liang]{squad-dataset}
+Rajpurkar, P., Zhang, J., Lopyrev, K., and Liang, P.
+\newblock Squad: 100,000+ questions for machine comprehension of text, 2016.
+
+\bibitem[Stonebraker et~al.(2018)Stonebraker, Abadi, Batkin, Chen, Cherniack, Ferreira, Lau, Lin, Madden, O'Neil, et~al.]{stonebraker2018c}
+Stonebraker, M., Abadi, D.~J., Batkin, A., Chen, X., Cherniack, M., Ferreira, M., Lau, E., Lin, A., Madden, S., O'Neil, E., et~al.
+\newblock C-store: a column-oriented dbms.
+\newblock In \emph{Making Databases Work: the Pragmatic Wisdom of Michael Stonebraker}, pp.\  491--518. 2018.
+
+\bibitem[Thorne et~al.(2018)Thorne, Vlachos, Christodoulopoulos, and Mittal]{fever}
+Thorne, J., Vlachos, A., Christodoulopoulos, C., and Mittal, A.
+\newblock Fever: a large-scale dataset for fact extraction and verification, 2018.
+\newblock URL \url{https://arxiv.org/abs/1803.05355}.
+
+\bibitem[Vaswani et~al.(2023)Vaswani, Shazeer, Parmar, Uszkoreit, Jones, Gomez, Kaiser, and Polosukhin]{attention-is-all-you-need}
+Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A.~N., Kaiser, L., and Polosukhin, I.
+\newblock Attention is all you need, 2023.
+
+\bibitem[Wilcox(2003)]{bootstrapping}
+Wilcox, R.~R.
+\newblock Bootstrap confidence interval.
+\newblock In \emph{Applying Contemporary Statistical Techniques}. Academic Press, 2003.
+
+\bibitem[Ye et~al.(2024)Ye, Lai, Lu, Lin, Zheng, Chen, Chen, and Ceze]{cascade-inference}
+Ye, Z., Lai, R., Lu, B.-R., Lin, C.-Y., Zheng, S., Chen, L., Chen, T., and Ceze, L.
+\newblock Cascade inference: Memory bandwidth efficient shared prefix batch decoding, February 2024.
+\newblock URL \url{https://flashinfer.ai/2024/02/02/cascade-inference.html}.
+
+\bibitem[Yu et~al.(2022)Yu, Jeong, Kim, Kim, and Chun]{orca-continous-batching}
+Yu, G.-I., Jeong, J.~S., Kim, G.-W., Kim, S., and Chun, B.-G.
+\newblock Orca: A distributed serving system for {Transformer-Based} generative models.
+\newblock In \emph{16th USENIX Symposium on Operating Systems Design and Implementation (OSDI 22)}, pp.\  521--538, Carlsbad, CA, July 2022. USENIX Association.
+\newblock ISBN 978-1-939133-28-1.
+\newblock URL \url{https://www.usenix.org/conference/osdi22/presentation/yu}.
+
+\bibitem[Zaharia et~al.(2012)Zaharia, Chowdhury, Das, Dave, Ma, McCauly, Franklin, Shenker, and Stoica]{zaharia2012resilient}
+Zaharia, M., Chowdhury, M., Das, T., Dave, A., Ma, J., McCauly, M., Franklin, M.~J., Shenker, S., and Stoica, I.
+\newblock Resilient distributed datasets: A $\{$Fault-Tolerant$\}$ abstraction for $\{$In-Memory$\}$ cluster computing.
+\newblock In \emph{9th USENIX symposium on networked systems design and implementation (NSDI 12)}, pp.\  15--28, 2012.
+
+\bibitem[Zheng et~al.(2023)Zheng, Yin, Xie, Huang, Sun, Yu, Cao, Kozyrakis, Stoica, Gonzalez, Barrett, and Sheng]{sglang}
+Zheng, L., Yin, L., Xie, Z., Huang, J., Sun, C., Yu, C.~H., Cao, S., Kozyrakis, C., Stoica, I., Gonzalez, J.~E., Barrett, C., and Sheng, Y.
+\newblock Efficiently programming large language models using sglang, 2023.
+
+\end{thebibliography}

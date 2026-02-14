@@ -1,0 +1,704 @@
+
+
+\section{Query Examples}
+\label{appendix:queries}
+Our benchmark suite incorporates a broad range of query types. We show examples of each query type as follows.
+
+% Our query benchmark suite is designed to explore the full spectrum of \sys's capabilities, incorporating a broad range of query types and use cases:
+\vspace{-0.2em}
+
+\textbf{\textit{LLM filter.}} This query type leverages LLM for filtering data within a \texttt{WHERE} clause. The LLM processes and analyzes information to meet some specified criteria, such as identifying whether a movie is suitable for kids. This query type illustrates typical use cases in sentiment analysis and content filtering, which are important for application tasks, such as customer feedback analysis and content moderation. 
+
+\begin{mdframed}[linecolor=black, linewidth=.5pt]
+\begin{minted}[fontsize=\small]{sql}
+SELECT t.movietitle
+FROM MOVIES
+WHERE LLM(
+    'Given the following fields, determine whether the movie is suitable for kids. Answer ONLY with "Yes" or "No".',
+    movieinfo,
+    reviewcontent,
+    reviewtype,
+    movietitle
+) = 'Yes'
+\end{minted}
+\end{mdframed} 
+\vspace{8pt}
+\vspace{8pt}
+\vspace{-2em}
+\textbf{\textit{LLM projection.}} This query type makes calls to an LLM within a \texttt{SELECT} statement to process information from specified database column(s). It reflects common tasks in data analytics in which the LLM is used for summarization and interpretation based on certain data attributes.
+
+\begin{mdframed}[linecolor=black, linewidth=.5pt]
+\begin{minted}[fontsize=\small]{sql}
+SELECT LLM(
+    'Given the following information, summarize good qualities in this movie that led to a favorable rating.',
+    reviewcontent, movieinfo
+)
+FROM MOVIES
+\end{minted}
+\end{mdframed} 
+
+% SELECT LLM('Given information including movie descriptions and critic reviews, summarize the good qualities in this movie that led to a favorable rating.', mr.*)
+% FROM ( SELECT r.*, m.* FROM reviews r JOIN movies m ON r.link = m.link ) AS mr
+
+\textbf{\textit{Multi-LLM invocation.}} This query type involves multiple LLM calls in different parts of the query and addresses scenarios in which several layers of data processing or analysis are required. It represents advanced analytical tasks, such as combining different data insights.
+
+\begin{mdframed}[linecolor=black, linewidth=.5pt]
+\begin{minted}[fontsize=\small]{sql}
+SELECT LLM(
+    'Given the information about a movie, summarize the good qualities that led to a favorable rating.',
+    reviewtype,
+    reviewcontent,
+    movieinfo,
+    genres
+)
+FROM MOVIES
+WHERE LLM(
+    'Given the following review, answer whether the sentiment is "POSITIVE" or "NEGATIVE". Respond ONLY with "POSITIVE" or "NEGATIVE", in all caps.',
+    reviewcontent
+) = 'NEGATIVE'
+\end{minted}
+\end{mdframed} 
+
+% WITH ( SELECT r.*, m.* FROM reviews r JOIN movies m ON r.link = m.link ) AS mr
+% SELECT LLM('Given information including movie descriptions and critic reviews, summarize the good qualities in this movie that led to a favorable rating.', mr.*)
+% WHERE LLM('Given the following review, answer whether the sentiment associated is 'POSITIVE' or 'NEGATIVE'. Answer in all caps with ONLY 'POSITIVE' or 'NEGATIVE': ', mr.review) == 'NEGATIVE'
+
+\vspace{-1em}
+\textbf{\textit{LLM aggregation.}} This query type incorporates an AVG operator that incorporates LLM outputs into further query processing. For example, one
+could use LLMs to assign sentiment scores to individual reviews and then aggregate these scores to calculate an average sentiment for overall customer feedback.
+This query type is essential for tasks that need to extract insights from complex textual data.
+
+\begin{mdframed}[linecolor=black, linewidth=.5pt]
+\begin{minted}[fontsize=\small]{sql}
+SELECT AVG(
+    LLM(
+        'Rate sentiment in numerical values from 1 (bad) to 5 (good).',
+        reviewcontent, movieinfo
+    )
+) AS AverageScore
+FROM MOVIES
+\end{minted}
+\end{mdframed} 
+\vspace{-1em}
+
+\textbf{\textit{Retrieval-augmented generation (RAG)}.} This query type leverages external knowledge bases for enhanced LLM processing, enriching LLM queries with a broader context. It simulates use cases where queries need to pull in relevant information from external sources, such as document databases or knowledge graphs, to provide comprehensive answers. 
+
+\begin{mdframed}[linecolor=black, linewidth=.5pt]
+\begin{minted}[fontsize=\small]{sql}
+SELECT LLM(
+    'Given a question and four supporting contexts, answer the provided question.', VectorDB.search(question, k=4), question)
+FROM FEVER
+\end{minted}
+\end{mdframed}
+
+\section{Dataset Information}
+\label{appendix:fields}
+% \shu{@asim: add the dataset configuration here on column settings}
+We detail the fields and functional dependencies 
+(FDs) used for each dataset as follows. 
+\begin{tcolorbox}[colback=gray!5!white, colframe=black!75!white, title=MOVIES]
+\footnotesize
+\begin{verbatim}
+columns:
+genres, movieinfo, movietitle, 
+productioncompany, reviewcontent, 
+reviewtype, rottentomatoeslink, 
+topcritic
+
+FDs: 
+movieinfo, movietitle, 
+rottentomatoeslink
+\end{verbatim}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=gray!5!white, colframe=black!75!white, title=PRODUCTS]
+\footnotesize
+\begin{verbatim}
+columns: 
+description, id, parent_asin, 
+product_title, rating, review_title, 
+text, verified_purchase
+
+
+FDs: 
+parent_asin, product_title
+\end{verbatim}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=gray!5!white, colframe=black!75!white, title=BIRD]
+\footnotesize
+\begin{verbatim}
+columns:
+Body, PostDate, PostId, Text
+
+FDs: 
+Body, PostId
+\end{verbatim}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=gray!5!white, colframe=black!75!white, title=PDMX]
+\footnotesize
+\begin{verbatim}
+columns: 
+artistname, bestarrangement, bestpath, 
+bestuniquearrangement, composername,
+complexity, genre, grooveconsistency, 
+groups, hasannotations, hascustomaudio,
+hascustomvideo, haslyrics, hasmetadata, 
+haspaywall, id, isbestarrangement, 
+isbestpath, isbestuniquearrangement, 
+isdraft, isofficial, isoriginal, 
+isuserpro, isuserpublisher, isuserstaff, 
+license, licenseurl, metadata, 
+nannotations, ncomments, nfavorites, 
+nlyrics, notesperbar, nnotes, nratings, 
+ntracks, ntokens, nviews, path, 
+pitchclassentropy, postdate, postid, 
+publisher, rating, scaleconsistency, 
+songlength, songlengthbars, 
+songlengthbeats, songlengthseconds, 
+songname, subsetall, subsetdeduplicated, 
+subsetrated, subsetrateddeduplicated, 
+subtitle, tags, text, title, tracks, 
+version
+
+
+FDs:
+[metadata, path], 
+[hasannotations, hasmetadata, isdraft, 
+isofficial, isuserpublisher, subsetall
+]
+
+\end{verbatim}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=gray!5!white, colframe=black!75!white, title=BEER]
+\footnotesize
+\begin{verbatim}
+columns: 
+beer/beerId, beer/name, beer/style, 
+review/appearance, review/overall, 
+review/palate, review/profileName, 
+review/taste, review/time
+
+FDs: 
+[beer/beerId, beer/name]
+\end{verbatim}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=gray!5!white, colframe=black!75!white, title=FEVER]
+\footnotesize
+\begin{verbatim}
+-- FEVER --
+columns: 
+claim, evidence1, evidence2, 
+evidence3, evidence4
+
+FDs: []
+\end{verbatim}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=gray!5!white, colframe=black!75!white, title=SQuAD]
+\footnotesize
+\begin{verbatim}
+columns: 
+question, context1, context2,
+context3, context4, context5
+
+FDs: []
+\end{verbatim}
+\end{tcolorbox}
+
+% \begin{lstlisting}
+% -- MOVIES --
+% columns: [reviewcontent, reviewtype, topcritic, rottentomatoeslink, movietitle, movieinfo, genres, productioncompany]
+% functional_dependencies: [movieinfo, movietitle, rottentomatoeslink]
+
+% -- PRODUCTS --
+% columns: [text, description, parent_asin, review_title, verified_purchase, rating, product_title, id]
+% functional_dependencies: [product_title, parent_asin]
+
+% -- BIRD --
+% columns: [Text, PostId, PostDate, Body]
+% functional_dependencies: [PostId, Body]
+
+% -- PDMX --
+% columns: [path, metadata, hasmetadata, version, isuserpro, isuserpublisher, isuserstaff, haspaywall, israted, isofficial, isoriginal, isdraft, hascustomaudio, hascustomvideo, ncomments, nfavorites, nviews, nratings, rating, license, licenseurl, genres, groups, tags, songname, title, subtitle, artistname, composername, publisher, complexity, ntracks, tracks, songlength, songlengthseconds, songlengthbars, songlengthbeats, nnotes, notesperbar, nannotations, hasannotations, nlyrics, haslyrics, ntokens, pitchclassentropy, scaleconsistency, grooveconsistency, bestpath, isbestpath, bestarrangement, isbestarrangement, bestuniquearrangement, isbestuniquearrangement, subsetall, subsetrated, subsetdeduplicated, subsetrateddeduplicated]
+% functional_dependencies: [[path, metadata], [hasmetadata, isofficial, isuserpublisher, isdraft, hasannotations, subsetall]]
+
+
+% -- BEER -- 
+% columns: [review/profileName, review/time, review/overall, review/taste, review/palate, review/appearance, beer/name, beer/style, beer/beerId]
+% functional_dependencies: [beer/beerId, beer/name]
+
+
+% -- FEVER --
+% columns: [claim, evidence4, evidence3, evidence2, evidence1]
+% functional_dependencies: []
+
+% -- SQuAD -- 
+% columns: [question, context5, context4, context3, context2, context1]
+% functional_dependencies: []
+% \end{lstlisting}
+\vspace{-0.5em}
+\section{Prompts}
+\label{appendix:prompts}
+We detail the system and user prompts for each query type and dataset as follows. 
+\vspace{-0.5em}
+
+% \subsection{LLM System Prompt}
+
+\begin{tcolorbox}[colback=gray!5!white, colframe=black!75!white, title=System Prompt]
+\scriptsize
+\begin{verbatim}
+You are a data analyst. Use the provided JSON data 
+to answer the user query based on the specified 
+fields. Respond with only the answer, 
+no extra formatting. 
+
+Answer the below query: 
+{QUERY} 
+
+Given the following data: 
+{fields}
+\end{verbatim}
+\end{tcolorbox}
+
+
+% \begin{lstlisting}
+%   You are a data analyst. Use the provided JSON data to answer the user query based on the specified fields. Respond with only the answer, no extra formatting. Answer the below query: \n{QUERY} \n Given the following data: \n {fields}.
+% \end{lstlisting}
+
+% 
+% -- EXAMPLE MOVIES PROMPT --
+% 'Answer the below query:
+% Given information including movie descriptions and a critic reviews for movies with a positive sentiment, summarize the good qualities in this movie that led to a favorable rating.
+%  Given the following data:
+%  {'reviewcontent': "There's over-the-top, and then there's just bafflingly insane.", 'reviewtype': 'Rotten', 'topcritic': 'False', 'rottentomatoeslink': 'm/300_rise_of_an_empire', 'movietitle': '300: Rise of an Empire', 'movieinfo': 'While King Leonidas and his 300 Spartans have their date with destiny at Thermopylae, another battle against the Persians is brewing, this time at sea. Themistocles (Sullivan Stapleton), a Greek general, sees the threat posed by the God-King Xerxes of Persia. He knows that he must unite all of Greece if he is to stand any chance of repelling the Persian invasion. Even if he accomplishes his mission, Themistocles must still face Artemisia (Eva Green), the ruthless leader of the Persian armada.', 'genres': 'Action & Adventure, Drama', 'productioncompany': 'Warner Bros. Pictures'}'
+\vspace{-0.6em}
+
+
+% \subsection{LLM User Prompt}
+%\shu{@Asim: can we write out each SQL query for each, because we do filter selection as well}
+
+\begin{tcolorbox}[colback=gray!5!white, colframe=black!75!white, title=User Prompt - LLM Aggregation]
+\scriptsize
+\begin{verbatim}
+MOVIES: Given the following fields of a movie 
+description and a user review, assign a sentiment 
+score for the review out of 5. Answer with ONLY a 
+single integer between 1 (bad) and 5 (good).
+
+PRODUCTS: Given the following fields of a product 
+description and a user review, assign a sentiment
+score for the review out of 5. Answer with ONLY a
+single integer between 1 (bad) and 5 (good).
+\end{verbatim}
+\end{tcolorbox}
+\vspace{-0.6em}
+
+\begin{tcolorbox}[colback=gray!5!white, colframe=black!75!white, title=User Prompt - Multi-LLM Invocation]
+\scriptsize
+\begin{verbatim}
+MOVIES/PRODUCTS: Given the following review, answer 
+whether the sentiment associated is 'POSITIVE' or 
+'NEGATIVE'. Answer in all caps with ONLY 'POSITIVE' 
+or 'NEGATIVE': 
+\end{verbatim}
+\end{tcolorbox}
+\vspace{-0.6em}
+
+\begin{tcolorbox}[colback=gray!5!white, colframe=black!75!white, title=User Prompt - LLM Filter]
+\scriptsize
+\begin{verbatim}
+MOVIES: Given the following fields, answer in one 
+word, 'Yes' or 'No', whether the movie would be 
+suitable for kids.  Answer with ONLY 'Yes' or 'No'.
+
+PRODUCTS: Given the following fields determine if 
+the review speaks positively ('POSITIVE'), 
+negatively ('NEGATIVE'), or netural ('NEUTRAL') 
+about the product. Answer only 'POSITIVE', 
+'NEGATIVE', or 'NEUTRAL', nothing else.
+
+BIRD: Given the following fields related to posts 
+in an online codebase community, answer whether the
+post is related to statistics. Answer with only 
+'YES' or 'NO'.
+
+PDMX: Based on following fields, answer 'YES' or 
+'NO' if any of the song information references a 
+specific individual. Answer only 'YES' or 'NO', 
+nothing else.
+
+BEER: Based on the beer descriptions, does this 
+beer have European origin? Answer 'YES' if it does 
+or 'NO' if it doesn't.
+\end{verbatim}
+\end{tcolorbox}
+
+\vspace{-0.5em}
+\begin{tcolorbox}[colback=gray!5!white, colframe=black!75!white, title=User Prompt - LLM Projection]
+\scriptsize
+\begin{verbatim}
+MOVIES: Given information including movie 
+descriptions and critic reviews, summarize the good
+qualities in this movie that led to a favorable 
+rating. (also used in multi-invocation)
+
+PRODUCTS: Given the following fields related to 
+amazon products, summarize the product, then answer 
+whether the product description is consistent with 
+the quality expressed in the review. (also used 
+in multi-invocation)
+
+BIRD: Given the following fields related to posts 
+in an online codebase community, summarize how the
+comment Text related to the post body.
+
+PDMX: Given the following fields, provide an 
+overview on the music type, and analyze the given 
+scores. Give exactly 50 words of summary.
+
+BEER: Given the following fields, provide an 
+high-level overview on the beer and review in a 
+20 words paragraph.
+\end{verbatim}
+\end{tcolorbox}
+\vspace{-0.6em}
+
+\begin{tcolorbox}[colback=gray!5!white, colframe=black!75!white, title=User Prompt - RAG]
+\scriptsize
+\begin{verbatim}
+FEVER: You are given 4 pieces of evidence as 
+{evidence1}, {evidence2}, {evidence3}, and 
+{evidence4}. You are also given a claim as {claim}. 
+Answer SUPPORTS if the pieces of evidence support 
+the given {claim}, REFUTES if the evidence refutes 
+the given {claim}, or NOT ENOUGH INFO if there is
+not enough information to answer. Your answer
+should just be SUPPORTS, REFUTES, or NOT ENOUGH
+INFO and nothing else.
+
+SQuAD: Given a question and supporting contexts, 
+answer the provided question.
+\end{verbatim}
+\end{tcolorbox}
+
+% \begin{lstlisting}
+% QUERIES
+
+% -- FILTERING -- 
+% MOVIES: 'Given the following fields, answer in ONE word, 'Yes' or 'No', whether the movie would be suitable for kids.  Answer with ONLY 'Yes' or 'No'.'
+
+% PRODUCTS: 'Given the following fields determine if the review speaks positively ('POSITIVE'), negatively ('NEGATIVE'), or netural ('NEUTRAL') about the product. Answer only 'POSITIVE', 'NEGATIVE', or 'NEUTRAL', nothing else.'
+
+% BIRD: 'Given the following fields related to posts in an online codebase community, answer whether the post is related to statistics. Answer with only 'YES' or 'NO'.'
+
+% PDMX: 'Based on following fields, answer 'YES' or 'NO' if any of the song information references a specific individual. Answer only 'YES' or 'NO', nothing else.'
+
+% BEER: 'Based on the beer descriptions, does this beer have European origin? Answer 'YES' if it does or 'NO' if it doesn't.'
+
+% -- PROJECTION -- 
+% MOVIES: 'Given information including movie descriptions and critic reviews, summarize the good qualities in this movie that led to a favorable rating.' (also used in multi-invocation)
+
+% PRODUCTS: 'Given the following fields related to amazon products, summarize the product, then answer whether the product description is consistent with the quality expressed in the review.' (also used in multi-invocation)
+
+% BIRD: 'Given the following fields related to posts in an online codebase community, summarize how the comment Text related to the post Body'
+
+% PDMX: 'Given the following fields, provide an overview on the music type, and analyze the given scores. Give exactly 50 words of summary.'
+
+% BEER: 'Given the following fields, provide an high-level overview on the beer and review in a 20 words paragraph.'
+
+% -- MULTI-INVOCATION --
+% MOVIES/PRODUCTS: 'Given the following review, answer whether the sentiment associated is 'POSITIVE' or 'NEGATIVE'. Answer in all caps with ONLY 'POSITIVE' or 'NEGATIVE': '
+
+% -- AGGREGATION -- 
+% MOVIES: 'Given the following fields of a movie description and a user review, assign a sentiment score for the review out of 5. Answer with ONLY a single integer between 1 (bad) and 5 (good): '
+
+% PRODUCTS: 'Given the following fields of a product description and a user review, assign a sentiment score for the review out of 5. Answer with ONLY a single integer between 1 (bad) and 5 (good): '
+
+% -- RAG -- 
+
+% FEVER: 'You are given 4 pieces of evidence as {evidence1}, {evidence2}, {evidence3}, and {evidence4}. You are also given a claim as {claim}. Answer SUPPORTS if the pieces of evidence support the given {claim}, REFUTES if the evidence refutes the given {claim}, or NOT ENOUGH INFO if there is not enough information to answer. Your answer should just be SUPPORTS, REFUTES, or NOT ENOUGH INFO and nothing else.'
+
+% SQuAD: 'Given a question and supporting contexts, answer the provided question.'
+% \end{lstlisting}
+
+% \section{LLM Prompt}
+
+
+% \section{Fixed Reordering (FR)}
+
+% \subsection{Algorithm}
+% The Fixed Reordering (FR) algorithm assigns a score to each column based on two factors: the average length of the values in the column and the average group size of the values in the column, prioritizing columns with longer values and larger groups of repeated values to maximize PHC.
+
+% Let $T$ be a table with $n$ rows and $m$ columns, where $T[r][c]$ denotes the value in row $r$ and column $c$. The \textit{average length} of the values in column $c$ is defined as:
+
+% \begin{equation}
+% \text{avg\_len}(c) = \frac{1}{n} \sum_{r=1}^{n} \text{len}(T[r][c])
+% \end{equation}
+
+% Let $G(c)$ be the set of unique values in column $c$, and let $|R_v|$ be the number of rows where the value in column $c$ equals $v$. The \textit{average group size} of column $c$ is given by:
+
+% \begin{equation}
+% \text{avg\_group\_size}(c) = \frac{1}{|G(c)|} \sum_{v \in G(c)} |R_v|
+% \end{equation}
+
+% The FR algorithm ranks and sorts the column in descending order of their scores. The \textbf{score} for column $c$ is the product of the average length and the average group size:
+
+% \begin{equation}
+% \text{score}(c) = \text{avg\_len}(c)^2 \times \text{avg\_group\_size}(c)
+% \end{equation}
+
+
+
+
+% \subsection{FR Worst-Case Analysis}
+% We perform a formal worst-case analysis of the FR algorithm under the given assumptions. We aim to compute the maximum possible ratio between the Prefix Hit Counts (PHCs) achieved by the GGR algorithm and the FR algorithm, and prove that this ratio cannot exceed the number of columns $c$. 
+
+
+% Consider a table $T$ with $r$ rows and $c$ columns. We make the following assumption: 
+% \begin{enumerate}
+%     \item \textit{Idenitcal Average String Length}: All columns have identical average string lengths, i.e., avg\_len($c$) is the same for all $c$.
+%     \item \textit{Single Group per Column}: each column contains exactly one group of $x$ identical values, where $x \leq r$. We later show how this can be generalized to multiple groups. All other values in each column are unique.
+%     \item \textit{Non-overlapping Rows between Consecutive Columns}: \shu{not sure if this is a proper assumption, or worst-case choice FR can make}
+% \end{enumerate}
+
+% \paragraph{Prefix Hit Count of FR and GGR}
+% The FR algorithm assigns a score to each column based on the above formula. Since avg\_len($c$) and the average group size is identical across all columns, the FR algorithm assigns equal scores to all columns and will arbitrarily choose one column to prioritize. 
+% The worst-case layout for FR is that there are non-overlapping rows between groups in consecutive columns. Thus, only one group can get prefix hit, as shown in Figure~\ref{}. 
+% The prefix hit count (PHC) of the FR algorithm is 
+% \begin{equation} \text{PHC}_{\text{FR}} = x - 1 \end{equation} 
+
+% The GGR algorithm recursively selects the group with the largest group size at each step, allowing for different column orderings per row. Since the groups in different columns are in non-overlapping rows, the GGR algorithm can group together all $c$ groups independently. Therefore, the total PHC for the GGR algorithm is: 
+% \begin{equation} \text{PHC}_{\text{GGR}} = c \times (x - 1) \end{equation}
+
+% The ratio of the PHCs achieved by the GGR and FR algorithms is $c$. 
+
+% \proof{
+% Say we want to add $n$ more such groups with $x$ rows into the table, and see whether we can further increase the gap of $c$ between FR and GGR algorithm. Now it is possible that multiple groups appearing in one column. Say we add $n$ more groups into one arbitrary columns. When we add these $n$ groups, FR will prioritize this column first based on the average group size score, thus its PHC will become $(x-1)\times(n+1)$. While the GGR algorithm will still be able to detect these $n$ groups as usual, resulting in a PHC of $(x-1)\times(c+n)$. The ratio between GGR and FR now becomes $\frac{c+n}{n+1}$. Since $n > 0$ and $c >= 1$, we get $\frac{c+n}{n+1} - c = \frac{n(1-c)}{n+1} \leq 0$, as the numerator is non-positive, and denominator is always positive. Thus, $\frac{c+n}{n+1} \leq c$. Further adding $n$ more groups in an arbitrary columns will not make the gap between FR and GGR larger. 
+
+% }
+% \proof{
+%     Assume, for contradiction, that there exists a table $T'$ where under the given assumptions, the ratio exceeds $c$. \shu{I was thinking to place another group somewhere, but FR will not stay the same, it will prioritize this column with additional groups}
+% }
+% For simplicity, we show the worst-case analysis of FR performance assuming each column has identical average string length. 
+
+% \textit{Table Construction} Consider a table $T$ with $r$ rows and $c$ columns. Assume that each \textit{column} contains exactly one group of $x$ identical values, where $x \leq r$, and all other values in the column are distinct. There are $c$ such groups.
+
+% % Now assume that these groups does not overlap the same rows as in the previous columns. Values other than the grouped values are all distinct. 
+
+% \textit{Fixed Reordering} The FR algorithm assigns a fixed score to each column based on average group size of this column, ignoring avg\_len(c) since they are the same across columns. Given that all groups contain $x$ rows, the FR algorithm will break-tie and pick one column to prioritize. \shu{not sure how to write this: zigzag shape} If the groups are formed in zigzag patterns where groups in consecutive columsn do not overlap in rows, this will result in a total prefix hit count of 
+% \begin{equation}
+%     PHC_{FR} = x - 1
+% \end{equation}
+
+% \textit{GGR} The GGR algorithm recursively selects the group of values that has the largest group size at each step, allowing different column orderings per row. In this case, it can take advantage of these non-overlapping groups at each set of rows to achieve a much higher PHC, resulting in: 
+% \begin{equation}
+%     PHC_{GGR} = (x - 1) \times c
+% \end{equation}
+
+% % Comparing the two, the ratio of PHCs for GGR and FR is $min(\frac{r}{x}, c)$. For example, if $x = \frac{r}{c}$, then this ratio becomes $c$. 
+
+% \proof{ 
+%     \shu{How to prove this??}
+%     We aim to prove that the worst-case performance ratio cannot exceed $c$. 
+%     Assume, for the sake of contradiction, that the ratio could exceed $c$, given a table, say $c+n$ where $n > 0$. In this case, it means that the GGR algorithm is able to hit $n$ more groups of $x$ rows than the FR algorithm. Putting such group anywhere in the current setup where each column cotnains exactly one such group will make FR algorithm prioritize the column with one additional group. 
+% }
+
+
+% \textit{Variabe string length}
+
+
+% \subsection{FR Best-Case Analysis}
+% We will now prove that GGR achieves a PHC no worse than fixed reordering. 
+% % TODO
+
+
+
+% \textbf{Base Case}: Trivially, GGR and Fixed reordering perform identically for 1 row tables, as the entire row is a cache miss. We can now analyze the 2 row scenario:
+
+% We consider a table \( T \) with 2 rows and \( m \) columns. For each column \( c \), we define an indicator variable \( I_c \) as follows:
+
+% \[
+% I_c = 
+% \begin{cases} 
+% 1 & \text{if } T[1][c] = T[2][c], \\
+% 0 & \text{if } T[1][c] \neq T[2][c].
+% \end{cases}
+% \]
+
+% \textit{Fixed Reordering} \\Fixed Reordering (FR) orders the columns based on a fixed score \( score(c) \). 
+
+% In the two-row case, the score \( score(c) \) for column \( c \) reduces to:
+
+% \[
+% score(c) = 
+% \begin{cases} 
+% \text{len}(T[1][c]) & \text{if } I_c = 1, \\
+% 0 & \text{if } I_c = 0,
+% \end{cases}
+% \]
+
+% Thus, \( \sigma_{\text{FA}} \) orders the columns such that all columns with \( I_j = 1 \) appear before any columns with \( I_j = 0 \), in order of length. 
+
+% \textit{GGR} \\The GGR algorithm works by greedily selecting the columna where the score \( score(c) \) is highest and recursing on the rest of the table. We note that the scores in each recursive step are identical to the scores at the beginnign of the algorithm, as each recursive call only removes 1 column and no rows from \( T \).
+
+% For the two-row case, this means GGR will continue to select columns where \( I_c = 1 \) in order of the longest length until no such columns remain.
+
+% \textit{Comparison of Hits for FR and GGR}
+
+% We see that both algorithms will place all columns in order of length. The number of hits will be the sum of the length of each unique value in all columns \( c \) such that \( I_c = 1 \). 
+   
+% \textbf{Inductive Hypothesis}:
+% The inductive hypothesis states that for all \( k \) such that \( 2 < k < n \), GGR performs no worse than FR. Formally, we assume that:
+
+% \[
+% \forall k, \ 2 < k < n, \ PHC_{GGR}(T_k) \geq PHC_{FR}(T_k)
+% \]
+
+% \textbf{Inductive Step}:
+% We now analyze a table \( T \) with n rows. At the first stage, GGR selects the value group with the largest score. This divides \( T \) into 2 subtables, one with the rows containing this max value \( T_{top} \) and one without \( T_{bottom} \).
+
+% First, we note that \( T_{bottom} \) must contain at least \( n - 1 \) rows, as by definition of GGR, one value is selected and all occurrences of that value are included in \( T_{top} \). In the event that all values tie for the same score, a value is selected arbitrarily. With this in mind, we can apply the inductive hypothesis to \( T_{bottom} \) to conclude that \( PHC_{GGR}(T_{bottom})\) \geq \(PHC_{FR}(T_{bottom})\). 
+% \asim{is this fair though? the actual values in Tbottom might be different for FR vs GGR so the proof might break here...}
+
+% We can now analyze \( T_{top} \). We can first consider the PHC of the first column in \( T_{top} \). By definition, in rows containing the max value, the PHC in this first column is maximized, as GGR selects the local optimum -- so more hits are contributed to overall PHC in these rows in this column than FR. We can also apply the inductive hypothesis to the subtable not containing the max value column in the rows containing the max value.
+
+\section{Ablations}
+We present two sets of ablation experiments: one comparing the prefix hit rate (PHR) between \greedy and an optimal oracle, and another examining the impact of using a smaller LLM model.
+
+\subsection{PHR of GGR v.s. \optimal}
+\label{appendix:hit-rate}
+OPHR is a very expensive brute-force oracle algorithm that iterates through all possible combinations of value groups and calculates the prefix hit count. In our empirical evaluation, it is impractical to run on larger datasets.
+
+Thus, we test the first (10, 25, 50, 100, 200) rows for each dataset and terminate OPHR runs exceeding 2 hours, reporting the result of the successful run with the most rows. For PDMX, we reduce 57 columns to 10 to enable runs on even 
+as few as 10 rows. The PHR (prefix hit rate) and solver runtime in seconds across datasets are reported in Table~\ref{tab:phr_runtime_combined}, with the dataset labeled as \textit{\{dataset\}}-\textit{\{\#rows\}}.
+
+% Thus, to analyze the difference between the greedy heuristic and OHPR, we test the first (10, 25, 50, 100, 200) rows for each dataset and terminate OPHR runs exceeding 2 hours, reporting the result of the successful run with the most rows. For PDMX, we reduce 57 columns to 10 to enable runs even on 10 rows. The PHR (prefix hit rate) and solver runtime results across datasets are reported in Table~\ref{tab:phr_runtime_combined}. 
+% We show empirical results on the hit rate comparison 
+
+
+\begin{table}[h]
+\centering
+\footnotesize
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Dataset} & \multicolumn{3}{c}{\textbf{PHR (\%)}} & \multicolumn{2}{c}{\textbf{Solver Runtime (s)}} \\
+\cmidrule(lr){2-4} \cmidrule(lr){5-6}
+& \textbf{OPHR} & \textbf{GGR} & \textbf{Diff} & \textbf{OPHR} & \textbf{GGR} \\
+\midrule
+Movies-50   & 80.6 & 80.6 & 0\%   & 2556  & 0.05 \\
+Products-25 & 19.7 & 18.5 & -1.2\% & 357   & 0.06 \\
+BIRD-50     & 77.5 & 76.2 & -1.3\% & 0.43  & 0.05 \\
+PDMX-25     & 29.4 & 28.6 & -0.8\% & 822   & 0.05 \\
+Fever-50    & 7.3  & 6.9  & -0.4\% & 110   & 0.23 \\
+Beer-10     & 25.7 & 25.6 & -0.1\% & 1269  & 0.08 \\
+SQuAD-10    & 34.0 & 34.0 & 0\%   & 1.6   & 0.05 \\
+\bottomrule
+\end{tabular}
+\caption{Comparison of Prefix Hit Rate (PHR) and solver runtime across datasets. GGR achieves near-optimal PHR while being orders of magnitude faster than OPHR.}
+\label{tab:phr_runtime_combined}
+\end{table}
+
+
+
+% \begin{table}[h]
+% \centering
+% \begin{tabular}{lccccccc}
+% \toprule
+% \textbf{PHR} & \textbf{Movies-50} & \textbf{Products-25} & \textbf{BIRD-50} & \textbf{PDMX-25} & \textbf{Fever-50} & \textbf{Beer-10} & \textbf{SQuAD-10} \\
+% \midrule
+% OPHR & 80.6 & 19.7 & 77.5 & 29.4 & 7.3 & 25.7 & 34.0 \\
+% GGR  & 80.6 (0\%) & 18.5 (-1.2\%) & 76.2 (-1.3\%) & 28.6 (-0.8\%) & 6.9 (-0.4\%) & 25.6 (-0.1\%) & 34.0 (0\%) \\
+% \bottomrule
+% \end{tabular}
+% \caption{Prefix Hit Rate (PHR) across datasets for OHPR and GGR. GGR achieves hit rate within 2\% as compared to OPHR.}
+% \label{tab:phr}
+% \end{table}
+
+% \begin{table}[h]
+% \centering
+% \begin{tabular}{lccccccc}
+% \toprule
+% \textbf{Solver Runtime (s)} & \textbf{Movies-50} & \textbf{Products-25} & \textbf{BIRD-50} & \textbf{PDMX-25} & \textbf{Fever-50} & \textbf{Beer-10} & \textbf{SQuAD-10} \\
+% \midrule
+% OPHR & 2556 & 357 & 0.43 & 822 & 110 & 1269 & 1.6 \\
+% GGR  & 0.05 & 0.06 & 0.05 & 0.05 & 0.23 & 0.08 & 0.05 \\
+% \bottomrule
+% \end{tabular}
+% \caption{Solver runtime (in seconds) across datasets. GGR demonstrates a significant speedup over OPHR.}
+% \label{tab:runtime}
+% \end{table}
+
+
+We can see that on these small samples of the datasets, our algorithm (GGR) achieves within 2\% of the optimal, but can be up to \textit{hours faster} on solver runtime. 
+
+\subsection{Results of Smaller Model}
+\label{appendix:models}
+To analyze the impact of using a smaller model, we run the Filter Query described in Fig.~\ref{fig:filter-q} with the Llama-3.2-1B model, using the same setup as with Llama-3 8B (i.e., single L4 instance), and compare the prefix hit rate and end-to-end query execution time of GGR with the default vLLM baseline (i.e. Cache Original). The results are reported in Table~\ref{tab:llama32results}. 
+
+% \begin{table}[h]
+% \centering
+% \begin{tabular}{lccc}
+% \toprule
+% \textbf{Dataset} & \textbf{OPHR} & \textbf{GGR} & \textbf{Difference} \\
+% \midrule
+% Movies-50   & 80.6 & 80.6 & 0\% \\
+% Products-25 & 19.7 & 18.5 & -1.2\% \\
+% BIRD-50     & 77.5 & 76.2 & -1.3\% \\
+% PDMX-25     & 29.4 & 28.6 & -0.8\% \\
+% Fever-50    & 7.3  & 6.9 & -0.4\% \\
+% Beer-10     & 25.7 & 25.6 & -0.1\% \\
+% SQuAD-10    & 34.0 & 34.0 & 0\% \\
+% \bottomrule
+% \end{tabular}
+% \caption{Prefix Hit Rate (PHR) comparison between OPHR and GGR across datasets. GGR achieves hit rates within 2\% of OPHR.}
+% \label{tab:phr}
+% \end{table}
+
+\begin{table}[h]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Metric} & \textbf{BIRD} & \textbf{Movies} & \textbf{PDMX} \\
+\midrule
+Runtime (orig/GGR) & 1.5$\times$ & 1.3$\times$ & 1.3$\times$ \\
+Orig PHR (\%) & 10.41 & 29.32 & 11.97 \\
+GGR PHR (\%) & 83.99 & 82.10 & 56.00 \\
+\midrule
+\textbf{Metric} & \textbf{Products} & \textbf{BEER} & \\
+\midrule
+Runtime (orig/GGR) & 1.4$\times$ & 1.2$\times$ & \\
+Orig PHR (\%) & 24.06 & 47.98 & \\
+GGR PHR (\%) & 82.10 & 73.93 & \\
+\bottomrule
+\end{tabular}
+\caption{Cache runtime ratio and prefix hit rate (PHR) (\%) comparison between original and GGR ordering for Llama-3.2-1B.}
+\label{tab:llama32results}
+\end{table}
+
+
+
+% \begin{table}[h]
+% \centering
+% \begin{tabular}{lccccc}
+% \toprule
+% \textbf{Llama-3.2-1B} & \textbf{BIRD} & \textbf{Movies} & \textbf{PDMX} & \textbf{Products} & \textbf{BEER} \\
+% \midrule
+% Cache original / GGR (runtime) & 1.5x & 1.3x & 1.3x & 1.4x & 1.2x \\
+% Cache original PHR & 10.41\% & 29.32\% & 11.97\% & 24.06\% & 47.98\% \\
+% GGR PHR & 83.99\% & 82.10\% & 56.00\% & 82.10\% & 73.93\% \\
+% \bottomrule
+% \end{tabular}
+% \caption{Cache performance and PHR comparison for Llama-3.2-1B across datasets.}
+% \label{tab:llama32results}
+% \end{table}
+
+
+We observe similar prefix hit rates with Llama-3.2-1B compared to our previous 8B model runs. This consistency arises from the effectiveness of GGR field reordering, which converts non-reusable field contents (0 hits) into reusable prefixes within the cache.
+We also observe that under the same GPU instance setup (e.g., L4 with 24 GB memory), larger models like Llama-8B (7.6 GB) exhibit larger relative performance gains from GGR compared to smaller models like Llama-1B (1.8 GB), despite seeing similar prefix hit rates. This is because prefix caching benefits from reducing computational overhead on shared prefixes and enabling larger batch sizes for LLM generation by reducing memory usage through sharing. For smaller models, the availability of ample GPU memory diminishes the relative impact of prefix caching, as larger batch sizes can be achieved without relying on caching. But for larger models, or when there is less available GPU space, prefix caching benefits become more pronounced.
+

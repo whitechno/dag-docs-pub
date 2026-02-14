@@ -1,0 +1,64 @@
+\section{Background and Motivation}
+
+% \accheng{change to not say only offline, FIFO but there should be some info we use}
+% \shu{to be fixed}
+% LLMs are a powerful tool for programmatic analysis of text data and are being rapidly incorporated into major analytical DBMSes~\cite{google-bigquery-llm,aws-redshift-llm,databricks-ai-functions}.
+% LLM inference has several unique characteristics that have significant implications for performance. 
+This section provides a brief overview of the inference process and the key components of the LLM architecture.
+%to provide context. 
+% We then present opportunities to improve performance for relational analytics.
+% While there is prior work on improving model serving with data systems~\cite{velox}, these do not focus on LLMs. In particular, this research does not address impact of data dependencies between requests and also does not optimize for the tradeoff between memory and compute present in LLMs.
+
+\textbf{LLM inference.} 
+% LLMs have seen growing usage in a range of application to comprehend and generate text. 
+LLMs are made up of autoregressive Transformer models~\cite{attention-is-all-you-need}, which generate words as tokens, one at a time, until a termination token is generated or a token limit is reached. The inference process for LLMs occurs in two stages: (i) the prefill stage, in which the model processes all the input prompts at once, and (ii) the decoding stage, during which output generation occurs. 
+Generation for each request proceeds sequentially since the process depends on (the product of the conditional probabilities of) all previous tokens. 
+% Generation for each request proceeds sequentially (i.e., new tokens must be generated one by one) since the process depends on (the product of the conditional probabilities of) all previous tokens.
+% This process continues until the model outputs a termination token. 
+% LLMs are made up of autoregressive Transformer models~\cite{attention-is-all-you-need}, which generate words as tokens, one at a time, based on a given prompt and the existing sequence of tokens that have already been outputted. A \textit{token} is a concise representation, typically Byte-Paired Encoding \cite{byte-pair-encoding}, of a chunk of characters.
+
+An LLM inference engine (e.g., vLLM \cite{vllm}, TGI \cite{tgi}, TensorRT-LLM \cite{trt-llm}) runs the transformer models and schedules the prefill and decode stages. The LLM inference engine batches multiple requests continuously \cite{orca-continous-batching} together to improve throughput. 
+During the inference process, the intermediate computed state for all tokens involved is stored in memory.
+This token state is cached as key and value vectors in the \textit{key-value (KV) cache}. Each token can take up to 800KB for a 13B Model \cite{vllm}, so an average request (involving 2,000 tokens) can take up to 1.6 GB of space. Furthermore, even with batching (for online workloads, batch sizes of up to 32 requests are used~\cite{orca-continous-batching}), LLM inference is computationally expensive and is currently limited to a processing speed of ~2,000 tokens/s on a single GPU. 
+As such, LLM performance is currently the bottleneck in many analytical tasks.
+
+% \joey{Don't forget to fill in [X]}
+
+% \accheng{
+% - what is a token? abstraction for string 
+% - how to convert token to KV? tokens need to be computed b/c they in the attention step}
+
+
+% \accheng{kv vecs are by-product
+
+% since the new tokens are conditioned on the old tokens, you need to store the old ones in cache (an some computation is already done on them)
+% }
+\vspace{-0.5em}
+\textbf{Prompt KV cache.}
+A crucial factor for LLM serving throughput is memory management within the KV cache.
+% Consequently, managing memory usage in the KV cache is crucial for LLM serving throughput. 
+% This cache has several unique characteristics: it can dynamically grow and shrink over time as the model generates new tokens, and its lifetime and size are not known a priori. 
+To enable maximum cache utilization (i.e., hit rate), recent work proposes sharing tokens across requests. Since many user prompts share the same \textit{prefix}, or input prompt, the KV cache can store one copy of the prefix in advance to reduce redundant computation during the prefill phase. For instance, if two requests share a prefix, the first request will have already performed some computation on the input tokens and loaded these results in the KV cache. The subsequent request can directly reuse these values for further inference without having to recompute the shared tokens. 
+
+% An example of prefix sharing across requests to enhance KV cache efficiency is shown in Figure~\ref{fig:simple-sharing}. Reqs 2 and 3 share some prefix tokens with Req 1.
+% \accheng{if not in cache, need to recompute KV for tokens}
+
+% Existing research confirms that effective KV cache management is critical to end-to-end latency and throughput \cite{vllm, sglang}. 
+% focuses only on online inference in which the LLM assumes no knowledge about future requests \cite{vllm}.
+\vspace{-0.5em}
+% \subsection{Optimization Opportunities in Analytics}
+% \shu{this needs to be fixed - ignore now}
+% In this paper, we optimize LLM inference in the context of relational analytics. We describe new opportunities to improve performance by utilizing the structure and semantics of SQL workloads. \shu{this sounds repetitive}
+
+\textbf{Improving KV cache hit rate}.
+% Existing LLM online inference engines make no assumptions about future requests and execute queries as they arrive, or first-in, first-out (FIFO) order. As a result, they miss out on opportunities to improve cache hit rate by leveraging the workload information present in relational analytics.
+For data analytics, we observe particularly high opportunities for \textit{prefix KV cache} sharing. 
+Given information about the structure and data of the full set of requests and, critically, the ability to rearrange the requests before execution, requests can be arranged to maximize prefix KV cache reuse during inference. 
+% For instance, two requests that share a prefix may execute non-consecutively in the original data ordering, and both would lead to cache misses. Instead, if we ordered these requests together, we could ensure that the latter results in a cache hit. 
+% Since all prefixes are known in batch queries, we can group shared prefixes together to increase the KV cache hit rate.
+Overall, we want to maximize the \textit{prefix hit count}, or the sum of the length of prefixes that can be shared in the KV cache. 
+
+
+\textit{Our Approach: Request Reordering.} We leverage workload information to enhance the KV cache hit rate. Specifically, we introduce algorithms that reorder requests and fields within each request to maximize prefix sharing across requests and enable efficient memory usage. Our algorithm leverages functional dependencies and table statistics to reduce runtime while finding near-optimal orderings that maximize prefix hit count.
+
+%

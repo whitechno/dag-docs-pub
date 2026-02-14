@@ -1,0 +1,216 @@
+\newpage
+\section{Implementation}
+
+In this section, we describe the implementation of our optimizations, which consists of 5K lines of Python code integrated with PySpark~\cite{spark-sql}. To invoke the LLM in SQL queries, we implement a PySpark~\cite{pyspark} \accheng{@asim,shu add brief clause about why we use PySpark/what PySpark is} UDF that makes external calls to an LLM endpoint and a vector database. The UDF takes in a prompt for the LLM as well as data values (per column) as arguments to pass to the model. We augment the query optimizer to account for LLM operators, and LLM output post-processing is handled in the UDF. 
+% \amog{
+% 1. Prompt construction can be very significantly shortened with more details and a concrete example in the Appendix.
+
+% 2. Query optimization is not implemented. We should probably remove.
+
+% 3. Constrained decoding is not novel. We can probably remove.
+
+
+% The main takeaway currently is that the system is implemented in Spark, but it's also not clear how and when the reordering algorithms are actually executed.
+
+% }
+
+% \accheng{add high-level description of system like how calls go through pyspark to vllm}
+
+% \subsection{LLM UDFs and Optimizations}
+% We implement external calls to the LLM endpoint and vector database using a PySpark \asim{TODO: cite pyspark here} user defined function (UDF).
+% \begin{enumerate}
+%     \item This UDF is responsible for input construction given a system prompt and column values.
+%     \item LLM output post-processing is also handled in the UDF. 
+% \end{enumerate} 
+
+\textbf{Prompt construction.} Our UDF converts column values to prompt strings that can be parsed by an LLM. The first part of every prompt is the \textit{system prompt} containing instructions for the LLM. In the \textit{user prompt}, the question is provided as well as a JSON encoding of the column values for a particular row.
+
+% \textbf{Query optimization.} Traditionally, relational databases employ cost-based query optimizers, which enhance the performance of requests by analyzing query structures and operators to minimize data accesses and computational overheads~\cite{}. We extend these optimizers to account for LLM operators costs so that they can find query plans that minimize LLM invocations. Specifically, we augment cost estimation for the external functions that are used to invoke LLMs. 
+% % Currently, LLMs are most commonly accessed via UDFs. For instance, Databricks offers an \texttt{ai\_query}() function that allows users to call a model endpoint~\cite{databricks-aiquery}. Similarly, Amazon Redshift enables uses to LLM calls via UDF functions~\cite{aws-redshift-llm}. 
+% We estimate LLM costs based on the token length of the input and estimated decode length over requests. In most cases, LLM invocations are significantly more expensive than other query operators, so these calls are pulled up in the query plan. 
+
+% \shu{I remove the SQL query example, describe in text instead to save space} 
+% \accheng{@shu, removing this para since I don't think we need to go into detail}
+% As an example of how LLM operator costs affect query planning, consider the query provided earlier in Figure \ref{fig:filter} as an example. Without accounting for LLM inference costs, a naive execution might call the UDF on every row in the table before applying the filter \textit{c.Timestamp > '2023-10-01'}. This would lead to unnecessary LLM invocations and could significantly increase overall execution time. A better execution strategy would be to apply the filter before invoking the LLM UDF, thereby reducing the dataset size that the LLM processes. This optimization would also benefit other query operators, such as joins. In general, the optimizer will pull up LLM calls as much as possible since these tend to be the most expensive parts of the query.
+
+% We implement logic in our UDF for converting column inputs into LLM-readable prompt strings. 
+% \begin{enumerate}
+%     \item Takes a system prompt argument which contains the primary instruction repeated across all rows to be processed. 
+%     \item If multiple columns are passed into the UDF, prompts are constructed using columns in the order they appear in the UDF column list argument.
+%     \item If the constructed prompt for a given row is too long for our model context length (4096 tokens), we truncate the row to the system prompt and skip the row. \asim{do we need this?}
+% \end{enumerate}
+
+\textbf{Output post-processing.} LLM output can be inconsistent and contain rambling answers (even if the model is explicitly told to be concise in its instruction prompt).
+We take advantage of the vLLM\cite{vllm} serving engine, which supports constrained decoding of outputs to match our output pattern(s). Accordingly, we implement our UDF to optionally take in output pattern(s) as arguments, which the UDF searches for in the LLM output. For example, in a sentiment analysis query, we may only want our outputs to be "Positive", "Negative", or "Neutral", so we specify these output targets to the UDF. \amog{Again, I would strongly consider removing this section. Guided decoding is a property of vLLM, not our work, and I believe we don't even use constrained decoding for any of our experiments.}
+
+% LLM output is inconsistent and can often ramble to answer a user question in several words despite being told not to do so in its instruction prompt. 
+% \begin{enumerate}
+%     \item Therefore, in order to perform useful follow-up analysis on your table given the output of an LLM call, it is necessary to clean the LLM output and extract information we seek. 
+%     \item Thus, we optionally allow for output pattern(s) as an argument to the UDF which will be searched for in the LLM output.
+%     \item For example, in a sentiment analysis query, we likely only want our LLM outputs to be "Positive", "Negative", or "Neutral".
+% \end{enumerate}
+
+% \subsection{Prefix Caching}
+% We implement a novel eviction strategy for the KV cache within vLLM to address a limitation of current system.
+% The existing vLLM implementation assumes that all prefixes of a batch of requests can fit in the KV cache, but this does not hold when there is a high diversity in prefix size, which is typical for batch analytical workloads. We take a reactive approach: when a new request is scheduled and there is insufficient GPU memory to accommodate the new requests, the system automatically evicts prefixes based on first-in, first-out (FIFO) order. If a previously evicted prefix is needed for a future request, it is recomputed and readmitted into the cache. This strategy ensures that the system dynamically adapts to changing workload patterns while managing memory constraints effectively. 
+
+% We address this limitation by implementing a novel eviction strategy for the KV cache within vLLM. 
+
+
+% In our system, we address the limitations of the current vLLM implementation, which assumes that prefixes of all requests in a batch can fit within available memory. This assumption does not hold in scenarios with a vast and diverse range of possible prefixes, which are typical in our batch analytics setup. To manage this, we implement an eviction strategy for prefix caching within the vLLM framework. Our approach is reactive: when a new request is scheduled and there is insufficient GPU memory to accommodate the new requests, the system automatically evicts the the first-in, first-out (FIFO) prefixes from the KV cache. If a previously evicted prefix is needed for a future request, it is recomputed and readmitted into the cache. This strategy ensures that the system dynamically adapts to changing workload patterns while managing memory constraints effectively.
+
+% \subsection{VectorDB Retrieval}
+
+
+% \shu{Have separate sections; before evaluation, need implementation sections (Transactional caching paper), should be short; what systems, what do we change, and mention stuff in 3.5, do it straightforward way, separate it into the pyspark and vllm changes; first sentence: topic sentence, just read the first sentence, and know what they get from the topic sentence (get to the point as soon as possible), that sentence takes the longest to write, and be clear what is the structure; leave it for bullet point for now}
+
+% \subsection{Optimized Cache Management}
+% In this section, we address cache admission and eviction for batch queries.
+% \begin{itemize}
+%     \item Existing inference systems typically admit all prefixes into the cache and employ a simple eviction policy, such as FIFO, to serve online, dynamic requests.
+%     \item Their lack of awareness of future requests can lead to severe cache underutilization.
+%     \item For instance, any prefixes that occur only once should not be cached since they will not benefit future requests.
+%     \item Furthermore, proactive eviction of prefixes that will no longer be used can free up memory for other purposes.
+% \end{itemize}
+
+
+% We implement admission and eviction algorithms based on workload knowledge.
+% \begin{itemize}
+%     \item From our reordering algorithm in Section~\ref{}, we are aware of which requests will access each prefixes.
+%     \item \textbf{Admission}: We only admit prefixes to the cache if  they are accessed by more than one request, enabling us to reduce the write costs of loading prefixes into the KV cache.
+%     \item \textbf{Eviction}: We proactively evict prefixes once they are no longer involved in future requests.
+%     \item Consider as an example the following batches of requests: $[D,D,B][B,B,B][C,A,A]$.
+%     \item We no longer need $D$ after the first batch, so we only cache $B$. After the second batch completes, we can evict $B$ immediately.
+% \end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \label{sec:queries}
+% \begin{table}[t]
+%     \centering
+%     \resizebox{\linewidth}{!}{%
+%         \begin{tabular}{ m{7.5em}  m{16em}}
+%           \toprule
+%           {\bf Parameter} & {\bf Description}  \\
+%         %   \hline
+%             \midrule
+%           Retriever & Structured and unstructured database \\%\hline
+%       Analyzer & LLM, other ML models \\%\hline
+%       Pipeline  & Single-hop, Multi-hop \\%\hline
+%       SQL types & Selection, Projection, Join, Order By, Min, Max, Count, Sum, Avg \\%\hline
+%       \bottomrule
+%       \end{tabular}
+%   }
+%   \vspace{0.5em}
+%     \caption{Benchmark Parameters.}
+%     \label{tab:benchmark}
+% \end{table}
+
+
+% \subsection{Categories}
+% \shu{Maybe shouldn't list these queries: maybe write it in this way: VBase paper, can't spend too much time on this, why making up the queries all by themselves, they take a page (very long), have to argue why these are the right queries and why they matter, those things should be in the evaluation, first section of Eval (Eval benchmark)}
+
+% \label{sec:queries-categories}
+% We systematically categorize various types of queries as our benchmark suite in the context of integrating LLMs and Vector DB with SQL, as shown in Table \ref{tab:benchmark}. This table classifies queries based on several key parameters. 
+
+% \textbf{Retriever} This parameter distinguishes between structured and unstructured databases. Structured databases follow a fixed schema, like those stored in the traditional SQL database. Unstructured databases handle more flexible data formats like image and videos; these data are typically stored as embedding in vector database. The choice of retriever impacts the query formulation, especially in terms of data extraction and pre-processing.
+
+% \textbf{Analyzer}: The role of the LLM as an analyzer is to interpret data. LLMs can process natural language, making them ideal for tasks like sentiment analysis, summarization, or extracting specific information from the data provided. While LLMs are central to our discussion, other machine learning models can also be used as analyzers, depending on the nature of the data or specific requirements of the query. Different models often have different trade-offs in terms of computational and monetary costs. 
+
+% \textbf{Pipeline}: The pipeline parameter focuses on whether the query uses a single-hop or multi-hop approach. Single-hop queries directly retrieve and process data, whereas multi-hop queries involve multiple steps, often combining data retrieval and processing in multiple stages.
+
+% \textbf{SQL Types}: This includes a range of SQL query types such as Selection, Projection, Join, Order By, Min, Max, Count, Sum, Avg. Each type can be used differently according to the workload context. 
+
+% \subsection{Examples}
+% \subsubsection{Retriever and Analyzer}
+% The query in Figure \ref{fig:retriever} demonstrates the integration of different retrievers. It uses a structured database (albums and artists) to extract the reviews. The LLM acts as an analyzer to identify the artist's name mentioned from reviews. Then vector DB acts as a retriever, where it stores the correct artist name as embeddings, to correct misspellings in the artist name by doing similarity search. The results are then used in the structured database to extract the number of albums corresponding to this artist. 
+
+% \begin{figure}
+%     \centering
+%     \begin{minted}{sql}
+%         -- extract the number of albums for the artist mentioned in the review. 
+%         SELECT SUM(albums) 
+%         FROM albums 
+%         WHERE album.aid IN (
+%             SELECT aid 
+%             FROM artists 	
+%             WHERE artists.name IN s.correct_artist 
+%                 (
+%                     SELECT 
+%                         review, 
+%                         LLM("What is the artist mentioned in this review?", review) as artist, 
+%                         Vector_DB("Correct this word spelling", artist) as correct_artist 
+%                     FROM reviews
+%               ) AS s
+%         ) 
+%     \end{minted}
+%     \caption{SQL Example: retriever.}
+%     \label{fig:retriever}
+% \end{figure}
+
+% \subsubsection{Complex Pipeline}
+% The query in Figure \ref{fig:complex-pipeline} shows a scenario where LLM is invoked multiple times. Initially, it identifies negative sentiment reviews for products. Then, it performs a summarization task to condense the main issues from these reviews. 
+ 
+% \begin{figure}
+%     \centering
+%     \begin{minted}{sql}
+%         -- Multi-invocations to LLM in SQL 
+%         SELECT 
+%             p.ProductID, 
+%             LLM("Summary of main issues in {Text}", 
+%         	GROUP_CONCAT(r.ReviewText)) AS CommonIssues
+%         FROM ProductReviews r
+%         JOIN Products p ON r.ProductID = p.ProductID
+%         WHERE 
+%             LLM("Sentiment on the {Text}", r.ReviewText) = 'Negative'
+%         GROUP BY p.ProductID
+%         HAVING COUNT(*) > 100
+%     \end{minted}
+%     \caption{SQL Example: chain of execution.}
+%     \label{fig:complex-pipeline}
+% \end{figure}
+
+
+% \subsubsection{SQL Operators}
+% Figure \ref{fig:sql_operators} demonstrates queries with different operators. The first query within this figure exemplifies the use of the join operator, merging ticket request and response data. The second query demonstrates the selection and projection operators. By joining user and comment data, the LLM is used to assess the sentiment of each comment. The final query in this figure uses the aggregation operator to calculate the average sentiment of product reviews.
+
+% \begin{figure}
+%     \centering
+%     \begin{minted}{sql}
+%         -- Join (LLM output from both side) 
+%         SELECT 
+%             tr.ticket_id,
+%             LLM(
+%                 "Examples {few_shots}, Did {response_text} address {request_text}", 
+%                 VectorDB(tr.response_text + tr.request_text) as few_shots, 
+%                 tr.response_text,
+%                 tr.request_text
+%             )
+%             AS resolution_success
+%         FROM ticket_requests r
+%         JOIN ticket_responses s ON r.ticket_id = s.ticket_id as tr 
+%         WHERE s.response_text IS NOT NULL AND r.status = 'resolved'
+        
+%         -- Selection, Projection 
+%         SELECT u.UserID
+%         FROM Users u
+%         JOIN Comments c ON u.CommentID = c.CommentID
+%         WHERE
+%             LLM("{Few_shot_examples}, sentiment on the {Text} is", c.Text) = 'Negative' 
+%             AND c.Timestamp > '2023-10-01'
+
+%         -- Average 
+%         SELECT 
+%             p.ProductID, 
+%             AVG(LLM("Sentiment score on the {Text}", r.ReviewText)) as AverageSentiment
+%         FROM Products p
+%         JOIN Reviews r ON p.ProductID = r.ProductID
+%         WHERE r.Timestamp BETWEEN '2023-01-01' AND '2023-12-31'
+%         GROUP BY p.ProductID
+
+%     \end{minted}
+%     \caption{SQL Example: different SQL operators.}
+%     \label{fig:sql_operators}
+% \end{figure}
+
+
+

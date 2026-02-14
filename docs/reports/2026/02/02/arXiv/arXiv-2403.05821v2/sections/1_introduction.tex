@@ -1,0 +1,60 @@
+\section{Introduction}
+Large Language Models (LLMs) are changing the landscape of textual data analysis.
+% making it dramatically easier to analyze textual data. 
+In fact, a number of analytical database vendors, including AWS Redshift~\cite{aws-redshift-llm}, Databricks~\cite{databricks-ai-functions}, and Google BigQuery~\cite{google-bigquery-llm}, have already added LLM invocation functions to their SQL APIs. \shu{Matei: any user data to add here? Shall we remove this example}
+As an example, consider the following SQL query: 
+
+\vspace{4pt}
+\begin{mdframed}[linecolor=black, linewidth=.5pt]
+\begin{minted}[fontsize=\small]{sql}
+SELECT user_id, request, support_response, 
+  LLM('Did {support_response} address {request}?', support_response, request) AS success
+FROM customer_tickets 
+WHERE support_response <> NULL
+\end{minted}
+\end{mdframed}
+\vspace{4pt}
+where the LLM is invoked to analyze whether the customer service requests are effectively addressed.
+Increasingly, analysts wish to leverage LLMs in such queries for tasks, including classification, entity extraction, summarization, and translation~\cite{databricks-ai-functions}. Going forward, we will refer to SQL queries that invoke LLMs as \textit{LLM queries}.
+
+Unfortunately, applying LLMs this way to real-world datasets (which can contain millions of rows) has significant computational and economic costs. 
+For example, question answering with 22K facts from Fact Extraction and VERification (FEVER) dataset~\cite{fever} takes 30 minutes on an NVIDIA L4 GPU instance with a Llama3-8B model~\cite{llama2}. Using OpenAI GPT-4o model, running a query over this single table along takes \$70. 
+% For example, classifying the sentiment of 15K user reviews from Amazon Product Recommendation dataset~\cite{amazon-product-review-dataset} takes 30 minutes on an NVIDIA L4 GPU instance with a Llama3-8B model~\cite{llama2}. 
+
+% Unfortunately, applying LLMs this way to real-world datasets (which can contain millions of rows) has significant computational and economic costs. 
+% For example, classifying 15K rows of user reviews from Amazon Product Recommendation dataset~\cite{amazon-product-review-dataset} takes 30 minutes on an NVIDIA L4 GPU instance with a Llama3-8B model~\cite{llama2}. 
+% On a similar sized instance, an analytical database, such as DuckDB~\cite{duckdb}, can process more than 100GB of data per second in the TPC-DS benchmark~\cite{duckdb-tpcds-benchmark}. 
+% Processing the equivalent amount of data via the same LLM would take 96 days, more than 8 million times longer! Thus, minimizing the cost of LLM invocations is the critical objective for LLM queries. 
+% Later in this paper, we demonstrate novel optimizations that can reduce LLM runtime by 5$\times$. 
+
+
+There has been growing research on how to optimize this process. 
+Notably, OpenAI, Anthropic, and the other model serving platform has deployed Prompt Caching~\cite{openai-pricing,vllm,cascade-inference,hydragen} \shu{cite anthropic and prompt cache paper}. This technique involves caching the attention states of commonly revisited prompt segments in key-value (KV) cache in memory~\cite{attention-is-all-you-need}, allowing for efficient reuse whenever similar segments of prompts reappear, which helps minimize latency. Reusing prefixes in the cache has also been shown to have an outsized impact on performance~\cite{sglang}. Accordingly, existing inference systems aim to maximize prefix hits in the KV cache to reduce LLM request time and monetary costs.
+
+% At a high level, the output of each query is generated sequentially, as each output token depends on all previous tokens. To improve throughput, modern LLM serving engines batch multiple requests to process them in parallel.
+% However, this requires storing all requests in a batch in memory while they are being processed. 
+% As a result, efficient memory management is critical for LLM inference performance. LLM inference engines store intermediate states for past prompts and generations, or \textit{prefixes} of these requests, in a key-value (KV) cache~\cite{attention-is-all-you-need,vllm}. Reusing prefixes (e.g., between requests that share the same prompt) in the cache has been shown to have an outsized impact on performance~\cite{sglang,vllm,cascade-inference,hydragen}. Accordingly, existing inference systems aim to maximize prefix hits in the KV cache.
+
+Existing LLM inference systems~\cite{vllm,sglang} are mostly optimized for online serving workloads---they process requests as soon as they arrive, typically in a first-in, first-out (FIFO) order, to minimize the latency. Thus, they miss out on opportunities to improve performance by potentially re-ordering requests to take advantage of the offline analytical workload information. 
+
+In this work, we address the problem of optimizing inference for LLM queries. We introduce various techniques that reduce end-to-end query latency, dominated LLM request latency. To optimize for relational queries using LLMs, we propose dynamic \textbf{request reordering} at the row and column granularity to improve the KV cache hit rate. Our key insight is that, with oracular knowledge of all requests to be sent to the LLM, we can reorder both the requests and the fields inside each request to increase the number of cache hits. For instance, two requests that share the same prefix (which may be non-consecutive under FIFO ordering) should be passed to the LLM together so that the latter can experience a cache hit. 
+Likewise, in requests that input multiple fields of data (e.g., a product name and review) into the LLM, the fields should be ordered to maximize the number of shared prefixes.
+In real datasets, there can be many shared prefixes across both columns and rows of data, so changing the order and format of requests will markedly increase the prefix KV cache hit rate.
+
+
+However, finding the optimal order and format of requests is challenging because there are an exponential number of ways to order the columns and rows of data in a query. For example, for a table with $n$ rows and $m$ columns, there are $n \times m!$ possible orderings. First, we introduce an optimal algorithm, \textbf{Optimal Prefix Hit Recursion (\optimal)}, which maximizes the prefix hit rate by recursively dividing the table in optimal subtables. However, \optimal is impractical for large datasets due to its exponential complexity. To approximate the optimal solution efficiently, we present the \textbf{Greedy Group Recursion (\greedy)} algorithm. Our key insight is to leverage functional dependencies and table statistics to approximate the optimal solution efficiently. In particular, we use functional dependencies to identify which fields will be correlated early in the recursive algorithm, thereby reducing the need for backtracking. %if we decide on the ordering early 
+This way, \greedy narrows down the columns it needs to process at each step, reducing runtime while providing close-to-optimal performance. In addition, \greedy also leverages table statistics, such as the frequency and size of values, to approximate column order priority. 
+
+
+% In addition to our request reordering techniques, we present two optimizations to further reduce the computational costs of LLMs in relational queries. First, we observe that many real-world workloads have duplicates in textual data that lead to redundant LLM invocations. With deduplication, we can minimize the number of LLM calls without affecting the accuracy of the overall query. 
+% Second, we estimate LLM operator costs within query expressions. This optimization allows for the strategic reordering of operations by considering the significant expense associated with LLM operators. 
+
+
+We implement our techniques in Apache Spark~\cite{spark-sql} with vLLM~\cite{vllm} and SGLang~\cite{sglang} as the model serving backend. 
+Given the lack of standard workloads in this area, we build a diverse benchmark suite of LLM queries on multiple real-world datasets. We construct a wide range of query types, such as selection, projection, multi-LLM invocations, and retrieval-augmented generation (RAG)~\cite{retrieval-augmented-generation} queries, across a variety of recommendation and question-answering datasets, including Amazon Product Review \cite{amazon-product-review-dataset}, the Rotten Tomatoes Movie Dataset \cite{rotten-tomatoes-movies-dataset}, the Stanford Question Answering Dataset (SQuAD), and the FEVER Dataset \cite{squad-dataset}. We find that our techniques provide 2.1 -- 5.7$\times$ improvements in end-to-end query latency while preserving query semantics. In summary, our contributions are as follows: 
+% \vspace{-1.6em}
+\begin{itemize}
+    \item We identify significant opportunities to speed up LLM queries through reordering rows and columns.
+    \item We present an optimal algorithm (\optimal) that maximizes prefix sharing but with exponential complexity. We propose a greedy algorithm (\greedy) that approximates \optimal by leveraging functional dependencies and table statistics for efficiency.
+    \item We present a set of LLM query benchmarks using real-world data to represent a range of retrieval and processing tasks. Our evaluation using vLLM and SGLang shows up to a 5.7$\times$ speedup in end-to-end query latency compared to naive baselines.
+\end{itemize}

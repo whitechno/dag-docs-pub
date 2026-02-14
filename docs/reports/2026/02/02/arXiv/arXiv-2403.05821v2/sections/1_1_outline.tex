@@ -1,0 +1,264 @@
+\section{Outline}
+\shu{Background and LLM inference (section 2), section 3 is problem setup and opportunities, this create 4-5 opportunities that we didn't have in classical stuff}
+% \subsection*{Section 1: Introduction}
+% \newline 
+% \shu{Following my outline} \\
+% \textbf{LLM is important}
+
+
+% \subsection*{Section 2: Problem Setup}
+
+
+
+% \shu{Backgrounds / problem setup: just background on LLM and inference, separately have a section on the optimization opportunities for batch anlaytics workloads, bring in the past LLM stuff, different from online setting where you just get the call from users, list format}
+
+% \section{Introduction}
+% Put one example into Introduction 
+% \section{Background: LLM and stuff}
+% Reference: 
+
+% \subsection{Opportunities}
+% Challenges and opportunities, also talk about goals and our approach 
+% would require new offline optimizations to LLM inference (we could batch similar length prompts) and potentially run on cheaper hardware.  The query planner should also probably be aware of the monetary costs associated with LLM invocations.  
+
+% One can imagine having a simple SQL UDF for LLM invocation as well as system optimizations to invoke the LLM and improve query planning for expensive UDFs. One can also frame the standard RAG paradigm as an SQL expression.
+
+% Two key insights grounded the basis of the optimizations we looked into:
+
+% \textbf{(1) Adapt the LLM to the queries we know it will process (Do work faster).}
+% The advantage of batch analysis settings is that we have knowledge beforehand of the requests sent into the LLM for processing. We can make use of this while deciding our model-side optimizations. 
+
+% \textbf{(2) Do less work.}
+% First, LLM invocations are expensive, and it is critical to reduce these invocations as data is processed during batch analytic
+
+% \shu{What is interesting about the problem, and what are the opportunities}
+
+% \accheng{start from: decades of ML in DB (MADLib, MauveDB)
+
+% long history of bringing ML into DB
+
+% However, much of this work has focused on how to incorporate training into a DB system
+
+% MADLib for training
+% Query engine is used in the training pipeline, data clustering
+
+% DB2 (MPI): how to distributed training in the DB
+% SystemML (IBM): distributed training
+
+% Velox (CIDR): all ML in DB is training, should be inference
+
+% Rich history in training
+% LLM setting changes to in-context learning and inference
+
+% Specifically, we take advantage of unique properties of LLMs
+
+% Expensive UDF BUT with structure
+
+% Not scans over data from training but calling function over data
+
+% 2. LLMs are expensive but there is structure
+
+% Need to explain decoder architecture briefly
+
+% Work: Paged Attention for problem structure
+
+% What the SotA LLMs do (published)
+% Attention kernel
+% }
+
+% \shu{Exploit LLM structure for query optimization: inference time (bigger blocks), tuning the page size for page attention, you know what's coming up (workload shaping for lLM), collapsing into single; knowing the workload, tune page size, replacement (eviction)}
+
+% \shu{
+% Workload shaping 
+% 1. Record level / row level reordering 
+% 2. Token dedup of some flavors (pick one) 
+
+% Shape the workloads, schedule the inference 
+% 1. Tuning the paging 
+% 2. Eviction strategy (follow reorder is optimal, continuous batching w/ static prefix pool)
+% }
+% \accheng{
+% Methodology:
+% General optimization as a strength, can apply techniques on more than 1 system
+
+% No system
+
+% Fundamental story: cache reuse for token, record, row level --> main insight
+
+% Transform workload for cache reuse
+% 3.2: input-level cache reuse
+
+% How to exploit LLM structure for query optimization
+% }
+
+% \shu{Unique properties in LLM (prefix sharing, and semantic / exact dedup, immediately saying that LLM has new kind of model that has structured at inference that where we can use for optimization; expensive UDF (but this is about the structure; system ML - transformer..; exploit the structure of these models for query optimizations; optimizations is okay}
+
+% \textbf{Insights}
+% \begin{enumerate}
+%     \item Lots of sharing patterns: prefix cache sharing 
+%     \item Lots of duplicate (variations) to the same entity 
+%     \item Order of execution matters 
+% \end{enumerate}
+% \textbf{Example Query: RAG}
+% Show example of a single RAG query to see how these three dimensions can apply. 
+
+% \subsection*{Section 3: Our Solution}
+% \textbf{3.1 Prefix Cache for Batch}
+% This can include 
+% \begin{enumerate}
+%     \item Workload shaping for cache-awareness (row and record level) 
+%     \item Workload-aware eviction strategies 
+% \end{enumerate}
+% \textbf{3.2 SQL Optimizations}
+% \begin{enumerate}
+%     \item Order of filtering
+%     \item Orders of joins 
+% \end{enumerate}
+% \textbf{3.3 De-duplication}
+% \begin{enumerate}
+%     \item Exact de-duplication: do a duplicate studies on datasets 
+%     \item Semantic de-duplication with hard rules: show some simple entity resolution examples 
+% \end{enumerate}
+% \subsection*{Section 4: System Architecture}
+% \textbf{4.1 LLM engine}
+% Implement as part of the vllm 
+% \textbf{4.2 SQL engine: PySpark}
+% Implement this as PySpark UDF 
+% \subsection*{Section 5: Evaluation}
+% \textbf{5.1 Types of Queries}
+% \begin{enumerate}
+%     \item Retriever: structured and unstructured data 
+%     \item Pipeline: single-hop, multi-hop 
+%     \item SQL types: selection, projection, join 
+% \end{enumerate}
+% \textbf{5.2 Ablation Study}
+% \begin{enumerate}
+%     \item SQL optimization effect 
+%     \item Prefix cache effect 
+%     \item Deduplication effect 
+% \end{enumerate}
+% \textbf{5.3 System Comparisons}
+% \begin{enumerate}
+%     \item Compare with vllm naive implementation 
+%     \item Compare with SGLang online cache strategies
+% \end{enumerate}
+% \subsection*{Section 6: Related Work}
+% \begin{enumerate}
+%     \item SQL optimizations 
+%     \item LLM inference: more of an online setup 
+% \end{enumerate}
+
+
+% \textbf{Background Setup}
+% % \shu{maybe not RAG; but can work for LLM as well, don't make it; optimziing queries that include LLM, try to claim a bigger contributions; maybe not many backgrounds; but focus more on the contributions and evals (how to do this well)}
+% % \shu{UDF? how to frame it with LLM / vector DB; DB papers on the UDF optimizations? }
+% % \shu{SQL queries, new functions, can be built in functions in the query (easy-to-understand from the user standpoint); it is useful to use LLM in this context, describe a few potential use cases; challenge: LLM is expensive, retrieval is not cheap either, opportunities to optimize (semantic deduplication, prefix stuff), up to X amount of speedup; use LLM in the SQL context, but these things are very expensive, doing this naively is bad, this paper we explore them, and apply them in reallistic context}
+
+% \shu{Having query at the beginning of the paper, query can demonstrate things; analytics queries are different; sentiment analysis: sentiment, concepts, QA, name extraction}
+% \begin{enumerate}
+%     \item RAG: LLM and retrieval are widely used \shu{LLM and offline analytics (better way to frame the work)}
+%     \begin{enumerate}
+%         \item In RAG, data is loaded and prepared for queries or "indexed"
+%         \item User queries act on the index, which filters down the data to the most relvant context 
+%         \item This context and the query then go to LLM along with the prompt, and LLM provides a response 
+%     \end{enumerate}
+%     \item RAG pipeline can be arbitrarily constructed 
+%     \begin{enumerate}
+%         \item Retriever: structured, semi-structured, and unstructured data 
+%         \item LLM: can be of different types 
+%         \item Orders of execution: single hop, multi-hop (chains of execution)
+%         \item Example: Llamaindex \cite{https://docs.llamaindex.ai/en/latest/getting_started/concepts.html}, Langchain \cite{https://python.langchain.com/docs/use_cases/question_answering/} (e.g. RAG with agents)
+%     \end{enumerate}
+%     \item Use cases 
+%     \begin{enumerate}
+%         \item Chat applications 
+%         \item Question Answering 
+%     \end{enumerate}
+% \end{enumerate}
+% \shu{Talk about more about query optimizations, or optimizing queries that use LLM and retriever (otherwise sounds like building batch analytics)}
+% \textbf{LLM and Retrieval in Batch Analaytics Context}
+% \begin{enumerate}
+%     \item Batch workloads: processing of data that is generated or collected in batches over a period
+%     \item LLM and Retrieval is becoming more relevant for batch analytics workloads 
+%     \begin{enumerate}
+%         \item Retrieval: retrievers can connect to data of any types
+%         \item LLMs: useful in interpreting large sets of textual data, extracting insights, or even automating certain decision-making processes based on the analyzed data
+%     \end{enumerate}
+% \end{enumerate}
+% \textbf{New Challenge}
+% \begin{enumerate}
+%     \item Traditional: most systems today deals with online inference (e.g. vLLM) \shu{Not what we work on; not change the serving systems that much; FlexGen: limited devices, batch inference, but that's not what we are doing}\cite{https://mlinproduction.com/batch-inference-vs-online-inference/}
+%     \begin{enumerate}
+%         \item Retrieve and response in real time upon request 
+%         \item Response are generated on a single observation on data at runtime 
+%     \end{enumerate}
+%     \item \shu{What are other systems we should compare ourselves against? From the perspective of the DB, naively running this is wasteful and expensive}
+%     \item Our setup: batch inference 
+%     \begin{enumerate}
+%     \item Generate response on a batch of data
+%     \begin{enumerate}
+%         \item Data: not processed in real-time, but at scheduled intervals or after accumulating a certain amount of data 
+%         \item Batch processing tasks: handle large volumes of data all at once
+%         \item Optionally cache or store the results for easy retrieval later on when needed
+%     \end{enumerate}
+%     \item Challenge: naive execution on the pipeline leads to exploding execution time
+%     \begin{enumerate}
+%         \item Huge amount of data: e.g. tables of millions of rows 
+%         \item LLM and Retriever execution is way too expensive, computationally and monetary, when handling data at scale 
+%         \item One or two motivation figures showing the breakdown on diverse range of workloads \shu{Maybe not here, but later can put it there; obvious opportunities; degree of the cost estimation (it is not blackbox), cost tricks; showing that there is an opportunities; cardinality estimation; constraints in output (data types and domains), type returns (returned type is string or force)}
+%     \end{enumerate}
+%     \end{enumerate}
+% \end{enumerate}
+% \textbf{Insights}
+%  Offline inference gives us better understanding on the data and compute
+%  \shu{Cost estimate (support cost for UDF), fit it into the frameworks; 2 LLM (GPT 3.5 and GPT 4, and 3.5 is cheaper), shouldn't always do it last; a way to put it with other things; right thing todo, and we are not missing something}
+% \begin{enumerate}
+%     \item Compute insights
+%     \begin{enumerate}
+%         \item Given logical operators (e.g. selection, projection, and UDF)
+%         \item Construct the best physical execution plan with ordering  
+%         \item Goal: input as few as possible data into expensive UDF 
+%     \end{enumerate}
+%     \item Data insights 
+%     \begin{enumerate}
+%         \item Lots of duplicates 
+%         \item Lots of shared data (e.g. prompt, shared prefix columns) 
+%         \item Goal: input fewer data, and speed up processing speed of LLM UDF 
+%     \end{enumerate}
+% \end{enumerate}
+
+% \textbf{New Solution}
+%     \begin{enumerate}
+%         \item Unified SQL abstraction 
+%         \begin{enumerate}
+%             \item Being able to describe standard RAG paradigm 
+%         \end{enumerate}
+%         \item Batch optimizations 
+%     \begin{enumerate}
+%         \item SQL optimizations: reordering and smarter constructions on the RAG physical execution plans 
+%         \shu{pyspark: easier way to do this? write an optimizer generically look at UDF cost (Fit into some principal frameworks it should be good), don't spend too much time on this, too obvious; focus on things unique to the language model}
+%         \item De-duplication: when to deduplicate, and how (e.g. semnatic, exact) \shu{Semantic one can add more depth: running this threshold on data put into the same cluster, identify datasets where this is actually happening (datasets, and algorithms); measure the accuracy, deduplication (formatting, captial letters, and some other ways to get certain guarantees, get some actual data; and see how much it helps), use embeddings to cluster sutff, have a rule (people's names, M jackson, Michael jackson, hard rules what actually counts as deduplicated), grouping and hard rules, idea is good but details can be its own paper, confirming and filtering; this is a performance optimizations, saving time, define this (up to capitalization, or something that the users understand and check mistakes)}
+%         \item LLM internal batch optimizations: KV cache \shu{Reorder can be expensive, the cost of LLM (ideally known), maybe cheaper to run on unordered stuff; should we sort or not (experiments on sorting v.s model), to show the systems can decide do something and not to do something; reviewers might ask what if the models are cheap and sorting is expensive} \shu{Dictionary compression: tells you what the prefixes are; today database; maximize prefix for efficient LLM inference; physical operator (merge join and hash join, etc.); LLM is benefiting from sort order, so you know that ... if you don't use for LLM (interesting order, injected from merge and sort join), order sensitivity; interesting orders of LLM}
+%     \end{enumerate}
+% \end{enumerate}
+
+% \shu{Cover settings that are within this optimizations, is there an opportunity for semnatic deduplications for the workloads, are there anything smart to do with the batching; characteristics }
+% \subsection*{Milestones and Plans}
+% \begin{enumerate}
+%     \item Goal: Feb 1 (VLDB), approximate timeline is around 1.5 months (6 weeks)
+%     \item Next week (Dec 20)
+%     \begin{enumerate}
+%         \item Creation on all workloads (benchmark and testing scripts) 
+%         \begin{enumerate}
+%             \item 2-3 Datasets 
+%             \item 5-6 different query types for each, with tunable parameters as follows 
+%             \begin{enumerate}
+%                 \item Operators: selection, join, projection 
+%                 \item Data retrieved: change the selectivity 
+%                 \item Pipeline construct: orders of pipeline, multi-hop 
+%             \end{enumerate}
+%         \end{enumerate}
+%     \end{enumerate}
+% \end{enumerate}
+
+% \shu{Database has a large fraction of raw text (e.g. Snowflake), LLM provides a new way to process these data. Here is how you might use LLM in SQL query to make sense on the text. What is the challenges of doing that (running the LLM call is expensive, talk about how LLM works, sequential decoding, each token depends on the previous one, so has to fit in memory the whole time), existing systems optimized for online setting, but in SQL we have full control on the workloads. How to shape the data to be as cost-effective as possible. And state the problem. These patterns look like something in prior works, etc. Prior works have look at dataflow workflows, ML for systems; LLMs are different, inherent sequential nature, trade-offs of memory and GPU utilization are different than prior works (auto-regressive nature, in order to use GPU needs lots of things to be done at once); smaller GPU: throughput lower, etc. For problem setup, picture might be good. vLLM talk (for figure references)}

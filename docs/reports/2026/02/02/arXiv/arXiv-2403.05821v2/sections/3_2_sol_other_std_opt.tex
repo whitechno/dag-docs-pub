@@ -1,0 +1,68 @@
+\section{Other Standard Optimizations}
+~\label{sec:dedup}
+\vspace{-1.0em}
+% \accheng{shu, what is the category of a review? an int? maybe give an example} \shu{here there are only two types, one is 'Rotton', one is 'Fresh', and it is a string} 
+% indicating a high level of duplication since most reviews fall into a small number of categories.
+
+% \accheng{would be nice to have some statistics about our datasets + the \% of duplicates presents} \shu{In modern recommendation datasets, we often times see high degrees of duplication in the table columns. For example, for Rotton Tomato Movie datasets, \texttt{review\_type} is a column that categorizes the type of review. The selectivity ratio, a measure of uniqueness after deduplication compared to orginal dataset, was observed to be extremely low at 0.008. This indicates a high level of redundancy as majority of reviews fall into a small number of categories.} \accheng{clarify measure of uniqueness}
+
+
+% A common challenge in large datasets is the presence of duplicates or similar data elements across rows. In our context, where LLMs or Vector DB process text data, it is typical to encounter similar or identical inputs and shared data elements. 
+% there is a collection --> downplay it so that we don't get reviews (additional standard ones)
+\paragraph{\textbf{Exact Deduplication}} We can further reduce runtime by minimizing the number of inference calls we need to make. Specifically, we can deduplicate across requests that have the same input prompts before passing them to the LLM or vector DB, in order to reduce the computational load.
+% For instance, in the previous query shown in Section~\ref{sec:column-reordering}, many reviews might mention similar products. Processing every review through an LLM or vector DB would lead to redundant computations. Instead, we can identify these duplicates before passing them to the LLM or vector DB to reduce the computational load. 
+In modern recommendation datasets, there are often high degrees of duplication in the table columns. For example, the Rotten Tomatoes Movie dataset~\cite{rotten-tomatoes-movies-dataset}, commonly used in recommendation models, has a \texttt{review\_type} column corresponding to the category of the review (e.g., ``Fresh'' or ``Rotten''). As a result, the selectivity ratio of distinct values compared to total values is only 0.008 since there are only two distinct categories.
+
+% \accheng{how do we actually deduplicate? with filter operators?
+
+% any challenges with doing this over many rows of data?} \shu{Updated}
+
+%For instance, in SQL, the \texttt{DISTINCT} keyword can be used to eliminate duplicate rows from a result set, ensuring each unique item is processed only once. 
+
+For this work, we choose to apply exact deduplication without affecting query results. In the RDMBS's, this is commonly achieved through the use of distinct filters (e.g., \texttt{DISTINCT} in SQL) on the query inputs. This approach is straightforward and effective for reducing the number of LLM invocations by filtering out duplicate requests before they reach the model. We present an ablation study on deduplication with columns of different selectivity ratios in Figure~\ref{fig:dedup} in Section~\ref{sec:evaluation}. Beyond exact matches, \emph{semantic} deduplication, which identifies semantically similar records, represents a promising area for future research. 
+% We discuss it further in Section~\ref{sec:semantic_dedup}. 
+
+\paragraph{\textbf{SQL Optimization}} Traditionally, relational databases employ cost-based query optimizers, which enhance the performance of requests by analyzing query structures and operators to minimize data accesses and computational overheads~\cite{catalyst}. We extend these optimizers to account for LLM operator costs so that they can find query plans that minimize LLM invocations. Specifically, we augment cost estimation for the external functions used to invoke LLMs. 
+% Currently, LLMs are most commonly accessed via UDFs. For instance, Databricks offers an \texttt{ai\_query}() function that allows users to call a model endpoint~\cite{databricks-aiquery}. Similarly, Amazon Redshift enables uses to LLM calls via UDF functions~\cite{aws-redshift-llm}. 
+We estimate LLM costs based on the input token length and the estimated decode length over requests. In most cases, LLM invocations are significantly more expensive than other query operators, so these calls are included in the query plan. 
+% It is important to note that when deduplication is applied, the column statistics used by the MGR algorithm might not be directly usable. Therefore, we need to scan the input table to recalculate these statistics after deduplication. \shu{Argue that this is okay for the complexity of the algorithm already, overall?} In addition, applying deduplication across many rows of data presents challenges involving memory and processing time required to identify the duplicates efficiently. Furthermore, identifying duplicates is not helpful in scenarios with a vast amount of distinct data. We present an ablation study on deduplication with columns of different selectivity ratios in Figure~\ref{fig:dedup} in Section~\ref{sec:evaluation}. 
+
+% A promising direction for future research is semantic deduplication (i.e., identify records that will give similar output results), and we discuss it further in Section~\ref{}.
+
+
+
+
+% \accheng{what is our solution exactly? how do we actually account for the cost? are we gonna move this section to the implementation?}
+% \shu{We should probably ask this. Traditional UDF cost estimation is hard, cardinality estimation is also hard; we only consider simple push-down predicates scenario. Are we going to make the claim that LLM UDF is definitely more expensive than the other operators?}
+
+% \subsubsection{LLM Operator Costs}
+% We let SQL optimizers to be aware of expensive invocations of these external functions. 
+
+
+
+% \accheng{based on token length of the input and estimated decode length over requests? In most cases, LLM invocations are significantly more expensive than other query operators (Section~\ref{sec}), so these calls are pulled up in the query plan.}
+
+% In the context of traditional SQL query optimization, the execution order of operations is crucial for efficient data retrieval and processing. SQL optimizers typically analyze query structures and reordering operations such as joins, selections, and projections to minimize data access and computational overhead. However, when integrating external UDF like LLM, the SQL optimizer needs to be aware of the external UDF cost. 
+
+
+
+
+% Our solution involves pushing down cheaper operators and pushing up expensive LLM calls as much as possible, and let 
+
+% \begin{figure}
+%     \centering
+%     \begin{mdframed}[linecolor=black, linewidth=.5pt]
+
+%     \begin{minted}[fontsize=\small]{sql}
+% -- Selection, Projection 
+% SELECT u.UserID
+% FROM Users u
+% JOIN Comments c ON u.CommentID = c.CommentID
+% WHERE
+%     LLM("{Few_shot_examples}, sentiment on the {Text} is", c.Text) = 'Negative' 
+%     AND c.Timestamp > '2023-10-01'
+%     \end{minted}
+%     \end{mdframed}
+%     \caption{SQL Example with one LLM and one non-LLM filter. The order in which these filters are applied affects the end-to-end query execution time. \shu{Can remove this table if not enough space}}
+%     \label{fig:filter}
+% \end{figure}

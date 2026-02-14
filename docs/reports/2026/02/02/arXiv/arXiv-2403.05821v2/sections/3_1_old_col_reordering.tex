@@ -1,0 +1,469 @@
+\subsection{Column Reordering}
+\label{sec:column-reordering}
+Since cache hits occur only for the prefix of requests, determining the right order of columns in SQL queries can have a significant impact on performance. For example, consider the following query: 
+% Many SQL queries access data over multiple columns, and In database applications, queries involving multiple columns as inputs to an LLM have become increasingly common (\cite{}).
+
+\vspace{5pt}
+\begin{mdframed}[linecolor=black, linewidth=.5pt]
+\begin{minted}[fontsize=\small]{sql}
+    SELECT 
+        LLM("Give an overview based on this: ", pr.*) 
+    FROM 
+        (SELECT 
+                r.reviewText,
+                r.reviewerName, 
+                p.description, 
+                p.title, 
+             FROM reviews r
+             JOIN product p ON r.asin = p.asin
+         ) AS pr
+\end{minted}
+\end{mdframed} 
+\vspace{4pt}
+This query passes in multiple columns, such as \textit{reviewText}, \textit{reviewerName}, and \textit{description}, for each row of data sent to the LLM for summarization. Using the default column order (e.g., \textit{reviewText} happens to be first in the schema) can be inefficient because there are more distinct values in this column, leading to more unique prefixes. Instead, we can place the \textit{description} column first to increase the number of shared prefixes: since many reviews are associated with the same product, these prefixes can be cached and reused. 
+
+
+% \begin{enumerate}
+%     \item This query involves passing in rows with multiple columns, including \textit{reviewText}, \textit{reviewerName},  \textit{description}, and \textit{title}, to an LLM for summarization.
+%     \item Naively using the default column order (e.g., \textit{reviewText} is first) can be inefficient because values in this column are more likely to be distinct, leading to more unique prefixes.
+%     \item Instead, we can place the \textit{description} column first to increase the number of shared prefixes: since many reviews are associated with the same product, these prefixes can be cached and reused. 
+% \end{enumerate} increase the likelihood  of shared prefixes across requests to enhance cache reuse and reduce computational overhead. 
+  
+% \accheng{Do we use term "cache hit rate"? cache hit?}
+% \accheng{need consistent naming for techniques} \accheng{size of shared prefixes right? token hit ratio}
+
+\paragraph{Objective} The objective of column level input reordering is to order fields within requests such that we maximize the prefix token hit rate of the KV cache.
+This task is complicated by the diversity in shared prefix values and their variable lengths. For instance, longer shared prefixes might lead to more token hits even if they arise less frequently than shorter prefixes. Thus, a reordering strategy needs balance between prefix frequency and size to maximize cache reuse.
+
+% \accheng{we need to explain where the computation work comes from} 
+% \begin{enumerate}
+%     \item longer shared prefixes might save more computational work by putting them first even if they are less common, compared to shorter ones that are common.
+%     \item Thus, our reordering strategy needs to balance the commonality of data and the potential length of shared prefixes, which directly impacts computational savings during the LLM inference process. 
+% \end{enumerate} 
+
+\subsubsection{Oracle Algorithm}
+Finding the best order of columns is challenging because there is an exponential number of possible permutations for a given number of columns. For instance, a dataset with $N$ rows and $M$ columns would produce $N \times M!$ possible orders. Enumerating all of them would be prohibitively expensive in practice, so we need a heuristic that enables us to efficiently find an effective ordering.
+
+
+
+
+
+
+\begin{algorithm}[t!]
+\caption{Fixed Column Reordering}
+
+\begin{algorithmic}[1]
+\State \textbf{Input:} Table $T$
+\State \textbf{Output:} Reordered Columns List $L$
+\item[] 
+\State Initialize $L \gets []$
+\State Precompute $ASL \gets$ Map() \Comment{\parbox[t]{.5\linewidth}{Pre-computed average string length for each column}}
+\item[]
+
+\Function{CalculateScores}{$T$}
+    \State Initialize $ColumnScores \gets$ Map()
+    \For{each column $m$ in $T$}
+        \State $C_m \gets$ Cardinality($T, m$)
+        \State $ColumnScores[m] \gets ASL[m] \times \left( \frac{Table Length}{C_m} \right)$
+    \EndFor
+    \State \Return $ColumnScores$
+\EndFunction
+\item[]
+
+\State $T_{current} \gets T$
+\State $ColumnScores \gets$ CalculateScores($T_{current}$)
+
+\While{Columns remain for selection in $T_{current}$}
+    \State $c_{select} \gets \text{argmax}_{c} (ColumnScores)$ 
+    \State $L.append(c_{select})$
+    \State Remove $c_{select}$ from $T_{current}$
+    \State $ColumnScores \gets$ CalculateScores($T_{current}$) \Comment{Calculate scores for remaining columns}
+    % \State 
+\EndWhile
+\State \Return $L$
+\end{algorithmic}
+\end{algorithm}
+% \vspace{-2em}
+
+\subsubsection{Reordering Algorithm}
+Our reordering algorithm employs column statistics---specifically, the cardinality of column values---to quickly search for an effective ordering. Databases typically maintain statistics, such as the number of unique entries (i.e., cardinality) and distribution of values for each column, on store data, which we leverage to infer the potential for prefix sharing. We simplify the problem by establishing a fixed column ordering for all rows. This allows us to avoid having to consider an exponential number of permutations. In practice, many datasets have columns with high cardinality (i.e., few shared prefixes), so their order does not affect the cache hit rate.
+% ...\accheng{something we can say here?} \shu{many datasets have columns with high cardinality, so we can prune these columns to decrease the search space. Shu: what's the point here again?}
+
+% Given the prohibitive cost of an exhaustive search, we employ a heuristic strategy based on column statistics - specifically, the uniqueness of column values. 
+% \begin{enumerate}
+%     \item  
+%     \item 
+%     % ing the combinatorial explosion and providing a manageable framework for prefix optimization.
+% \end{enumerate}
+
+
+% We can simplify the problem by assuming we have a fixed column ordering for all rows that are passed into LLM. (This might be natural because we can store it as a special index, and directly pass in the input as it is based on our ordering algorithm). 
+
+Concretely, our algorithm begins by precomputing two pieces of metadata for each column: the average string length (ASL) and the cardinality (C) (or the number of unique values). These metrics enable us to estimate the likelihood of each column contributing to the token hit rate. We obtain the average length of the values in a given column by running a SQL query (e.g.,  \texttt{AVG(CHAR\_LENGTH(col)))} on the data.
+% To compute the average length of column table, we obtain  like \texttt{AVG(CHAR\_LENGTH(col))}. 
+% For efficiency, we sample a set of values from each column to precompute the average string length. 
+% \accheng{how big is the sample size? does it matter?} \accheng{manually constructed query}
+% \shu{We calculate the average length of column table column by using \texttt{AVG(CHAR\_LENGTH(col))}. For execution efficiency in larger table, we can sample... Shu: maybe no sample is okay, searched and realized that people just directly calculate it}
+We retrieve the cardinality from existing database statistics present in most systems.
+
+% The heuristics algorithm begin by precomputing two pieces of metadata for each column: the average token length (ATL) and the cardinality (C) (or the number of unique values). 
+% \begin{enumerate}
+%     \item These metrics serve as proxies for evaluating each column's likelihood to contribute to prefix cache utilization. 
+%     \item We sample a set of values to pre-compute the average token length for each column. 
+%     \item We can also retrieve cardinality of individual column easily, as it is often times stored in system table for optimizer use. 
+% \end{enumerate}
+
+Next, the algorithm calculates a score for each column.
+We draw inspiration from standard caching algorithms, such as GDSF~\cite{gdsf}, which give equal weight to size and frequency factors. Our algorithm uses the following formula: $$\textit{Score(\text{col})} = \text{ASL}_\text{col} \times \frac{\text{Total Number of Rows}}{\text{C}_\text{col}}$$
+Under this method, higher scores correspond to columns with longer and more frequent shared data values. Our algorithm then places columns in order of descending scores. 
+
+% As an example, Table 1 shows...\accheng{example TBU}
+% \joey{I think you need to say that this column ordering is then used in the subsequent steps to determine the row ordering as well as the ordering of the columns in the call to the LLM.}
+
+
+% \accheng{early simulation results show...
+% suggest lots of follow-on work
+% }
+
+\subsubsection{Limitations} While our column-level input reordering algorithm demonstrates the potential for enhancing cache efficiency, it has limitations. The primary assumption under our approach is the fixed ordering of columns across all data rows. This assumption simplifies the computational complexity but may not always hold in real-world scenarios. In practice, different rows could benefit from different orderings based on the specific data they contain. Future work could explore smarter reordering strategies, as we will talk about in Section \ref{sec:smarter_reordering}.
+
+% The algorithm proceeds by calculating a score for each function, defined by $$\textit{Score} = \text{ATL} \times \frac{\text{Number of Rows}}{\text{C}}$$. 
+% \begin{enumerate}
+%     \item The scoring mechanism is designed to identify columns that are likely to contain long, reusable prefixes while being sufficiently common across different queries. 
+%     \item Columns are then selected sequentially based on their scores, approximating an arrangement under practical computational constraints. 
+%     \item \shu{Idk whether example as in table 1 is worth it?}
+% \end{enumerate}
+
+% \begin{table}[t!]
+% \centering
+
+% \begin{tabular}{ccc|ccc}
+% \toprule
+% \multicolumn{3}{c}{Original Order} & \multicolumn{3}{c}{Our Order} \\
+% \midrule
+% \textbf{Z} & \textbf{Y} & \textbf{X} & \textbf{X} & \textbf{Y} & \textbf{Z} \\
+% \midrule
+% 0 & 4 & 5 & 5 & 4 & 0 \\
+% 10 & 6 & 8 & 5 & 7 & 3 \\
+% 1 & 9 & 8 & 8 & 9 & 1 \\
+% 2 & 6 & 8 & 8 & 6 & 10 \\
+% 3 & 7 & 5 & 8 & 6 & 2 \\
+% \bottomrule
+% \end{tabular}
+% \vspace{4pt}
+% \caption{A small data table sorted in two different ways. Original order has 0 cache hits, our order has 4 hits.}
+
+% \end{table}
+
+
+
+% \begin{itemize}
+%     \item Precompute Average Token Length (ATL): For each column, we sample a set of values to calculate the average token length. This step accounts for the computational work associated with processing each column's values. 
+%     \item Calculate Number of Unique Groups (NG): For each column, use a \texttt{GROUP BY} operation to identify the number of unique groups formed by the column's values.
+%     \item Estimate Column Scores:  For each column, calculate its score as $$\textit{Score} = \text{ATL} \times \frac{\text{Table Length}}{\text{NG}}$$ This score reflects the potential computational savings from reordering based on this column. 
+%     \item Select Columns Sequentially: Starting with the column with the highest score, select columns for reordering, recalculating scores for the remaining columns after each selection to account for changes in the table structure. 
+%     \item The algorithm is illustrated in Algorithm 1.
+% \end{itemize}
+
+
+
+% \subsubsection{Greedy Algorithm (Fixed Ordering for SubGroups)} 
+
+% Now assume that we don't have the constraints on fixed column orderings for all rows. 
+% \begin{enumerate}
+%     \item In the case where we have two columns, we can reduce it to a graph problem. 
+%     \item Assume that there is a fixed length for each column for now. 
+% \end{enumerate}
+
+% For example, let's consider two columns of requests as illustrated in Figure \ref{fig:table-and-figure}. We construct the graph representation of this table as follows 
+% \begin{enumerate}
+%     \item There is a list of nodes for each column.
+%     \item Each node represents the unique value for each column.
+%     \item Connect an edge between nodes across columns if this row exists.
+%     \item The degree of nodes represents the sharing factor of this value (i.e. basically how many requests have this value). 
+% \end{enumerate}
+
+% Now, a single iterative algorithm can be 
+% \begin{enumerate}
+%     \item For each node, assign a score $$(\text{degree} - 1) - (\text{number of neighbors with degree} > 1)$$
+%     \begin{enumerate}
+%         \item degree - 1: amount of cache hits 
+%         \item we subtract the number of neighbors with degree > 1 because the edge is symmetric. This means that prioritizing either side of the column does not matter. 
+%     \end{enumerate}
+%     \item Select the node with the max score and fix the column ordering for this unique value. 
+%     \item Remove edges associated with this node after selection. Recompute scores for any node that gets affected. 
+%     \item Do this iteratively until all edges are removed. 
+% \end{enumerate}
+
+% In our example, we will fix all rows for $C$ first, then choose $B$, and then $D$ and $J$. 
+
+% \textbf{Note}
+% \begin{enumerate}
+%     \item This is hard to prove optimal at high-dimension.
+%     \item At high-dimension, the problem where we don't have constraints on column orderings for all rows can potentially be solved using a DP program. 
+%     \item We select the group with max shared first, then fix the rows associated with this group and solve it iteratively. 
+%     \item Some optimizations: pruning the space (or groups that have few share) to reduce the computational complexity 
+% \end{enumerate}
+
+
+
+% \subsubsection{Comparison with Traditional Clustered Index} Traditional database indexing strategies prioritize short, unique, and static values to improve physical data retrieval efficiency, while LLM column ordering aims to maximize computational efficiency by prioritizing the reuse of common, longer shared strings to enhance cache performance. 
+
+% \begin{enumerate}
+%     \item Prioritize uniqueness: Traditional databases often prioritize columns with high uniqueness for the clustered index. This is because a unique or highly distinct column (like an ID or a primary key) helps in efficiently locating and retrieving data.
+%     \item Prioritize short keys: Wide keys (i.e., keys with large data types or multiple columns) make the index bulky and reduce performance. 
+% \end{enumerate}
+
+% But find out some other works where low cardinality columns can be prioritized first. https://arxiv.org/pdf/0909.1346.pdf
+% \begin{enumerate}
+%     \item This contains proof for both row and column-level reordering 
+% \end{enumerate}
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ROW
+
+
+\subsection{Row Sorting}
+% \begin{algorithm}[t!]
+% \caption{Row-Level Sorting Based on Column Prioritization}
+
+% \begin{algorithmic}[1]
+% \State \textbf{Input:} Table $T$, Reordered Columns List $L$ from Algorithm 1
+% \State \textbf{Output:} Reordered Table $T'$
+% \item[] 
+% \State $T' \gets T$ with columns reordered according to $L$ 
+
+% \For{$i \gets 0$ to length($L$)$\text{ } - 1$}
+%     \State $T' \gets stableSort(T', L[i])$ \Comment{Apply stable sort on $T'$ based on column $L[i]$, preserve previous sort orders}
+% \EndFor
+
+
+% \State \Return $T'$
+
+% \end{algorithmic}
+% \end{algorithm}
+
+% \begin{mdframed}[linecolor=black, linewidth=.5pt]
+% \begin{minted}[fontsize=\small]{sql}
+% SELECT LLM("Summarize the content of this movie: {movie}", m.movieInfo) AS summary 
+% FROM Movies m
+% \end{minted}
+% \end{mdframed} 
+% \vspace{8pt}
+
+% \shu{Remove this example, and connect to the previous section}
+% In the context of querying LLM with SQL, a common pattern involves passing a specific column from database table as input to the LLM. 
+% \begin{itemize}
+%     \item For instance, consider a query that summarizes movie contents, where the \texttt{m.movieInfo} column from the \texttt{Movies} table is used to generate summaries. 
+%     \item This approach generates content summaries based on detailed movie information stored in the database. 
+% \end{itemize}
+
+Once we determine a column order, we need to group the rows of data such that we maximize the number of shared prefixes across requests. To achieve this, we concatenate all column values into a string and sort these strings lexicographically (over different rows) to determine the row order. 
+
+% treat each row in its column order and concatenate each column value into a string. Then, we sort the string lexicographically to determine the row order. 
+
+% To achieve this, we employ a stable sorting algorithm to sort the rows. A stable sort is crucial here as it ensures that rows with equal values in the sorting column maintain their relative order post-sorting. This property is important for preserving the grouping of shared prefixes when the data is sorted on one of the selected columns. 
+
+% To do so, we introduce a row sorting algorithm to increase cache utilization. Specifically, we stably sort the rows (using an existing sorting algorithm, such as \accheng{what sort do we actually use?}) to maintain the relative order of rows with equal values (i.e., shared prefixes), ensuring that their original order is preserved in the sorted output. This enables us to place rows with shared prefixes together...\accheng{shu, i'm still unclear here}
+
+% \accheng{stable sorts, maintains sorted order}
+
+% With a column order in hand, we turn to the problem or row level sorting to further increase cache utilization. 
+
+% Assuming now we select some orderings of the column. Row-level reordering focuses on optimizing the order of requests to maximize cache utilization. Specifically, we group together inputs that share prefixes.
+
+% \begin{itemize}
+%     \item For instance, consider a query that summarizes movie contents, where the \texttt{m.movieInfo} column from the \texttt{Movies} table is used to generate summaries. 
+%     \item This approach generates content summaries based on detailed movie information stored in the database. 
+% \end{itemize}
+
+
+
+% \begin{table}[!t]
+%     \centering
+%     \begin{tabular}{c|c|c|c|c}
+%         \multicolumn{1}{c|}{T} & \multicolumn{2}{c|}{Without Reordering} & \multicolumn{2}{c}{With Reordering} \\ \hline
+%         & Keys accessed & Cache state & Keys accessed & Cache state \\ \hline
+%         1 & ${\color{red}1, 2, 3}$ & - & ${\color{red}1, 2, 3}$ & - \\ \hline
+%         2 & - & $1, 2, 3$ & - & $1, 2, 3$ \\ \hline
+%         3 & ${\color{red}4, 5, 6}$ & $1, 2, 3$ & $1, 2, 3$ & $1, 2, 3$ \\ \hline
+%         4 & - & $4, 5, 6$ & - & $1, 2, 3$ \\ \hline
+%         5 & ${\color{red}1, 2, 3}$ & ${4, 5, 6}$ & ${\color{red}4, 5, 6}$ & $1, 2, 3$ \\ \hline
+%         6 & - & $1, 2, 3$ & - & $4, 5, 6$ \\ \hline
+%         7 & ${\color{red}4, 5, 6}$ & $1, 2, 3$ & $4, 5, 6$ & $4, 5, 6$ \\ \hline
+%     \end{tabular}
+%     \vspace{0.5em}
+%     \caption{Comparison of KV cache state with different prefix input orders. Red represents cache misses: without reordering, there are 12 cache misses; with reordering, there are only 6 cold misses. }
+%     \vspace{-3em}
+%     \label{tab:cache-state-comparison}
+% \end{table}
+
+% \accheng{do we want to use the term prefix cache?}
+To demonstrate how this technique improves cache usage, consider an example in which we have a batch size of tee and six distinct prefixes that each appear tee times (as illustrated in Table \ref{tab:cache-state-comparison}). If the requests arrive in the following order (with batches shown in brackets): $[1,2,3],[4,5,6]$ $,[1,2,3],[4,5,6]$,     the KV cache would evict and recompute all six prefixes under a caching algorithm, such as FIFO, leading to inefficient cache use. Instead, if we sort the rows of input to group common prefixes together (e.g., $[1,2,3],[1,2,3],[4,5,6],[4,5,6]$), we ensure that each prefix is loaded into the cache only once and reused across any requests it is involved in. Upon eviction, we know that this prefix will never need to be loaded into the cache again. This approach can greatly reduce cache eviction and recomputation, leading to faster LLM processing times.
+
+Conveniently, the structured nature of SQL queries enables us to efficiently sort requests---we can identify and easily group shared data based on the relational schema by using existing database operations (e.g., \texttt{GROUP BY and ORDER BY}).
+
+
+% \begin{enumerate}
+%     \item If the requests arrive in the following order with batches show in brackets: $[1,2,3],[4,5,6]$ $,[1,2,3],[4,5,6]$, 
+%     the prefix cache would evict and recompute all six prefixes under an existing eviction method (e.g., FIFO), leading to inefficient cache use.  
+%     \item Instead, if we reorder the inputs to group common prefixes together, such as $[1,2,3],[1,2,3],[4,5,6],[4,5,6]$
+%     we ensure that each prefix is loaded into the cache only once and reused across any requests it is involved in. Upon eviction, we know that this prefix will never be loaded into the cache again.
+%     \item This approach can greatly reduce cache eviction and recomputation, leading to faster LLM processing time (Section~\ref{}).
+% \end{enumerate}
+
+
+
+% Using the same query above as an example, to optimize for prefix caching, we can group data from $m.movieInfo$ using existing database operations (e.g., \texttt{GROUP BY}). 
+
+% \subsection{Reordering Algorithm}
+% \shu{Put the algorithms for each of the subsection, get rid of 3.3}
+% In this section, we describe our algorithm for reordering rows and columns. 
+% \begin{itemize}
+%     \item The column reordering is designed to prioritize columns that, when used as prefixes, would result in the higher cache reuse rates. 
+%     \item Once the columns are reordered, sort rows so that rows with common values in the highest-priority columns are grouped together. This step may involve sorting rows based on the values of one or more columns, starting with the first column.
+% \end{itemize}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+% \textbf{Solutions: Workload Shaping and Oracle Cache Scheduling}
+% % \begin{itemize}
+% %     \item To address these challenges, we propose a strategy that leverages the unique characteristics of batch workloads 
+% %     \item This involves 
+% %     \begin{itemize}
+% %         \item \textbf{Field Ordering    }
+% %         \begin{itemize}
+% %             \item Based on the workload characteristics  
+% %             \item We have control in how to shape the workloads to maximize cache reuse
+% %         \end{itemize}
+% %         \item \textbf{Workload-aware cache scheduling}
+% %         \begin{itemize}
+% %             \item Optimize end-to-end cache hit rate and GPU utilization. 
+% %             \item We know  
+% %             \begin{itemize}
+% %                 \item When exactly should the prefix be evicted so that it does not eat up GPU memory. 
+% %                 \item When prefixes should not be stored in the first place. 
+% %             \end{itemize}
+% %         \end{itemize}
+% %     \end{itemize}
+% % \end{itemize}
+% \textbf{Solution \#1: Reshape the Workload}
+% \begin{itemize}
+%     \item \textbf{Structured inputs} and \textbf{control over the workload} give us unique opportunities to reshape the inputs to maximize cache hits on prefix 
+%     % \shu{Longest common prefix first; string A, B, C, A, B, C, D, currently in this order, strict subset comes after something else; slight twick on sorting, and say future works can explore; enough to put this into arxiv}
+%     \item \textbf{Record-level reordering} 
+%     \begin{itemize}
+%         \item LLM is an order-sensitive UDF 
+%         \item Sequential inputs: [1,2,3,4][5,1,2,3][4,5] are adversarial patterns to the LLM cache engine with LRU policy 
+%         \item Solution: grouped inputs of ordered [1,1,1,1][1,1,1,1][2,2,...] allows prefix to be admitted only once, and repeatedly reused until eviction by LRU
+%     \end{itemize}
+%     \item \textbf{Row-level reordering} 
+%     \begin{itemize}
+%         \item One can imagine writing queries not just pass in one column from the database table, but the entire row 
+%         \item For example, Fig. \ref{fig:row-reorder} illustrates that we can pass in all rows from \textit{movie} table entirely, which contains \textit{movieInfo}, \textit{movieTitle}, \textit{genres}, \textit{directors}, etc. and many other fields 
+%         \item How to reorder these fields so that maximal prefixes can be shared is essential 
+%         \item Example 
+%         \begin{itemize}
+%             \item Putting \textit{movieTitle} first does not make sense because the titles are most likely to be distinct 
+%             \item If some \textit{directors} direct many movies, then it makes sense to put this field first 
+%         \end{itemize}
+%                           \item Solution: can use \textit{groupBy} to determine the sharing factor, select the most shared field, then use \textit{groupBy} to sort the rest of the field (without the first selected field), etc. Do this sequentially to select the next request in sequence. \shu{is this optimal? how to determine how many are shared, using something like RadixAttention?}
+%     \end{itemize}
+% \end{itemize}
+% \textbf{Caveat: Warm up for Record-level Reordering}
+% \begin{itemize}
+%     \item Currently the requests within a batch cannot share the prefix (i.e. all of them are computed in parallel), which means that we need a separate warm-up phase to prefetch prefix in order to be reused 
+%     \begin{itemize}
+%         \item E.g. [A, A, A] has no reuse in cache, but [A] [A, A] has 
+%         \item E.g. [A, A, B, B] [C, C, D, D] has 8 misses, while [A, B, C, D] [A, B, C, D] has 4 misses 
+%     \end{itemize}
+%     \item This might not be an issue when there is a lot of sharing (larger than batch size), but is an issue for smaller requests and for prefixes that are not shared that much 
+%     \item @Shiyi: special kernel that allows sharing within batch 
+%     \begin{itemize}
+%         \item Assume the new kernel efficiency is on par with the current one 
+%         \item Reordering with continuous batching yields the optimal cache hit rate, each unique prefix only has one cold miss 
+%     \end{itemize}
+%     \item \textbf{Assumption:} without that kernel for now 
+%     \begin{itemize}
+%         \item If we just consider \textbf{cache hit rate (or byte hit rate)} as an objective, then sequential processing and reordering is always the best (e.g. [A][A][B][B][B][C][C]) 
+%         \item But we also want to \textbf{saturate the batch} and maximize parallelism 
+%     \end{itemize}
+% \end{itemize}
+% \textbf{Solution \#1.1: Batching with Warmup}
+% \begin{itemize}
+%     \item For prefix that has only 1 request: put wherever there is space 
+%     \item For prefix that has more than 2 requests 
+%     \begin{itemize}
+%         \item Sort the prefix according to their request frequency 
+%         \item Fill in one by one until the batch is full 
+%         \item Go tough distinct prefixes in this batch to drain all of their frequency counts 
+%         \item If one frequency pool is drained, then the prefix is done, drain with another prefix request pool that can hit the current cache 
+%     \end{itemize}
+%     \item Example: D x 2, B x 3, C x 3, E x 4, A x 5, BS = 5 
+%     \begin{itemize}
+%         \item Naive reordering has 13 misses: [D, D, B, B, B] (All misses), [C, C, C, E, E] (All misses), [E, E, A, A, A] (E hits, A miss) [A, A] (A hits) 
+%         \item This method has 5 misses: [D, B, C, E, A] (All misses), [D, B, C, E, A](All hits) , [DE, B, C, E, A](All hits) , [A, A] (All hits) 
+%     \end{itemize}
+% \end{itemize}
+
+% We leverage table statistics, such as average token length (ATL) and unique value counts for each column, to estimate the optimal column order. This method allows us to circumvent the exponential complexity by fixing column orders based on their likelihood to contribute shared prefixes:
+
+
+
+% \subsubsection{Formulation} 
+% We formulate the problem of column-level input reordering as follows. Assuming the data value at a particular row and column, if cached, is cached entirely as a prefix (i.e. not considering sub-string of data as prefix now). We also assume that there are some auto-prefix detection mechanisms. 
+
+% The primary objective is to find an optimal ordering of columns for each row in a database so that the number of shared prefix tokens is maximized across all requests. The efficiency is measured by \textit{amount of computation} saved by reusing prefixes in the cache. This requires an ordering of columns that maximizes the number of shared tokens across all rows. The number of shared tokens is the product of the number of shared data values times the length of these data values.
+
+% \textbf{Definitions}
+% \begin{enumerate}
+%     \item Requests (rows): Let $R_i$ represents the $i^{th}$ request (or row) in the dataset, where $i \in 1, 2, ..., N$, and $N$ is the total number of rows 
+%     \item Columns: Let $C_j$ denote the $j^{th}$ column in the table, where $j \in 1, 2, ..., M$, and $M$ is the total number of columns  
+%     \item Data value: we denote string value in row $R_i$ and column $C_j$ as $D_{ij}$.  
+% \end{enumerate} 
+
+
+% \subsubsection{Optimal Algorithm}
+% A naive optimal algorithm requires enumeration tough all the possible combinations of column orderings for each row, which is $O(N * M!)$ where $N$ is the number of rows, and $M$ is the number of columns from the table. 
+
+% \begin{figure}[!t]
+%     \centering
+%     \begin{minipage}{0.51\linewidth}
+%         \centering
+%         \begin{tabular}{|c|c|}
+%             \hline
+%             \textbf{Column 1} & \textbf{Column 2} \\
+%             \hline
+%             D & L \\
+%             \hline
+%             D & A \\
+%             \hline
+%             B & G \\
+%             \hline
+%             B & F \\
+%             \hline
+%             C & Q \\
+%             \hline
+%             C & R \\
+%             \hline
+%             C & L \\
+%             \hline
+%             J & L \\
+%             \hline
+%             J & H \\
+%             \hline
+%         \end{tabular}
+%     \end{minipage}
+%     \hfill
+%     \begin{minipage}{0.43\linewidth}
+%         \centering
+%         \includegraphics[width=\linewidth]{figures/two-column.pdf}
+%     \end{minipage}
+%     \caption{Rows and its graphical representation}
+%     \label{fig:table-and-figure}
+% \end{figure}

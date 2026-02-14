@@ -1,0 +1,448 @@
+\section{Recursive Request Reordering}
+\label{sec:column-reordering}
+
+This section introduces our request reordering algorithms which re-arranges the columns for each row to maximize prefix sharing in the KV cache. We leverage full workload information from analytical queries to ensure requests sharing the same prefixes are executed consecutively. Specifically, we first present an optimal recursive reordering algorithm to maximize prefix hit count (Sec~\ref{sec:optimal}). 
+Because this algorithm has exponential complexity, we then introduce an efficient greedy simplification of the optimal algorithm  (Sec~\ref{sec:greedy}).
+% with various optimizations that can be applied to real-world tasks .
+
+% say worst case runtime, and say best case runtime too
+% \accheng{update this sentence}
+% in proximity of one another, thus optimizing the  
+
+\subsection{Problem Setup}
+
+% \textbf{LLM Request Structure.} 
+We define the LLM function within the context of SQL queries. In addition to the text of the prompt, this function accepts \emph{set} expressions listing one or more columns $\{T.a, T.b, T.c\}$ or $\{T.*\}$ of table $T$.
+This API design enables us to dynamically reorder fields within these expressions to optimize for cache efficiency. 
+
+% \textbf{Objective} 
+The goal of request scheduling is to \textbf{maximize} the \textit{prefix hit count} (PHC) by optimizing the order of columns and rows of an input table with $n$ rows and $m$ columns. 
+Note that for each row, there may be a different column order.
+We represent a request schedule as a list of tuples, $L$, where each tuple in $L$ corresponds to a row in the original table, and the tuple elements are the values within the row. The tuple order in the list can be rearranged to represent different row orders, and the order of the elements in each tuple can be rearranged to represent the chosen column order for the row. 
+We pass the list $L$ of input requests along with the desired prefix prompt to the LLM for inference.
+When providing each row as an input request to the LLM, we prepend column names in front of values to indicate the column each value belongs to using a standard JSON encoding.
+
+
+% Each tuple in $L$ corresponds to a row, and the elements of the tuple correspond to the values within the columns. 
+
+We define the PHC of $L$ as the number of consecutive column cell values shared with the previous row starting from the first cell, summing over all rows from $0$ to $n-1$. Each cell value must exactly match the corresponding cell of the previous row (cannot be a substring), and cell values past the first must match consecutively (must be a prefix). 
+% We assume that the previously seen prefix must match the entire value of a previous cell, and cannot be a substring. 
+Formally, a cell in the list of tuples is denoted as $L[r][c]$, indicating the value in tuple $r$ at position $c$. Then, the PHC for a list of tuples $L$ with $n$ rows and $m$ columns is given by: 
+% $\text{PHC}(T) = \sum_{i=0}^{n-1} \max_{1 \leq j \leq m} \textit{hit}(T_{i,j})
+% $. 
+
+\begin{equation}
+\text{PHC}(L) = \sum_{r=0}^{n-1} \textit{hit}(L, r)
+\label{eq:phc}
+\end{equation}
+
+Here, the function $\textit{hit}(L, r)$ represents the prefix hit count for a single row $r$ in $L$. For simplicity, we assume that the input list is sorted. For each row $r$, the function checks if the value in each column $t$ matches any previously seen value in the same column of the previous row $r-1$. If all previous columns match, the hit count is the sum of the squares of the lengths of the values in those columns until a mismatch occurs. The squared lengths reflect the quadratic complexity of token processing in LLM inference, where each token computation depends on every preceding token and increases computational cost quadratically with input length. 
+% \shu{make it clear about the Tuple index, tuple has order that represents column ordering; have to sort to make things work, previous rows (overlap), simplify by looking at, assuming at least one row fits into KV cache; n-1 (how much overlap, assume cache is large enough to reuse for previous few rows)}
+
+% It is defined as the length of the concatenated string of cell values for row $i$ from column $1$ to $j$, if and only if all the concatenated cell values exactly match the previously seen concatenated cell values in the same columns.
+
+% Defined over all previous rows 
+% \begin{equation}
+% \textit{hit}(L, r) = \max_{0 \leq c < m}
+% \begin{cases} 
+% \sum_{t=0}^{c-1} \text{len}(L[r][t])^2 & \text{if } \FORall t \leq c, L[r][t] = L[x][t] \\
+% & \quad \exists x \text{ s.t., }  0 \leq x < r \\
+% %& \quad \max\left(0, r -q \right) \leq x < r \\
+% 0 & \text{otherwise}
+% \end{cases}
+% \label{eq:hit}
+% \end{equation}
+
+\begin{equation}
+\textit{hit}(L, r) = \max_{0 \leq c < m}
+\begin{cases} 
+\sum_{t=0}^{c-1} \text{len}(L[r][t])^2 & \text{if } \forall t \leq c, L[r][t] = \\ & L[r-1][t] \\
+
+%& \quad \max\left(0, r -q \right) \leq x < r \\
+0 & \text{otherwise}
+\end{cases}
+\label{eq:hit}
+\end{equation}
+
+
+To simplify this challenging algorithm design task, we make a few assumptions. 
+First, we assume that cell values do not have substring hits. 
+A cell value must match the entire value of a previously seen cell to count as a hit. 
+We also assume that the input list is sorted and at least one tuple (row) can fit into the KV cache to allow reuse. 
+\accheng{@shu, what are the implications of these assumptions on performance?}
+%\shu{is this enough for justifying just look at previous row and sort?}
+
+
+\paragraph{Example Query}
+% Since cache hits occur only for the request prefixes, determining the right order of columns in SQL queries can significantly impact performance. 
+Consider the following query:
+\vspace{1pt}
+\begin{mdframed}[linecolor=black, linewidth=.5pt]
+\begin{minted}[fontsize=\small]{sql}
+SELECT LLM("Summarize: ", pr.*) 
+FROM (
+    SELECT review, rating, description
+    FROM reviews r JOIN product p ON r.asin = p.asin
+) AS pr
+\end{minted}
+\end{mdframed} 
+\vspace{1pt}
+
+This query sends the columns \textit{review}, \textit{rating}, and \textit{description} from table \textit{pr} to the LLM for summarization. Starting with \textit{review} is inefficient due to its many distinct values, which reduces prefix sharing. Placing \textit{description} first increases shared prefixes, as more reviews link to the same product. Effective reordering must balance prefix frequency and length to optimize cache reuse.
+
+
+% This query passes in the columns \textit{review}, \textit{rating}, \textit{description}, and \textit{title} for all the rows in table \textit{pr} to the LLM for summarization purposes. Using the default order in which \textit{review} comes first is inefficient because this column has more distinct values, leading to more unique prefixes. Instead, placing the \textit{description} column at the beginning can increase shared prefixes, as many more reviews are associated with the same product. The request reordering task in real datasets is complicated by the diversity in shared prefix values and their variable lengths. For instance, longer shared prefixes might lead to larger PHC, even if they arise less frequently than shorter prefixes. Thus, a reordering strategy must balance prefix frequency and size to maximize cache reuse. 
+
+\paragraph{Our Proposal}
+We propose an optimal request ordering algorithm, Optimal Prefix Hit Maximization (\optimal), to maximize PHC. 
+Given the exponentially expensive computational cost of the \optimal algorithm,  we also introduce Greedy Group Recursion (\greedy), an approximation of \optimal that leverages functional dependencies and table statistics to reorder requests for large tables efficiently. 
+
+%%%%%%%%%%%%% MLSYS ALGORITHM NEEDS RECONSTURCTION 
+% \begin{algorithm}[t!]
+% \caption{Optimal Prefix Hit Recursion (OPHR)}
+% \begin{algorithmic}[1]
+% \STATE \textbf{Input:} Table $T$
+% \STATE \textbf{Output:} Prefix Hit Count $S$, Reordered List of Tuples $L$
+
+% % \newcommand{\algorithmicfunction}{\textbf{function}}
+% % \newcommand{\algorithmicendfunction}{\algorithmicend\ \algorithmicfunction}
+
+% \FUNCTION{$\textsc{HitCount} (v, c, T)$ }
+%     \STATE $R_v \gets \{i \mid T[i,c] = v\}$
+%     \STATE {\bfseries Return} ${\text{len}(v)}^2 \times (|R_v| - 1)$
+% \ENDFUNCTION
+
+% \item[]
+% \FUNCTION{$\textsc{Recurse}$ ($T$)}
+%     \IF{$|T|_{rows} = 1$}
+%         \STATE return 0, $[T[1]]$
+%     \ENDIF 
+%     \IF{$|T|_{cols} = 1$}
+%         \STATE $S \gets \sum_{v \in \text{distinct}(T[,1])} \textsc{HitCount}(v, 1, T)$ % groupby or sort, choose best group, append 
+%         \STATE {\bfseries Return} $S, sort([T[i] \mid i \in 1 \dots |T|_{rows}])$
+%     \ENDIF
+%     \STATE $max\_phc \gets -1$, $best\_L \gets T$
+
+%     \COMMENT{For each distinct value $v$ in each column $c$}
+%     \FOR{$c \in \text{columns}(T)$, $v \in \text{distinct}(T[,c])$} 
+%         % \STATE $\text{distinct\_values} \gets \{T[i,c] \mid i \in 1 \dots |T|_{rows}\}$
+%         % \FOR{$v \in \text{distinct\_values}$}
+%         \STATE $R_v \gets \{i \mid T[i,c] = v\}$
+%         \STATE $A\_HC, L_A \gets \textsc{Recurse}(T[\text{rows} \setminus R_v, \text{cols}])$
+%         \STATE $B\_HC, L_B \gets \textsc{Recurse}(T[R_v, \text{cols} \setminus \{c\}])$
+%         \STATE $C\_HC \gets \textsc{HitCount}(v, c, T)$
+%         \STATE $phc \gets A\_HC + B\_HC + C\_HC$
+%         \IF{$phc > max\_phc$}
+%             \STATE $\max\_phc = phc$, 
+%             \STATE $best\_L = [[v] + L_A[i] \mid i \in 1 \dots |R_v|] + L_B$
+%         \ENDIF
+%     \ENDFOR
+%     \STATE $\textbf{return } \text{max\_phc}, \text{best\_L}$
+% \ENDFUNCTION
+
+% \STATE 
+% \STATE \textbf{return } \textsc{Recurse}($T$)
+% \end{algorithmic}
+% \label{alg:optimal}
+% \end{algorithm}
+
+
+\begin{algorithm}[t!]
+\caption{Greedy Group Recursion (GGR)}
+\begin{algorithmic}[1]
+
+\STATE \textbf{Input:} Table $T$, Functional Dependency $FD$
+\STATE \textbf{Output:} Prefix Hit Count $S$, Reordered List of Tuples $L$
+
+
+\item[]
+\FUNCTION{$\textsc{HitCount} (v, c, T, FD)$}
+    \STATE $R_v \gets \{i \mid T[i,c] = v\}$
+    \STATE $\text{inferred\_cols} \gets \{c' \mid (c, c') \in FD\}$
+    \STATE $\text{tot\_len} = \text{len}(v)^2 + \sum_{\substack{c' \in \text{inferred\_cols}}} \frac{\sum_{r \in R_v} \text{len}(T[r, c'])}{|R_v|}$
+    \STATE \textbf{return } $\text{tot\_len} \times (|R_v| - 1)$, $[c] + \text{inferred\_cols}$
+\ENDFUNCTION
+
+
+\item[]
+\FUNCTION{\textsc{MRecurse}($T$, $FD$)}
+    \IF{$|T|_{rows} = 1$ or $|T|_{cols} = 1$}
+        \STATE \textbf{return } \text{Base case processing as in \optimal}
+    \ENDIF
+
+    \STATE $max\_HC, best\_v, best\_c, best\_cols \gets -1, \text{None}, \text{None}, []$
+
+    \FOR{$c \in \text{columns}(T)$, $v \in \text{distinct}(T[,c])$}
+        \STATE $HC, cols \gets \textsc{HitCount}(v, c, T, FD)$
+        \IF{$HC > max\_HC$}
+            \STATE $max\_HC, best\_v, best\_c, best\_cols = HC, v, c, cols$
+        \ENDIF
+    \ENDFOR
+    
+    \STATE $R\_v \gets \{i \mid T[i, best\_c] = best\_v\}$
+    \STATE $A\_HC, L\_A \gets \textsc{MRecurse}(T[\text{rows} \setminus R\_v, \text{cols}], FD)$
+    \STATE $B\_HC, L\_B \gets \textsc{MRecurse}(T[R\_v, \text{cols} \setminus best\_cols], FD)$
+    \STATE $C\_HC, \_ \gets \textsc{HitCount}(best\_v, best\_c, T, FD)$
+    \STATE $S \gets A\_HC + B\_HC + C\_HC$
+    \STATE $L \gets [[best\_v] + L_A[i] \mid i \in 1 \dots |R\_v|] + L\_B$
+    \STATE \textbf{return } $S, L$
+\ENDFUNCTION
+
+\item[]
+\STATE \textbf{return } \textsc{MRecurse}($T$, $FD$)
+\end{algorithmic}
+\label{alg:greedy}
+\end{algorithm}
+
+\subsection{Case Study: Fixed Column Ordering}
+Most of the table has some default column orderings applied to all rows. How bad can this be in terms of PHC? 
+
+Imagine a table with a column with all distinct values as the first column, for example, commonly seen ones including timestamp, ID, etc. Assuming each value in the table is of length of 1. In the worst case, assuming all other columns, each column has a single value. In this case, the hit rate difference of optimal ordering (i.e., putting distinct column last) compared with the naive fixed column ordering is 0 versus $(n-1)\times(m-1)$, where the only last column is missed, and the cold miss of the first row.  
+
+Now imagine for example, there are some groups of values in the default ordering, first column, that does have some values. Assume that there are $i$ such groups from $G_1, ..., G_{i}$, each group has $x$ rows where $x < n$. We can always construct a case where if $i == 1$, and each column contains such group with non-overlapping rows compared to the previous or next column, then the PHC of such fixed column orderings is $x - 1$, where $-1$ account for the cold miss of such column. However, an obvious better ordering is to have different column orderings for different set of rows. For example, choosing $G1$ of column $1$ to be first, then for the next set of $x$ rows pick $G3$ of column $2$ to be first. In this case, the hit rate of such ordering will be $m \times (x-1)$. Thus, the ratio of PHCs comparing default orderings and a better orderings will be as high as $m$.  
+
+\subsection{Optimal Prefix Hit Recursion (OPHR) } \label{sec:optimal}
+
+%%%%%%%%%%%%%%%%%% Matei's feedback 
+% \shu{need to explain: consider reordering rows but also columns, and doing it differently for each row. Why is it important to do it differently, if you don't add it you'll get $c$ times worse, show some base cases; might be losing accuracy. 
+
+% Motivate: necessary to reorder both rows and columns somewhere (differently across different records), that's the new thing; why is that --> we prove that if you use a fixed column order, can be off by a factor of $c$ by hit rate. Imagine there's a group in each column. 
+
+% Then: now that we know we need to choose different orders even within each row (optimal --> GGR) 
+
+% Don't need to put the algorithm of optimal. Don't need. Example of how it can be off by a factor of c, show the picture. Motivate this. What's the claim (scientific question), obvious cases it does poorly 
+
+% Don't add too many appendix, sglang it is ok to mention it is similar. Queries can be in there. }
+%%%%%%%%%%%%%%%%%% Matei's feedback 
+Our Optimal Prefix Hit Maximization (\optimal) algorithm is a recursive algorithm that finds the \textit{optimal} PHC for a given table $T$ by considering all possible ways to split the table into a group of cells with the same value and two sub-tables (Algorithm~\ref{alg:optimal}). % It finds the \textit{optimal} PHC for a given table $T$ by assigning column orders for each row (Algorithm~\ref{alg:\optimal}). 
+% table layout algorithm, table ordering algorithm 
+The algorithm takes as input a table $T$ and computes the optimal PHC $S$ along with a reordered list of tuples $L$. If $T$ only has one row or column, \optimal computes PHC and trivially returns the sorted $T$ (lines 8-14). In the recursive case, for each column $c$ in $T$, the algorithm identifies all distinct values $v$ in this column and the rows $R_v$ for which the column value is $v$. For each distinct value $v$, the table is split into two sub-tables: one of $T$ excluding rows $R_v$ (line 18), and one of $R_v$ excluding column $c$ (line 19). The PHC for the currently selected value $v$ is calculated as the sum of the PHC of the sub-tables and the PHC contribution of $v$ (line 20). The algorithm evaluates all possible groups of distinct values in each column and selects the value that yields the maximum PHC (Figure~\ref{fig:optimal}). 
+
+Unsurprisingly, the \optimal algorithm has exponential complexity with respect to the number of rows and columns due to its recursive nature and the combinatorial explosion of possible distinct value groupings (we present a more efficient algorithm in Sec~\ref{sec:greedy}). 
+
+
+\begin{figure}
+    \vspace{-1em}
+    \centering
+    \includegraphics[width=0.49\textwidth]{figures/SIGMODfigures/prefix_hit_maximization.pdf}
+    \vspace{-1.5em}
+    \caption{The \optimal algorithm evaluates each group of distinct values (e.g., v and a) and calculates PHC as the sum of PHC of the elected group values (yellow and red boxes), the sub-table $T$ excluding rows $R_v$, and the sub-table of rows $R_v$ excluding the column where the value is located in (blue and green boxes). \shu{change this graph to include OHPR and GGR illustration}}
+    \label{fig:optimal}
+\end{figure}
+
+
+% is this even correct?
+% $T(n,m) \leq m \cdot k \cdot T(n-1, m) + T(n, m-1)$  where $k$ is the number of distinct values per column. The worst-case time complexity of \optimal is $O((m \cdot k)^n))$. We now prove the optimality of \optimal. 
+
+% Specifically, for each column, the algorithm considers all distinct values, leading to a time complexity of $O(m \cdot k \cdot T(n-1, m) + T(n, m-1))$ where $k$ is the number of distinct values per column. The worst-case time complexity of \optimal is O((m$\cdot$k)^n))
+
+\paragraph{Optimality Proof}
+In the base case, the \optimal algorithm trivially computes the best PHC: for the single row case, the PHC is 0; for the single column case, the PHC is the sum of the squared lengths of distinct values multiplied by their occurrences minus one, which accounts for the initial miss when a value is seen the first time. 
+Next, we prove optimality by induction.
+For the inductive case, assume that the \optimal algorithm is optimal for any table with $k \leq n$ rows and $l \leq m$ columns. 
+For a table $T$ with $n+1$ rows and $m+1$ columns, the algorithm iterates through each column $c$. For each distinct value $v$ in column $c$, we split $T$ into two sub-tables: $T_A$ (rows not containing $v$), and $T_B$ (rows containing $v$ but excluding column $c$). Based on the inductive hypothesis, \optimal optimally computes PHC for both sub-tables because it is optimal for tables with fewer rows and columns. The PHC for $T$ is the sum of PHC for $T_A$ and $T_B$, plus the contribution of $v$. When the distinct value $v$ is used to partition the table, its full contribution to the PHC is captured. If the table were not split based on distinct values, this contribution could be fragmented or lost due to non-contiguous groupings, leading to suboptimal PHC.
+Thus, the \optimal algorithm ensures optimal reordering by selecting the best from all possible configurations.
+
+
+\subsection{Greedy Group Recursion (\greedy) Algorithm}
+\label{sec:greedy}
+\shu{Add architecture diagrams here? Design of this reordering algorithm similar to: https://arxiv.org/pdf/2311.04934}
+Due to the computational complexity of the \optimal algorithm, we propose a Max Group Recursion (\greedy) algorithm (Algorithm~\ref{alg:greedy}) that approximates \optimal.  
+The \greedy algorithm takes an input table $T$ and returns the PHC $S$ along with a reordered list of tuples $L$. It has the same base case as the \optimal algorithm if $T$ only has one row or one column. At a high level, the \greedy algorithm recursively selects the value with the maximum prefix hit count (lines 3-8) at each recursion step (lines 13-19) rather than iterating through all possible distinct values in the entire table. It then splits the table into groups of cells of the same values and recurses on two sub-tables (lines 21-23), similar to the \optimal algorithm. 
+
+Since \greedy does not iterate through all possible distinct values but instead selects the one that gives the highest hit count at each step, the number of recursive calls is significantly reduced (i.e. the maximum depth of recursion is $O(min(n,m))$, where the algorithm reduces dimensions of the table at each recursive step). However, at each recursive step, the cost of scanning to determine distinct values can lead to quadratic complexity in terms of table size. 
+% \shu{ends with this, is it weird? do we need some transition?} \joey{it might have helped to have table statistics next.}
+
+
+% Count the total number of splits 
+% Each time split: one row 
+% Worst case
+% Can also do that with stats, but scan 
+% 1 column base case, how many total times (table with 2 columns, pick a value from one column, add a basecase); worst case: number of distinct values * how much the scan costs (more columns) 
+% lots of distinct values - could be quadratic in the table -> individual step (do this in stats, linear in table size) 
+
+% not have complexity analysis 
+
+% \shu{Still exponential, just that the number of recursive calls reduces to O(m) not m * k?}
+
+% branch and bound, prune the space 
+% $T_{\greedy}(n,m) \leq O(m) \cdot T_{\greedy}(n-1, m) + T_{\greedy}(n, m-1)$ 
+% Our \greedy algorithm improves the runtime complexity compared to the \optimal algorithm by avoiding the exhaustive search over all possible configurations. \greedy evaluates the hit count for distinct values in each column in each step and selects the best local configuration. Despite this simplification, the \greedy algorithm still faces exponential growth in complexity due to the recursion. \accheng{@shu, seems weird to end with this, is \greedy exponential in the worst case? we should find some way to bound it if so}
+% \greedy also leverages functional dependencies and table statistics to improve performance further. We describe each of these techniques in detail below.
+
+% \shu{not optimization, for corretness, avoid having to check each step as long as it captures most of the correlation between columns} 
+
+\subsubsection{Functional Dependencies} We leverage functional dependencies to reduce the number of columns the \greedy algorithm needs to consider at each recursion step. This insight helps improve both the approximation and efficiency of the algorithm, bringing it closer to the optimal solution without the need for extensive backtracking as in the \optimal algorithm. 
+
+A functional dependency (FD) is a constraint between two sets of attributes in a relation from a database. For example, let $R$ be a relation schema and let $X$ and $Y$ be nonempty sets of attributes in $R$. We define an instance $r$ of $R$ that satisfies the $FD$ $X \rightarrow Y$ if for every pair of tuples $t_1$ and $t_2$ in $r$: if $t1.X = t2.X$, then $t1.Y = t2.Y$. As an example, if $R(A,B,C)$ is a table with attributes (columns) $A,B,C$, and an $FD$ of $A \rightarrow C$ means that if two rows have the same value for $A$, then they must have the same value for $C$. In our \greedy algorithm, FDs help narrow down the columns that must be considered at each recursion step. Specifically, when a value $v$ in column $c$ is selected, all columns functionally dependent on 
+that column only need to be processed once (lines 5-6). In the example where $A \rightarrow C$, we do not need to separately consider $C$ when $A$ is already included in the prefix, as $C$ will not provide a different PHC.
+% are also considered as inferred columns (line 5-6). This means we only need to process these inferred columns once per recursion, which reduces redundant calculations and expedites the process. 
+% \shu{Note: our algorithm here seems to ignore the case where you have $AB \rightarrow C$, where you have two rows have same value for $A$ and $B$? but under the assumption where we append columns it might not matter. Also shall we assume transitivity already in our psedocode? i.e. A -> C, C -> B, then FD includes A -> B too.}
+% We also include functional dependency in the \greedy algorithm to enhance PHC by including related columns. In database literature, ...
+
+\subsubsection{Table Statistics} To further reduce the algorithm runtime, we introduce an early stopping mechanism that halts recursion when the hit count (line 3) falls below a certain threshold. Additionally, we can further improve the quality of the solution by establishing a fixed column ordering for the subtables using table statistics once the recursion stops. Databases typically maintain statistics on stored data, such as the number of unique entries (i.e., cardinality) and the distribution of length of values for each column. Specifically, our \greedy algorithm estimate a \texttt{HITCOUNT} score for each column $c$ with $HITCOUNT(C) = avg(len(c))^2 \cdot (\frac{n}{cardinality} - 1)$. This score denotes the expected contribution of a column to the PHC, taking into account both the average length of the values and their frequency. Using these statistics, the algorithm can prioritize columns that are more likely to contribute to the PHC. Early termination and falling back to table statistics allows \greedy to avoid scanning the table and performing recursions on realistic workloads. 
+
+% In practice, many datasets have columns with high cardinality (i.e., few shared prefixes), so their order has minimal impact on the cache hit rate.
+
+% \subsubsection{Optimality Analysis}
+% \shu{in what case does it match the \optimal? Can we match it} 
+
+\subsubsection{Achieving Optimal PHC} While our \greedy algorithm is an approximation of the \optimal algorithm, there are specific scenarios when the \greedy algorithm can achieve optimal PHC.
+% matches the prefix hit count of the \optimal algorithm exactly. 
+In the simplest cases where the table has only one row or one column, the \greedy algorithm returns the same outputs as the \optimal algorithm by construction. When functional dependencies are accurate and cover all the columns of a table, the GGR algorithm can also identify the optimal solution. For instance, if there is a column $A$ that functionally determines all other columns, then \greedy algorithm will prioritize groups of values in this column due to the accumulated \texttt{HITCOUNT} score (line 3 in Algorithm~\ref{alg:greedy}), ensuring it can find the optimal reordering by capturing the most significant correlations early on. 
+% As an example, if there is a column \textit{movie_year} that functionally determines the column \textit{movie_title}, the \greedy algorithm will prioritize groups of values in \textit{movie_year} ,
+% \accheng{@shu, do we have an example of this in one of our benchmarks? would mention here if so}
+However, in cases where there is a tie in the \texttt{HITCOUNT} score, the \greedy algorithm might be suboptimal because it lacks the mechanism to resolve ties as effectively as the \optimal algorithm, which explores all possible configurations that could potentially result in higher overall PHC.
+% * For FDs which cover all the columns, the \greedy algorithm with functional dependencies will be able to identify the same output as optimal, without needing to even do the backtracking and iterating through all rows, if FDs are correct. 
+% * Discuss when there is a tie on max group score, then the greedy algorithm is suboptimal, don't know what to do. 
+
+% Think about some subset of cases where it is, can also think about with a table with just one column, it is okay, table of two columns, condition to be okay. (or independent), no FDs, independent; FD, method capture it (FDs, cover all things). Columns that are not covered by FDs, assumption if those are independently assign or distributed, then what we are doing is okay.
+
+% Tie on the first step, don't find the right answer later, then this doesn't know what to do.
+
+% \subsection{Row-level Reordering}
+% Once we determine a column order, we need to group the rows of data such that we maximize the number of shared prefixes across requests. To achieve this, we concatenate all column values into a string and sort these strings lexicographically (over different rows) to determine the row order. 
+% Conveniently, the structured nature of SQL queries enables us to efficiently sort requests---we can identify and easily group shared data based on the relational schema by using existing database operations (e.g., \texttt{GROUP BY and ORDER BY}). \shu{Add reasoning why row-ordering works, once we relax the assumption on not infintie cache size}
+
+% \accheng{@shu, is there a reason we don't split this into a separate subsubsection?}
+% Additionally, we introduce an early stopping mechanism based on the average values from the table statistics. Specifically, we manually add a early stopping parameter to not considering group with hit count is larger than a particular value \accheng{@shu, unclear what this means}. The algorithm stops the recursion and returns the current result if this parameter is satisfied, saving computational resources.
+%while still providing a near-optimal solution.
+
+
+% \begin{algorithm}[t!]
+% \caption{Row-Level Sorting Based on Column Prioritization}
+
+% \begin{algorithmic}[1]
+% \STATE \textbf{Input:} Table $T$, Reordered Columns List $L$ from Algorithm 1
+% \STATE \textbf{Output:} Reordered Table $T'$
+% \item[] 
+% \STATE $T' \gets T$ with columns reordered according to $L$ 
+
+% \FOR{$i \gets 0$ to length($L$)$\text{ } - 1$}
+%     \STATE $T' \gets stableSort(T', L[i])$ \Comment{Apply stable sort on $T'$ based on column $L[i]$, preserve previous sort orders}
+% \ENDFOR
+
+
+% \STATE \Return $T'$
+
+% \end{algorithmic}
+% \end{algorithm}
+
+% \begin{mdframed}[linecolor=black, linewidth=.5pt]
+% \begin{minted}[fontsize=\small]{sql}
+% SELECT LLM("Summarize the content of this movie: {movie}", m.movieInfo) AS summary 
+% FROM Movies m
+% \end{minted}
+% \end{mdframed} 
+% \vspace{8pt}
+
+% \shu{Remove this example, and connect to the previous section}
+% In the context of querying LLM with SQL, a common pattern involves passing a specific column from database table as input to the LLM. 
+% \begin{itemize}
+%     \item For instance, consider a query that summarizes movie contents, where the \texttt{m.movieInfo} column from the \texttt{Movies} table is used to generate summaries. 
+%     \item This approach generates content summaries based on detailed movie information stored in the database. 
+% \end{itemize}
+
+% \subsection{Row-level Reordering}
+% Once we determine a column order, we need to group the rows of data such that we maximize the number of shared prefixes across requests. To achieve this, we concatenate all column values into a string and sort these strings lexicographically (over different rows) to determine the row order. 
+% Conveniently, the structured nature of SQL queries enables us to efficiently sort requests---we can identify and easily group shared data based on the relational schema by using existing database operations (e.g., \texttt{GROUP BY and ORDER BY}). \shu{Add reasoning why row-ordering works, once we relax the assumption on not infintie cache size}
+
+% Once we determine a column order, we concatenate all column values into a string and sort these strings lexicographically (over different rows) to determine the row order. 
+
+% % To demonstrate how this technique improves cache usage, 
+% Consider an example in which we have a batch size of three and six distinct prefixes that each appear three times. If the requests arrive in the following order (with batches shown in brackets): $[1,2,3],[4,5,6]$ $,[1,2,3],[4,5,6]$, the KV cache would evict and recompute all six prefixes under a caching algorithm, such as FIFO, leading to inefficient cache use. Instead, if we sort the rows of input to group common prefixes together (e.g., $[1,2,3],[1,2,3],[4,5,6],\newline[4,5,6]$), we ensure that each prefix is loaded into the cache only once and reused across any requests it is involved in. Upon eviction, we know that this prefix will never need to be loaded into the cache again. This approach can greatly reduce cache eviction and recomputation, leading to faster LLM processing times.
+
+
+% with various optimizations that can be applied to real-world tasks .
+
+% say worst case runtime, and say best case runtime too
+% \accheng{update this sentence}
+% in proximity of one another, thus optimizing the  
+
+% \subsection{Problem Setup}
+
+% % \textbf{LLM Request Structure.} 
+% We define the LLM function within the context of SQL queries. In addition to the text of the prompt, this function accepts \emph{set} expressions listing one or more columns $\{T.a, T.b, T.c\}$ or $\{T.*\}$ of table $T$.
+% This API design enables us to dynamically reorder fields within these expressions to optimize for cache efficiency. 
+
+% % \textbf{Objective} 
+% The goal of request scheduling is to \textbf{maximize} the \textit{prefix hit count} (PHC) by optimizing the order of columns and rows of an input table with $n$ rows and $m$ columns. 
+% Note that for each row, there may be a different column order.
+% We represent a request schedule as a list of tuples, $L$, where each tuple in $L$ corresponds to a row in the original table, and the tuple elements are the values within the row. The tuple order in the list can be rearranged to represent different row orders, and the order of the elements in each tuple can be rearranged to represent the chosen column order for the row. 
+% We pass the list $L$ of input requests along with the desired prefix prompt to the LLM for inference.
+% When providing each row as an input request to the LLM, we prepend column names in front of values to indicate the column each value belongs to using a standard JSON encoding.
+
+
+% % Each tuple in $L$ corresponds to a row, and the elements of the tuple correspond to the values within the columns. 
+
+% We define the PHC of $L$ as the number of consecutive column cell values shared with the previous row starting from the first cell, summing over all rows from $0$ to $n-1$. Each cell value must exactly match the corresponding cell of the previous row (cannot be a substring), and cell values past the first must match consecutively (must be a prefix). 
+% % We assume that the previously seen prefix must match the entire value of a previous cell, and cannot be a substring. 
+% Formally, a cell in the list of tuples is denoted as $L[r][c]$, indicating the value in tuple $r$ at position $c$. Then, the PHC for a list of tuples $L$ with $n$ rows and $m$ columns is given by: 
+% % $\text{PHC}(T) = \sum_{i=0}^{n-1} \max_{1 \leq j \leq m} \textit{hit}(T_{i,j})
+% % $. 
+
+% \begin{equation}
+% \text{PHC}(L) = \sum_{r=0}^{n-1} \textit{hit}(L, r)
+% \label{eq:phc}
+% \end{equation}
+
+% Here, the function $\textit{hit}(L, r)$ represents the prefix hit count for a single row $r$ in $L$. For simplicity, we assume that the input list is sorted. For each row $r$, the function checks if the value in each column $t$ matches any previously seen value in the same column of the previous row $r-1$. If all previous columns match, the hit count is the sum of the squares of the lengths of the values in those columns until a mismatch occurs. The squared lengths reflect the quadratic complexity of token processing in LLM inference, where each token computation depends on every preceding token and increases computational cost quadratically with input length. 
+% % \shu{make it clear about the Tuple index, tuple has order that represents column ordering; have to sort to make things work, previous rows (overlap), simplify by looking at, assuming at least one row fits into KV cache; n-1 (how much overlap, assume cache is large enough to reuse for previous few rows)}
+
+% % It is defined as the length of the concatenated string of cell values for row $i$ from column $1$ to $j$, if and only if all the concatenated cell values exactly match the previously seen concatenated cell values in the same columns.
+
+% % Defined over all previous rows 
+% % \begin{equation}
+% % \textit{hit}(L, r) = \max_{0 \leq c < m}
+% % \begin{cases} 
+% % \sum_{t=0}^{c-1} \text{len}(L[r][t])^2 & \text{if } \FORall t \leq c, L[r][t] = L[x][t] \\
+% % & \quad \exists x \text{ s.t., }  0 \leq x < r \\
+% % %& \quad \max\left(0, r -q \right) \leq x < r \\
+% % 0 & \text{otherwise}
+% % \end{cases}
+% % \label{eq:hit}
+% % \end{equation}
+
+% \begin{equation}
+% \textit{hit}(L, r) = \max_{0 \leq c < m}
+% \begin{cases} 
+% \sum_{t=0}^{c-1} \text{len}(L[r][t])^2 & \text{if } \forall t \leq c, L[r][t] = \\ & L[r-1][t] \\
+
+% %& \quad \max\left(0, r -q \right) \leq x < r \\
+% 0 & \text{otherwise}
+% \end{cases}
+% \label{eq:hit}
+% \end{equation}
+
+
+% To simplify this challenging algorithm design task, we make a few assumptions. 
+% First, we assume that cell values do not have substring hits. 
+% A cell value must match the entire value of a previously seen cell to count as a hit. 
+% We also assume that the input list is sorted and at least one tuple (row) can fit into the KV cache to allow reuse. 
+% \accheng{@shu, what are the implications of these assumptions on performance?}
+% %\shu{is this enough for justifying just look at previous row and sort?}
+
+
+% \paragraph{Example Query}
+% % Since cache hits occur only for the request prefixes, determining the right order of columns in SQL queries can significantly impact performance. 
+% Consider the following query:
+% \vspace{1pt}
+% \begin{mdframed}[linecolor=black, linewidth=.5pt]
+% \begin{minted}[fontsize=\small]{sql}
+% SELECT LLM("Summarize: ", pr.*) 
+% FROM (
+%     SELECT review, rating, description
+%     FROM reviews r JOIN product p ON r.asin = p.asin
+% ) AS pr
+% \end{minted}
+% \end{mdframed} 
+% \vspace{1pt}
+
+% This query sends the columns \textit{review}, \textit{rating}, and \textit{description} from table \textit{pr} to the LLM for summarization. Starting with \textit{review} is inefficient due to its many distinct values, which reduces prefix sharing. Placing \textit{description} first increases shared prefixes, as more reviews link to the same product. Effective reordering must balance prefix frequency and length to optimize cache reuse.
+
+
+% % This query passes in the columns \textit{review}, \textit{rating}, \textit{description}, and \textit{title} for all the rows in table \textit{pr} to the LLM for summarization purposes. Using the default order in which \textit{review} comes first is inefficient because this column has more distinct values, leading to more unique prefixes. Instead, placing the \textit{description} column at the beginning can increase shared prefixes, as many more reviews are associated with the same product. The request reordering task in real datasets is complicated by the diversity in shared prefix values and their variable lengths. For instance, longer shared prefixes might lead to larger PHC, even if they arise less frequently than shorter prefixes. Thus, a reordering strategy must balance prefix frequency and size to maximize cache reuse. 
+
+% \paragraph{Our Proposal}
+% We propose an optimal request ordering algorithm, Optimal Prefix Hit Maximization (\optimal), to maximize PHC. 
+% Given the exponentially expensive computational cost of the \optimal algorithm,  we also introduce Greedy Group Recursion (\greedy), an approximation of \optimal that leverages functional dependencies and table statistics to reorder requests for large tables efficiently. 

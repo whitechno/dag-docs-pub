@@ -1,0 +1,18 @@
+\section{Conclusion}
+In this paper, we introduce techniques to optimize LLM invocations in relational data analytics workloads.
+By leveraging workload information coupled with observations about the LLM inference process, we can significantly improve end-to-end query performance and reduce costs without affecting query semantics. 
+Our technique achieves up to 3.4$\times$ decreases in end-to-end query latency with Llama-3-8B and Llama-3-70B and also achieves up to 32\% cost savings under OpenAI and Anthropic pricing models. 
+
+% We first observe that the LLM computation is the dominant cost factor in LLM-enabled SQL workload. Each byte processed by LLMs is multiple orders of magnitude more expensive than bytes processed with traditional SQL operators.
+% Our request reordering techniques, along with other standard optimizations, enhance prefix sharing of the LLM KV cache and reduce the number of LLM invocations needed. 
+% In optimizing for LLM queries, we fill a void in existing inference systems, which only target the online setting. 
+% Our results suggest that there is a wide design space to further enhance LLM inference in the relational analytics setting to greatly improve performance.
+
+% In this paper, we introduce a range of techniques to optimize LLM invocations in relational workloads.
+% We first observe that the LLM computation is the dominant cost factor in LLM-enabled SQL workload. Each byte processed by LLMs is multiple orders of magnitude more expensive than bytes processed with traditional SQL operators.
+% By leveraging relational workload information in relational analytics, coupled with observations about the LLM inference process, we can significantly improve end-to-end query performance and reduce costs without affecting query semantics. 
+% Our request reordering techniques, along with other standard optimizations, enhance prefix sharing of the LLM KV cache and reduce the number of LLM invocations needed. 
+% We observe up to 3.4$\times$ decreases in end-to-end query latency. 
+% In optimizing for LLM queries, we fill a void in existing inference systems, which only target the online setting. 
+% Our results suggest that there is a wide design space to further enhance LLM inference in the relational analytics setting to greatly improve performance.
+% \shu{fixed the formatting below on references, seem a bit off}

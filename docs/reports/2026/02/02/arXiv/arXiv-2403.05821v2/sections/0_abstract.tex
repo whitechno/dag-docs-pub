@@ -1,0 +1,24 @@
+\begin{abstract}
+% \accheng{needs to be updated}
+
+% V3: ...
+Analytical database providers (e.g., Redshift, Databricks, BigQuery) have rapidly added support for invoking Large Language Models (LLMs) through native user-defined functions (UDFs) to help users perform natural language tasks, such as classification, entity extraction, and translation, inside analytical workloads.
+However, LLM inference is highly expensive in both computational and economic terms: for example, an NVIDIA L4 GPU running Llama3-8B can only process 6 KB of text per second.  
+In this paper, we explore how to optimize LLM inference for analytical workloads that invoke these models within relational queries.  
+We show that relational queries present novel opportunities for accelerating inference. These include reordering rows and columns to maximize key-value (KV) cache reuse and other standard techniques such as deduplication and SQL optimizations.  
+We implement these optimizations in Apache Spark, with vLLM as the model-serving backend, and achieve up to 5.7$\times$ improvement in end-to-end latency on a benchmark of diverse LLM-based queries on real datasets. 
+To the best of our knowledge, this is the first work to explicitly address the problem of optimizing LLM invocations within SQL queries. 
+
+% L4 7B 2000 toks/s on prefill dominate workload.  800 toks/s on decode dominate workload. 1 tok is 4 bytes. Balancing this give us about 1500 toks/s -> 6000 bytes/s.
+
+% \simon{maybe something like: To the best of our knowledge, this is the first work applying properties in LLM inference technologies in optimizing SQL queries.}
+
+
+% V2: ...
+% LLMs have seen increasing adoption in a wide range of fields. However, LLM inference is very computationally expensive: [stat and citation].
+% In this paper, we focus on applying LLMs for batch analytical tasks in the context of SQL queries. For instance, an application might want to process millions of records from a products reviews database to deduce user sentiment. To optimize for LLM invocations via SQL, we leverage the workload information from queries to maximize memory usage of LLMs. Specifically, we introduce a reordering algorithm that groups requests with shared input prompts, or prefixes, together. 
+% With these optimizations, we see up to 4.3$\times$ improvement in end-to-end latency. 
+
+% V1:...
+% There’s been a lot of work to build a real-time LLM application stack, including chains, vector DBs for retrieving items, etc. However, it’s also useful to apply LLMs in batch analytics tasks, such as processing millions of records in a database to figure out what a user’s sentiment is, which products reviews tend to mention, etc. How can LLMs and retrieval be used most efficiently in this context? For example, it might make sense to deduplicate records or group similar records before passing them to an LLM to minimize inference times, or to replace “point lookups” into a vector DB with some kind of efficient vector similarity join. Any work on this problem would also be useful to teams seeking to train or evaluate their LLM pipelines more efficiently on large datasets.
+\end{abstract}

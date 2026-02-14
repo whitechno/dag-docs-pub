@@ -1,0 +1,726 @@
+\section{Evaluation}
+\label{sec:evaluation}
+% \shu{Matei: if we have time, I'd love an experiments that checks whether accuracy is significantly affected by column reordering in the queries we do that in.}
+
+In this section, we evaluate the effectiveness of our optimizations within a constructed benchmark suite of queries. We aim to answer the following questions: 
+% \shu{@Audrey: double check these questions?} %\shu{reframe this as question, not findings}
+% \begin{enumerate}
+%     \item \accheng{summarize main findings similar to NoScope S9s}
+%     \item \accheng{do we have any non-negligible overheads for any of our optimizations? if we don't have any, we should state this somewhere}
+% \end{enumerate}
+
+% \begin{enumerate}
+%     \item \accheng{summarize main findings similar to NoScope S9s}
+%     \item \accheng{do we have any non-negligible overheads for any of our optimizations? if we don't have any, we should state this somewhere}
+% \end{enumerate}
+% \begin{enumerate}
+%     \item Changing the order of inputs we provide to the LLM, both within a single prompt and within a batch of prompts, can noticeably reduce query latency.%, up to 3.0$\times$ over unreordered inputs in our experimental results. 
+%     \item LLM output generation time dominates query latency, and optimizations that reduce the number of inputs the LLM receives significantly improve performance.% We see up to 1.7$\times$ over passing in the full input list to the LLM in our experimental results. 
+% \end{enumerate}
+
+\begin{enumerate}
+    \item How does the request reordering optimization impact query latency across different LLM query types and datasets? 
+    \item What effects do standard optimizations like deduplication and SQL optimizations have on query latency? 
+    \item How does our request reordering algorithm influence LLM accuracy and solver time? 
+\end{enumerate}
+% \begin{enumerate}
+%     \item What is the impact of reordering the inputs we provide to the LLM on the query latency, both within a single prompt and for a batch of prompts? 
+%     %can noticeably reduce query latency.%, up to 3.0$\times$ over unreordered in∂∑puts in our experimental results. 
+%     \item Does reducing the number of inputs the LLM significantly impact end-to-end latency? Does LLM output generation time dominate query latency?
+%     % We see up to 1.7$\times$ over passing in the full input list to the LLM in our experimental results. 
+% \end{enumerate}
+
+% and compare it against baselines without these optimizations. 
+
+\subsection{Evaluation Benchmark}
+\label{sec:queries}
+
+% \begin{table}[t]
+%     \centering
+%     \resizebox{\linewidth}{!}{%
+%         \begin{tabular}{ m{7.5em}  m{16em}}
+%           \toprule
+%           {\bf Parameter} & {\bf Description}  \\
+%         %   \hline
+%             \midrule
+%           Retriever & Structured and unstructured database \\%\hline
+%       Analyzer & LLM, other ML models \\%\hline
+%       Pipeline  & Single-hop, Multi-hop \\%\hline
+%       SQL types & Selection, Projection, Join, Avg \\%\hline
+%       \bottomrule
+%       \end{tabular}
+%   }
+%   \vspace{0.5em}
+%     \caption{Benchmark Query Parameters. \asim{this table isn't referenced anywhere}}
+%     \label{tab:benchmark-table}
+% \end{table}
+
+Given the lack of standard benchmarks for LLM queries, we construct a benchmark suite to represent real-world data retrieval and processing tasks. We create a range of query types over datasets from various sources to assess the impact of integrating LLMs into relational analytics.
+
+% The integration of LLMs into batch analytics and SQL query processing introduces a novel paradigm, yet there exists no benchmark specifically designed to evaluate the performance of such systems. Thus, in our evaluation, we have developed a benchmark suite tailored to assess the efficiency of a variety of LLM queries. 
+
+
+\subsubsection{Datasets}
+
+% Skip the tables 
+% \begin{table}[!t]
+%     \centering
+%     \begin{minipage}{\linewidth}
+%         \centering
+%         \begin{tabular}{|c|c|c|c}
+%             \hline
+%             \textbf{Field} & \textbf{Type} & \textbf{Example} \\
+%             \hline
+%             asin & identifier & 0741304058 \\
+%             \hline
+%             reviewText & string & ``A favorite cd now...'' \\
+%             \hline
+%             verified & boolean & True \\
+%             \hline
+%             overall & double & 5.0 \\
+%             \hline
+%             summary & string & ``Five Stars'' \\
+%             \hline
+%             Format & string & "MP3 Music" \\
+%             \hline
+%             description & list of strings & [``Great CD for babies...'', ``'', ``''] \\
+%             \hline
+%         \end{tabular}
+%     \end{minipage}
+%     \caption{Amazon Products Schema}
+%     \label{tab:products_schema}
+% \end{table}
+
+% \begin{table}[!t]
+%     \centering
+%     \begin{minipage}{\linewidth}
+%         \centering
+%         \begin{tabular}{|c|c|c|c}
+%             \hline
+%             \textbf{Field} & \textbf{Type} & \textbf{Example} \\
+%             \hline
+%             rotten-tomatoes-link & identifier & m/10002114-dark-water\\
+%             \hline
+%             review-type & string & ``Fresh'' \\
+%             \hline
+%             review-content & string & ``Fun, brisk and imaginative'' \\
+%             \hline
+%             top-critic & boolean & True \\
+%             \hline
+%             movie-info & string & ``In this moody...'' \\
+%             \hline
+%         \end{tabular}
+%     \end{minipage}
+%     \caption{Rotten Tomatoes Movies Schema}
+%     \label{tab:movies_schema}
+% \end{table}
+
+We build our benchmark suite on a variety of commonly used datasets for recommendation and natural language processing (NLP) models. \textbf{Amazon Product Reviews}\cite{amazon-product-review-dataset} is a recommendation dataset that contains product reviews and metadata from Amazon. We utilize the 2023 version of the dataset and select the "Handmade Products" category, which consists of 586.6K reviews. We use 15,060 rows of this dataset in our queries. % The schema of this dataset includes  the fields of interest for this dataset is shown in Table \ref{tab:products_schema}.
+\textbf{Rotten Tomatoes Movie Reviews}\cite{rotten-tomatoes-movies-dataset} is a recommendation dataset that stores critic review data along with movie metadata from the popular movie review website Rotten Tomatoes. This dataset consists of 1,130,018 reviews. We use 15,018 rows of this dataset in our queries. %We show part of the schema with fields of interest in Table \ref{tab:movies_schema}. 
+\textbf{Stanford Question Answering Dataset (SQuAD)} \cite{squad-dataset} is a reading comprehension dataset with more than 100,000 rows and consists of questions posed by crowdworkers on a set of Wikipedia articles. The context to every question is a segment of text, or span, from the corresponding reading passage. \textbf{Fact Extraction and Verification (FEVER)}\cite{fever} is a dataset consisting of claims that have been generated by altering sentences from a set of Wikipedia passages. The claims have been classified by human annotaters as either Supports, Refutes, or NotEnoughInfo if the claims is factually correct based off the Wikipedia passages. We use a deduplicated labeled dev set of Fever consisting of 22,862 claims. The Wikipedia dataset contains over 5 million passages.
+% \begin{enumerate}
+%     \item \textbf{Amazon Product Reviews}\cite{amazon-product-review-dataset} is a recommendation dataset that contains product reviews and metadata from Amazon. We utilize the 2023 version of the dataset and select the "Handmade Products" category, which consists of 586.6K reviews. We use 15,060 rows of this dataset in our queries. 
+%     % The schema of this dataset includes  the fields of interest for this dataset is shown in Table \ref{tab:products_schema}.
+%     \item \textbf{Rotten Tomatoes Movie Reviews}\cite{rotten-tomatoes-movies-dataset} is a recommendation dataset that stores critic review data along with movie metadata from the popular movie review website Rotten Tomatoes. This dataset consists of 1,130,018 reviews. We use 15,018 rows of this dataset in our queries. %We show part of the schema with fields of interest in Table \ref{tab:movies_schema}. 
+%     \item \textbf{Stanford Question Answering Dataset (SQuAD)} \cite{squad-dataset} is a reading comprehension dataset with more than 100,000 rows and consists of questions posed by crowdworkers on a set of Wikipedia articles. The context to every question is a segment of text, or span, from the corresponding reading passage. 
+%     % accheng{unclear here}
+%     \item \textbf{Fact Extraction and VERification (Fever)}\cite{fever} is a dataset consisting of claims that have been generated by altering sentences from a set of Wikipedia passages. The claims have been classified by human annotaters as either Supports, Refutes, or NotEnoughInfo if the claims is factually correct based off the Wikipedia passages. We use a deduplicated labelled dev set of Fever consisting of 22,862 claims. The Wikipedia dataset contains over 5 million passages.
+% \end{enumerate}
+ 
+
+
+% \begin{itemize}
+%     \item asin - “id” field, each product has a unique asin
+%     \item reviewText - a plain-text user submitted review for a product.
+%     \item verified - a boolean field that denotes whether a given product is "verified" on Amazon. 
+%     \item description - from the metadata table, description contains a short description for the product.
+% \end{itemize} 
+
+% \begin{itemize}
+%     \item rotten-tomatoes-link - like an “id” field, each movie has a unique rotten-tomatoes-link
+%     \item review-type - “Fresh” or “Rotten” (used in filtering queries)
+%     \item review-content - a plaintext user or critic review for a movie
+%     \item top-critic - a boolean field that denotes whether the author for a review is a "top critic" on the website or not
+%     \item movie-info - from the metadata table, this field contains a short description for the movie
+% \end{itemize}
+% \newline
+
+\subsubsection{LLM Queries}\label{llmqueries}
+Our benchmark suite incorporates a wide range of query types and use cases. We show examples of each query type below. 
+
+% Our query benchmark suite is designed to explore the full spectrum of \sys's capabilities, incorporating a broad range of query types and use cases:
+\vspace{8pt}
+
+\textbf{\textit{Q1/Q5: LLM projection.}} This query type makes calls to an LLM within a \texttt{SELECT} statement to process information from specified database column(s). It reflects common tasks in data analytics in which the LLM is used for summarization and interpretation based on certain data attributes. Q1 passes in a subset of columns from the table, while Q5 passes in the entire table. 
+\vspace{8pt}
+\begin{mdframed}[linecolor=black, linewidth=.5pt]
+\begin{minted}[fontsize=\small]{sql}
+SELECT LLM('Recommend movies for the user based on {movie information} and {user review}', m.info, r.review)
+FROM reviews r JOIN movies m ON r.link = m.link
+\end{minted}
+\end{mdframed} 
+\vspace{8pt}
+\begin{mdframed}[linecolor=black, linewidth=.5pt]
+\begin{minted}[fontsize=\small]{sql}
+SELECT LLM('Given the following fields, answer in ONE word, Yes or No, whether the movie would be suitable for kids.', 
+    mr.*)
+FROM ( SELECT r.*, m.* FROM reviews r JOIN movies m ON r.link = m.link ) AS mr
+\end{minted}
+\end{mdframed} 
+\vspace{8pt}
+\textbf{\textit{Q2: LLM filter.}} This query type leverages LLM for filtering data within a \texttt{WHERE} clause. The LLM processes and analyzes information to meet specific criteria, such as identifying positive reviews. This query type illustrates typical use cases in sentiment analysis and content filtering, which are important for application tasks such as customer feedback analysis and content moderation. 
+\vspace{4pt}
+\begin{mdframed}[linecolor=black, linewidth=.5pt]
+    \begin{minted}[fontsize=\small]{sql}
+SELECT m.movie_title
+FROM Movies m JOIN Reviews r ON r.link = m.link
+WHERE LLM('Analyze whether this movie would be suitable for kids based on {movie information} and {user review}', m.info, r.review) = 'Yes'  
+AND r.rtype == 'Fresh'
+    \end{minted}
+    \end{mdframed} 
+\vspace{8pt}
+
+\textbf{\textit{Q3: Multi-LLM invocation.}} This query type involves multiple LLM calls in different parts of the query and addresses scenarios in which several layers of data processing or analysis are required. It represents advanced analytical tasks, such as combining different data insights or performing sequential data transformations.
+\vspace{8pt}
+\begin{mdframed}[linecolor=black, linewidth=.5pt]
+\begin{minted}[fontsize=\small]{sql}
+SELECT LLM('Recommend movies for the user based on {movie information} and {user review}', m.info, r.review) AS recommendations
+FROM Movies m JOIN Reviews r ON r.link = m.link
+WHERE LLM('Analyze whether this movie would be suitable for kids based on {movie information} and {user review}', m.info, r.review) = 'Yes'  
+AND r.rtype = 'Fresh'
+\end{minted}
+\end{mdframed} 
+\vspace{8pt}
+
+\textbf{\textit{Q4: LLM aggregation.}} This query type incorporates LLM outputs into further query processing. For example, one such query could use LLMs to assign sentiment scores to individual reviews and then aggregate these scores to calculate an average sentiment for overall customer feedback. This query type is essential for tasks that need to extract insights from complex textual data. %clear, actionable overview 
+\vspace{8pt}
+\begin{mdframed}[linecolor=black, linewidth=.5pt]
+\begin{minted}[fontsize=\small]{sql}
+SELECT AVG(LLM('Rate a satisfaction score between 0 (bad) and 5 (good) based on {review} and {info}: ', r.review, m.info)) as AverageScore
+FROM reviews r JOIN movies m ON r.link = m.link
+GROUP BY m.movie_title
+\end{minted}
+\end{mdframed} 
+\vspace{8pt}
+    
+\textbf{\textit{Q6: Retrieval-augmented generation (RAG)}.} This query type leverages external knowledge bases for enhanced LLM processing, enriching LLM queries with broader context. It simulates use cases where queries need to pull in relevant information from external sources, such as document databases or knowledge graphs, to provide comprehensive answers. 
+\vspace{8pt}
+\begin{mdframed}[linecolor=black, linewidth=.5pt]
+\begin{minted}[fontsize=\small]{sql}
+SELECT LLM('Given the following {context}, answer this {question}', VectorDB.similarity_search(s.question), s.question)
+FROM squad s WHERE s.is_impossible = False
+\end{minted}
+\end{mdframed}
+\vspace{8pt}
+% \begin{enumerate}
+%     \item \textbf{\textit{Q1: LLM projection.}} This query type makes calls to an LLM within a \texttt{SELECT} statement to process information from specified database column(s). It reflects common tasks in data analytics in which the LLM is used for summarization and interpretation based on certain data attributes.
+    
+%     \item \textbf{\textit{Q2: LLM filter.}} This query type leverages LLM for filtering data within a \texttt{WHERE} clause. The LLM processes and analyzes information to meet some specified criteria, such as identifying positive reviews. This query type illustrates typical use cases in sentiment analysis and content filtering, which are important for application tasks, such as customer feedback analysis and content moderation. 
+    
+%     \item \textbf{\textit{Q3: Multi-LLM invocation.}} This query type involves multiple LLM calls in different parts of the query and addresses scenarios in which several layers of data processing or analysis are required. It represents advanced analytical tasks, such as combining different data insights or performing sequential data transformations.
+
+%     \item \textbf{\textit{Q4: LLM aggregation.}} This query type incorporates LLM outputs into further query processing. For example, one such query could use LLMs to assign sentiment scores to individual reviews and then aggregate these scores to calculate an average sentiment for overall customer feedback. This query type is essential for tasks that need to extract insights from complex textual data. %clear, actionable overview 
+
+%     \item \textbf{\textit{Q5: LLM Projection (Entire Table)}.} This query type uses multiple columns for each of the Movies and Products dataset. Specifically, 7 columns are used for Movies and 8 are used for Products.  
+    
+%     \item \textbf{\textit{Q6: Retrieval-augmented generation (RAG)}.} This query type leverages external knowledge bases for enhanced LLM processing, enriching LLM queries with a broader context. It simulates use cases where queries need to pull in relevant information from external sources, such as document databases or knowledge graphs, to provide comprehensive answers. 
+% \end{enumerate}
+
+% \begin{enumerate}
+%     \item \textbf{\textit{Q1: Single-Invocation of LLM}} These queries involve a one-time call to an LLM to retrieve or process information.
+%     \item \textbf{\textit{Q2: Multiple Invocations of LLM}} Complex queries that necessitate multiple calls to LLMs, often involving different pieces of information or processing steps.
+%     \item \textbf{\textit{Q3: RAG}} Leveraging retrieval-augmented generation to enhance query processing by incorporating external knowledge sources like vector databases. 
+%     \item \textbf{\textit{Q4: Different SQL Operators}} Including LLMs in filters, joins, or aggregations.
+% \end{enumerate} \accheng{since this query takes significantly longer to run?} \asim{yes -- it involves 2 invocations so it takes much longer}
+
+We run Q1-Q5 on the Amazon Product Reviews and Rotten Tomatoes Movie Reviews datasets and Q6 on SQuAD and FEVER. We evaluate Q1-Q5 on around 15,000 rows of the Movies and Products datasets. For Q6, we evaluate roughly 20,000 questions/claims for both SQuAD and FEVER, where each question retrieves \textit{K=3} contexts to augment its answer. 
+
+
+
+\subsubsection{Evaluation Metrics}
+Our key evaluation metric is the end-to-end query execution time, the most relevant metric for running analytical queries. %\accheng{@shu, because this is what analytical queries care about...?}. 
+Additionally, we analyze the prefix hit rate, which represents the ratio of prefix tokens served from the KV cache and the input token length. This metric corresponds directly to query latency speed-up from the LLM side.
+% While our previous algorithms use PHC as an objective, assuming that the entire value hits on a cell without allowing substring hits, THR is a more precise measure that reflects the actual performance during LLM execution. Thus, we report THR in our evaluation.  
+
+% We also collect statistics on LLM inference performance, including tokens per second (TPS) and requests per second (RPS) processed. 
+% This is a metric to measure the overall effectiveness of our systems in utilizing cached KV to speed-up query processing. 
+% \accheng{what's the diff between token hit rate and hit rate?}
+
+\subsubsection{Experimental Setup} %Hardware and model configurations
+% We collect results for the queries formulated on single L4 machines with 24GB GPU memory, with larger experiments run on A100 machines with 80GB memory. For experiments, we use the LLaMA model with 7B parameters. This model was both lightweight and inexpensive which we considered critical for workloads in this context.  collect results for the queries
+We run experiments on a g2-standard-48 GCP instance (48vCPUs, 192GB RAM) with an NVIDIA L4 GPU accelerator hosted in the us-central1 region. For the LLM endpoint, we use the instruction tuned variant of Meta's LLaMA-3 model with 8B parameters~\cite{llama3}. This model is lightweight and inexpensive to host locally, making it well-suited to analytical tasks. We use vLLM~\cite{vllm} as our model serving engine. For RAG queries, we use a GTE embedding model  (Alibaba-NLP/gte-base-en-v1.5)\cite{li2023towards} to embed the context and use Facebook Similarity Search Library (FAISS) ~\cite{johnson2019billion} to store these context embeddings into an index.
+
+% \accheng{need some more context here? what does FAISS stand for?} \asim{@shu can you elaborate on this above}
+% \begin{enumerate}
+%     \item All instances are hosted in the us-central1 region.
+%     \item For LLM endpoint, we use Meta's LLaMA-2 model with 7B parameters \cite{}.
+%     \item This model was both lightweight and inexpensive to host locally, which we considered critical for workloads in this context \asim{do we need this??}.
+%     \item We use vLLM as our model serving engine with LRU as the prefix cache eviction policy.
+%     \item For RAG queries, we use BGE embedding models (BAAI/bge-large-en-v1.5) to embed the context, and use FAISS to store these context embeddings into an index. 
+% \end{enumerate}
+
+
+
+\begin{figure*}[tbp]
+     \centering
+     \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        % \includegraphics[width=\textwidth]{figures/movies_runtimes_e2e.pdf}
+        \includegraphics[width=\textwidth]{figures/SIGMODfigures/movies.pdf}
+        \caption{Rotten Tomatoes Movies Dataset}
+        \label{fig:movies-runtimes}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        % \includegraphics[width=\textwidth]{figures/products_runtimes_e2e.pdf}
+        \includegraphics[width=\textwidth]{figures/SIGMODfigures/products.pdf}
+        \caption{Amazon Products Dataset}
+        \label{fig:products-runtimes}
+    \end{subfigure}
+
+    %\vspace{-2em}
+    \caption{End-to-end Result: Our optimizations (Cache (\greedy + Dedup + SQL Opt)) achieve 2.1 - 3.0$\times$ on Movie Dataset and 2.2 - 2.8$\times$ speed-up on Product Dataset over Cache with FIFO ordering (Cache(FIFO)). }
+    \label{fig:runtimes}
+\end{figure*}
+
+% \begin{figure*}[tbp]
+%      \centering
+%      \begin{subfigure}[b]{0.48\textwidth}
+%         \centering
+%         \includegraphics[width=\textwidth]{figures/SIGMODfigures/squad.pdf}
+%         \caption{SQuAD Dataset}
+%         \label{fig:squad}
+%     \end{subfigure}
+%     \hfill
+%     \begin{subfigure}[b]{0.48\textwidth}
+%         \centering
+%         \includegraphics[width=\textwidth]{figures/SIGMODfigures/fever.pdf}
+%         \caption{FEVER Dataset}
+%         \label{fig:fever}
+%     \end{subfigure}
+
+%     %\vspace{-2em}
+%     \caption{End-to-end Result: Our optimizations (Cache (\greedy + Dedup)) achieve 2.21 $\times$ on SQuAD Dataset and 2.13 $\times$ speed-up on FEVER Dataset over Cache with FIFO ordering (Cache(FIFO))}.
+%     \label{fig:rag-runtimes}
+% \end{figure*}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.45\textwidth]{figures/SIGMODfigures/rag.pdf}
+    \caption{End-to-end Result: Our optimizations, Cache (\greedy + Dedup + SQL Opt), achieve 2.2$\times$ on SQuAD Dataset and   2.1$\times$ speed-up on FEVER Dataset over Cache with FIFO ordering (Cache (FIFO)).} %\shu{These bars are too wide, need to narrow it a bit; change Cache (GGR) caption to Cache (GGR + Dedup + SQL Opt)}}
+    \label{fig:rag-runtimes}
+\end{figure}
+
+% \begin{figure}[ht]
+%     \centering
+%     \includegraphics[width=0.45\textwidth]{figures/SIGMODfigures/multicol.pdf}
+%     \caption{End-to-end Result: On a query using multiple columns (7 columns for Movies and 8 columns for Products), our optimizations (Cache \greedy + Dedup) achieve 2.6 $\times$ on both the Movies and Products Datasets over Cache with FIFO ordering (Cache FIFO)}
+%     \label{fig:rag-runtimes}
+% \end{figure}
+
+
+\subsection{End-to-End Benchmark Results}
+%\shu{Needs to add a few words about: why do we not evaluate the \optimal algorithm}
+\textbf{\textit{Overview}}. Figures~\ref{fig:runtimes} and~\ref{fig:rag-runtimes} show the end-to-end latency results on our optimization techniques for our full benchmark suite. 
+As baselines, we show the results of not using the KV cache for prefixes (No Cache) and caching without any reordering (Cache (FIFO)). We also measure the impact of caching with our algorithm detailed in Algorithm \ref{alg:greedy}, denoted as Cache (\greedy), and measure it without and with additional optimizations, such as deduplication and SQL optimization (i.e., Cache (\greedy+Dedup+SQL Opt)).  Our evaluation shows that our approach can achieve up to 5.7$\times$ speedup compared to baselines. 
+We do not evaluate the optimal prefix hit recursion algorithm in Section~\ref{sec:optimal} as its exponential complexity makes it infeasible to run over large tables. Even for a small table, the runtime of the algorithm far exceeds the LLM inference time. For example, solving for the optimal ordering with the \optimal algorithm takes several minutes for a 10-row table. 
+% We thus ignore Algorithm~\ref{alg:optimal} and 
+Next, we discuss the evaluation for each query type and the other baselines in detail as below.
+% We constrain the output token length for each experiment run so that we limit the token length variation whether or not we apply 
+
+% We compare our techniques against several baselines: no KV cache, KV cache with FIFO ordering, KV
+
+% including no KV cache and KV cache with original request order. 
+
+% \begin{enumerate}
+%     % \item Cache (with ordering): involves both column reordering and row sorting.
+%     \item \accheng{need to incorporate these details somewhere}
+%     \item Column reordering might change the LLM output. 
+%     \item We constrain the output token length for each experiment run so that we make sure with and without column reordering, the output token length variation is not too much.
+% \end{enumerate}
+
+% Overall, we find noticeable gains in performance using our algorithm for reordering and caching over the naive and non-reordered caching approaches for each of our queries.
+% \begin{enumerate}
+%     \item End-to-end experiments were run including all of our optimizations.
+%     \item Each query was run without prefix caching, using prefix caching without request order optimization, and using prefix caching with request order optimization.
+%     \item Results for Q1-Q4 are shown in Figure \ref{fig:runtimes}. 
+%     \item Results for Q5 are visible in Figure.
+%     \item Our results show that the LLM calls dominate the end-to-end runtime of the query
+%     \item Up to over \textbf{3x} speedup from naive batched requests using our optimizations.
+% \end{enumerate}
+   
+% The optimizations discussed in section 4 are implemented and ablation experiments were run investigating each of them. 
+
+\noindent \textbf{\textit{Q1: LLM projection.}} This query type applies the LLM to selected data for a given task. For the Movie dataset, we use the LLM to recommend some movies to a user based on their review of a given movie. For the Product dataset, we use the LLM to analyze whether the product quality inferred from a user's review matches the quality advertised in the product description.
+
+Compared to our No Cache baseline, we achieve up to 3.7$\times$ speed-up on projection queries in the Movie dataset and 3.6$\times$ speed-up in the Product dataset. 
+% and KV cache with FIFO ordering. \asim{these speedups are over no KV cache, not KV cache with FIFO}%\accheng{update names} 
+This significant speed-up results from the sharing of large prefixes. We observe significant savings by avoiding recomputation on these longer prefixes. The No Cache baseline constructs a prompt for each row in the table and thus sends as many prompts to the LLM as there are rows in the table. No computation is saved by the model itself, and as a result, this method incurs the highest query runtime for each of our queries. 
+% We benchmark against this method with our optimizations. 
+
+% This makes sense, as Q1 was run with the longest instruction prompt for the LLM, including few-shot examples for how to answer the question asked. The total length of this prompt was 172 tokens in the Movie dataset and 141 tokens in the Product dataset. As a result, due to prefix caching, a lot of LLM recomputation is saved, as visible in the speedup from Naive to Cache(Naive). From there, cache token hits are magnified by our reordering optimizations, which brings us the remaining speedup.
+
+We analyze the impact of our optimizations in detail on the Movie dataset. Cache (FIFO) provides a 1.6$\times$ speedup over No Cache since we can now reuse computed tokens for the instruction prompt. Our Cache (\greedy) algorithm ensures that the \textit{movie\_info} column is ordered first and groups requests with similar prefixes together to achieve a further speed-up of 2.0$\times$. Standard techniques like deduplication and SQL optimizations have minimal impact on this query type over the datasets we use. This is because the \textit{review\_content} column contains few duplicates (only 99 rows can be deduplicated), and this query does not include a filter clause. Thus, our ultimate speedup using Cache \greedy and deduplication is 3.7$\times$ over Naive and 2.3$\times$ over Cache (FIFO).
+
+% Analyzing the Movie dataset results in detail, we see speedup with each optimization introduction. 
+% \begin{enumerate}
+%     \item The naive method constructs a prompt for each row in our table using the columns inputted to the UDF, and thus inputs 15,000 prompts to the LLM. No computation is saved by the model itself, and as a result this method incurs the highest query runtime.
+%     \item Adding FIFO prefix caching provides X$\times$ speedup, as computation is saved caching the instruction prompt.
+%     \item To make the caching more effective, we reorder our columns to be able to cache \textit{movie\_info} as well, and sort our rows by this column to make use of caching locality. With this technique, we achieve a further Y$\times$ speedup.
+%     \item Our final optimizations include deduplication of inputs to the LLM and SQL filter optimization. The latter does not apply to Q1 as no filter clause is present. Because \textit{review\_content} is included as part of the prompt in this query, there are only a few (~100 rows) that are  deduplicated, and speedup is marginal.   
+% \end{enumerate}
+
+Our optimizations achieve similar improvements on the Product dataset. Cache (FIFO) improves query latency by 1.6$\times$ over the No Cache baseline. Cache (\greedy) achieves much higher speed-ups by mostly ordering the \textit{description} column first. This column contains many longer prefixes shared across different user reviews. Consequently, we achieve a 3.4$\times$ speedup over the No Cache baseline and a 2.2$\times$ speedup over Cache (FIFO). Like the Movie dataset, deduplication and filter reordering have less impact on this query type, so Cache (\greedy+Dedup+SQL Opt) achieves a 2.3$\times$ speedup over Cache (FIFO) overall. 
+% There is no filter clause, and the \textit{text} column of user reviews contains many unique values. 300 rows are deduplicated, leading to a 2.3$\times$ speedup over only our caching techniques.
+
+% The Product dataset results show similar improvement with each optimization.
+% \begin{enumerate}
+%     \item Adding FIFO prefix caching improves query latency only 1.1x over naive. This is significantly less speedup than in the Movie dataset, and is because the suffix length dominates the prompt token length. Specifically, the Fig\ref{tab:example-alg-values} shows the average token length of the \textit{reviewText} and \textit{desccription} input columns to be 381.54 and 282.56 tokens respectively. The prompt token length itself is only 141 tokens, so even when caching it, the majority of the LLM input must be recomputed.
+%     \item Reordering mitigates the previous issue by allows us to also cache the \textit{description} column with the system prompt. Rows are sorted by this column to make use of caching locality. With this technique, we achieve a 1.7$\times$ speedup over the naive method and 1.5$\times$ speedup over naive caching.
+%     \item Similar to the Movie dataset, the deduplication and SQL filter optimizations have less profound impact in this scenario. No filter cluase is present and \textit{reviewText} is mostly unique. Nonetheless, roughly 2000 rows are deduplicated leading to a further 1.4$\times$ speedup over only caching with reordering. 
+% \end{enumerate}
+
+% \accheng{missing explanation of why we achieve these wins. need to mention cache hit rate results and if the other two optimizations make a difference}
+
+
+\noindent \textbf{\textit{Q2: LLM filter.}} This query type applies LLM as a filtering tool. For the Movie dataset, we filter rows based on a standard SQL operator \textit{review\_type} (with condition ``Fresh'') and an LLM operator (with condition 'Yes'). For the Product dataset, we use rows where the \textit{rating} column is equal to ``5.0'' to filter and the same LLM operator to filter for ``Yes'' for whether a product is suitable for kids.
+
+Our algorithm Cache (\greedy) can achieve 5.6$\times$ speed-up over No Cache in the Movie dataset and 5.2$\times$ in the Product dataset. In the Movie dataset, Cache (FIFO) provides up to 1.9$\times$ speed-up over No Cache since the former saves computation by caching the instruction prompt. Cache (\greedy) provides a further speed-up of 2.1$\times$ by increasing prefix sharing.
+The \textit{review\_content} column has few duplicates, so deduplication has minimal impact. On the other hand, SQL optimizations demonstrate significant performance benefits (e.g., 1.4$\times$ improvement over Cache (\greedy)) because the execution order between the non-LLM and the LLM filter impacts query latency. Pushing the non-LLM filter down first results in only 10,461 rows being passed to the LLM after the first filter (\textit{review\_type} == ``Fresh'') out of the total 15,008 rows in the table.
+
+% Each optimization introduction introduces overall speedup in query latency. 
+
+% In the Movie dataset, ...
+% \begin{enumerate}
+%     \item Adding FIFO prefix caching provides 1.7$\times$ speedup over naive, as computation is saved caching the instruction prompt.
+%     \item Column and row reordering of our inputs provides further 1.6$\times$ speedup. We cache \textit{movie\_info} alongside the instruction prompt and sort our rows by this column to make use of caching locality.
+%     \item Our final optimizations include deduplication of inputs to the LLM and SQL filter optimization. Once again \textit{review\_content} is included as part of the prompt in this query so few prompts are  deduplicated to the LLM. However, Q2 contains both a non-LLM and an LLM filter, the order of execution of which impacts query latency. Pushing the non LLM filter down means that only 10000 rows are passed in to the LLM after the first filter (\textit{review\_type} == ``Fresh'') out of the entire 15000 row table. This results in 1.7$\times$ improvement over caching with reordering. 
+% \end{enumerate}
+
+For the Product dataset, Cache (FIFO) provides a 1.8$\times$ speedup over the No Cache baseline. For Cache (\greedy), we order \textit{description} as the first column and cache it alongside the instruction prompt to increase the cache hit rate. For deduplication, the \textit{text} column has few duplicates, so this optimization has limited impact. Our SQL optimization enables us to push down the non-LLM filter so that only 11,994 rows out of the 15,059 are passed to the LLM after the first filter (\textit{rating} == 5.0). As a result, we achieve 1.4$\times$ improvement over only caching.
+
+% In the Product dataset ... 
+% \begin{enumerate}
+%     \item Adding FIFO prefix caching provides 1.3$\times$ speedup over naive, as computation is saved caching the instruction prompt.
+%     \item Column and row reordering of our inputs provides further 1.6$\times$ speedup over FIFO caching. We cache \textit{movie\_info} alongside the instruction prompt and sort our rows by this column to make use of caching locality.
+%     \item Our final optimizations include deduplication of inputs to the LLM and SQL filter optimization. Once again \textit{review\_content} is included as part of the prompt in this query so few prompts are  deduplicated to the LLM. This query contains both a non-LLM and an LLM filter so the order of execution of these filters greatly impacts query latency. Pushing the non LLM filter down means that only 8874 rows are passed in to the LLM after the first filter (\textit{verified} == True) out of the entire 15000 row table. This results in 2.2$\times$ improvement over caching with reordering. 
+% \end{enumerate}
+
+% With reordering, we bring down the latency v.s. no reordering by X \%. With our SQL optimization techniques, we make sure that we apply the other filter condition first to reduce amount of inputs passed into LLM, then apply the LLM filter on reduced number of rows. We show that by pushing down cheaper predicates, we achieve a further 1.8$\times$ speedup on the Movie dataset and 2.78$\times$ on the Product dataset over only caching and reordering inputs.  \accheng{explain any difference between the two datasets or if no differences, why}
+
+% For evaluation, we perform a query with constrained output to filter on based on the review and description columns as context for both datasets. \accheng{why mention constrained output here if we already mention earlier?}
+
+% \sys is able to achieve X.Y$\times$ speedup in the Movie dataset and X.Y$\times$ in the Product dataset on filter queries. 
+% \begin{enumerate}
+%     \item Q2 uses the LLM as a filter. 
+%     \item Non-LLM condition for both dataset, and LLM condition for both \shu{@asim}
+%     \item Specifically, for Movie dataset we filter {add}, and for Product dataset we filter {add}
+% \end{enumerate}
+
+\noindent \textbf{\textit{Q3: Multi-LLM invocation.}} In this query, we combine Q1 and Q2 for each dataset. We first apply an LLM filter before invoking the LLM again for recommending movies and analyzing products in the \texttt{SELECT} statement. We achieve 4.8$\times$ speed-up over the No Cache baseline on the Movie dataset and 4.2$\times$ on the Product dataset on multiple invocation queries over the No Cache baseline.
+
+For the Movie dataset, Cache (FIFO) provides 2.0$\times$ improvement over the No Cache baseline. Cache (\greedy) provides 1.7$\times$ improvement over Cache (FIFO). Our SQL optimization significantly impacts latency (2.4$\times$ speed-up over FIFO caching and 4.8$\times$ over no caching) for this query type. Since the non-LLM filter selects roughly 5,000 rows, as detailed in the previous query analysis, we significantly reduce the number of LLM invocations. 
+
+For the Product dataset, Cache (FIFO) provides a 1.9$\times$ speedup over No Cache. Our optimizations of Cache (\greedy + Dedup + SQL Opt) provide a further 2.2$\times$ speed-up, leading to a total speedup of 4.2$\times$ over the No Cache baseline. 
+
+% The primary latency improvement in the Q3 experiments once again comes from the SQL filter optimization. 
+
+% Movies
+% \begin{enumerate}
+%     \item FIFO caching provides 1.7$\times$ improvement over naive method.
+%     \item This query is essentially a combination of Q1 and Q2, so speedup is similar along with the causes for speedup.
+%     \item Reordered caching provides 1.4$\times$ improvement over FIFO caching.
+%     \item Applying SQL filter optimization provides an additional 1.3$\times$ speedup over caching with reordering.
+% \item Filter chosen was same as Q2: \textit{review\_type == ``Fresh''}
+%     \item Non LLM filter has a selectivity ratio of 0.7.
+% \end{enumerate}
+
+% Products
+% \begin{enumerate}
+%     \item FIFO caching provides 1.5$\times$ improvement over naive method.
+%     \item Reordered caching provides an additional 1.3 $\times$ improvement over FIFO caching.
+%     \item Applying SQL filter optimization provides an additional 2.2$\times$ speedup over caching with reordering. The filter selected was the same as Q2: \textit{verified == True}.
+%     \item Non LLM filter has a selectivity ratio of 0.7.
+% \end{enumerate}
+
+% \begin{enumerate}
+%     \item We construct the multiple invocation queries by first 
+%     \item Next, a projection invocation to LLM is performed similar to Q1.
+% \end{enumerate} 
+
+\noindent \textbf{\textit{Q4: LLM aggregation.}} In this query, we use the \texttt{AVG} operator to aggregate the average sentiment score on the reviews column with the description column provided as context. For the Movie dataset, we group by \textit{movie\_title} and average over the LLM sentiment score output. For the Product dataset, we group by \textit{parent\_asin} and average over the LLM sentiment score output. We achieve a 3.6$\times$ speed-up in both the Movie and Product datasets over the No Cache baseline on aggregation queries using our optimizations. The results of this query type are similar to that of Q1, as the same columns are passed into the LLM with an instruction prompt of similar length.
+ 
+For the Movie dataset, Cache (FIFO) provides a 1.8$\times$ speed-up over the No Cache baseline. Cache (\greedy) generates an additional 2.2$\times$ speed-up over Cache (FIFO) since the \textit{movie\_info} columns contain many shared values. Like Q1, there is no LLM-filter clause and few duplicates in the \textit{review\_content} column, so not much extra benefit is achieved with these optimizations. As a result, the query latency improvement with all optimizations is 3.6$\times$ over no caching.
+
+For the Product dataset, Cache (FIFO) leads to a 1.6$\times$ speed-up over the No Cache baseline, and Cache (\greedy) brings a 2.2$\times$ speed-up over Cache (FIFO). Like Q1, the \textit{description} column is cached with the instruction prompt. There are marginal deduplication benefits with roughly 300 rows being removed, and the ultimate speedup is 3.6$\times$ over no caching.
+
+% \begin{enumerate}
+%     \item We use the AVG operator to aggregate an average sentiment score on the reviews column with the description column provided as context.
+%     \item For Movie dataset, we group by \textit{movie\_title} and average over the LLM sentiment score output.
+%     \item For Product dataset, we group by \textit{asin} and average over the LLM sentiment score output. 
+% \end{enumerate}
+% The results of this query are similar to that of Q1, as the same columns are passed in to the LLM with an instruction prompt of similar length. Specifically, the length of the instruction prompt was 166 tokens in the Movie dataset and 112 tokens in the Product dataset.
+
+% Movies
+% \begin{enumerate}
+%     \item FIFO caching provides us with 1.9$\times$ speedup over the naive method as we cache the instruction prompt.
+%     \item Reordered prefix caching adds an additional 1.8$\times$ speedup over FIFO caching, since the \textit{movie\_info} columns can be sorted on and cached. 
+%     \item Like Q1, there is no SQL optimization to be made here and few duplicates because of the \textit{review\_content} column. As a result, the query latency is nearly identical to reordered caching. 
+% \end{enumerate}
+
+% Products
+% \begin{enumerate}
+%     \item FIFO caching leads to 1.4$\times$ speedup over the naive method as we cache the instruction prompt.
+%     \item Reordered prefix caching brings 1.5$\times$ speedup over FIFO caching. Similar to Q1, the \textit{description} column is cached with the instruction prompt. 
+%     \item Marginal deduplication benefits can be seen with a 1.1$\times$ improvement over reordered prefix caching with deduplication, with roughly 2000 rows being deduplicated from the original input.
+% \end{enumerate}
+\noindent \textbf{\textit{Q5: LLM Projection (Entire Table).}} We run a projection query for all seven columns for the Movies dataset and all eight columns from the Products dataset as detailed in Section~\ref{llmqueries}. We achieve a 3.7$\times$ speedup over the No Cache baseline on the Movie dataset and a 3.9$\times$ speedup on the Product dataset.
+
+For the Movie dataset, Cache (FIFO) gets 1.4$\times$ speedup over No Cache baseline. For this query, we provide hints of functional dependencies to our algorithm, such as the \textit{`rotten\_tomatoes\_link'}, \textit{`movie\_info'}, and \textit{`movie\_title'} columns. These columns are grouped as they have one-to-one dependencies, so this is an FD for our algorithm. Cache (\greedy) provides a further 2.5$\times$ speedup over Cache (FIFO). It is unlikely to have exact duplicate values across seven columns, so speedup from adding deduplication is minimal. Thus, our final speedup is 3.7$\times$ over No Cache and 2.6$\times$ over Cache (FIFO). For the Product dataset, the columns of \textit{`product\_title'} and \textit{`asin'} have one-to-one dependencies, which serve as the input of the FD to our algorithm. Results on this dataset show that Cache (FIFO) is 1.5$\times$ faster than the No Cache baseline. From here, Cache (\greedy) achieves an extra 2.5$\times$ speedup over Cache (FIFO). The final speedup of our algorithm is 3.9$\times$ over No Cache and 2.6$\times$ over Cache (FIFO). 
+% \begin{itemize}
+%     \item We run a projection query using 7 columns from the Movies dataset and 8 columns from the Products dataset as detailed in \ref{llmqueries}.
+%     \item Movies
+%     \begin{itemize}
+%         \item Cache (FIFO) gets 1.4$\times$ speedup over No Cache baseline.
+%         \item Cache (\greedy) gets further 2.5$\times$ speedup over Cache (FIFO).
+%         \item The functional dependencies here are the 'rotten\_tomatoes\_link', 'movie\_info', and 'movie\_title' columns. These are grouped together.
+%         \item Not likely to deduplicate exact values across 7 columns, so speedup from adding deduplication is minimal.
+%         \item Final speedup is 3.7$\times$ over No Cache and 2.6$\times$ over Cache (FIFO). 
+%     \end{itemize}
+%     \item Products
+%     \begin{itemize}
+%         \item Cache (FIFO) gets 1.5$\times$ speedup over No Cache baseline.
+%         \item Cache (\greedy) gets further 2.5$\times$ speedup over Cache (FIFO).
+%         \item Few duplicate values across columns.
+%         \item Final speedup is 3.9$\times$ over No Cache and 2.6$\times$ over Cache (FIFO). 
+%     \end{itemize}
+% \end{itemize}
+
+
+\noindent \textbf{\textit{Q6: RAG}}. This query is performed on a table of questions and the top three supporting evidence extracted from the SQuAD and FEVER datasets. We achieve a 3.5$\times$ speed-up on the SQuAD and 2.7$\times$ on FEVER over the No Cache baseline. In this experiment, we embed all supporting contexts for a question/claim into a FAISS index. We perform a K-nearest neighbor search on the vector index for each question to fetch the top K relevant contexts, where we choose $K = 3$. The embeddings and retrieval are computed before query time. At runtime, we apply our \greedy algorithm to the table of questions and contexts to maximize cache hits.
+
+For the SQuAD dataset, Cache (FIFO) results in a 1.6$\times$ improvement over No Cache. Cache (\greedy) improves this further with 1.3$\times$ over Cache (FIFO). In this dataset, deduplication yields significant benefits because of the duplicated evidence lists, with only 9,561 prompts passed into the LLM after deduplication. Thus, the final speedup is 2.2$\times$ over Cache (FIFO) and 3.5$\times$ over No Cache.
+
+For the FEVER dataset, Cache (FIFO) provides a 1.3$\times$ speedup over No Cache. Cache (\greedy) presents a further 1.9$\times$ speedup over Cache (FIFO). Roughly 3,000 out of 20,000 prompts are deduplicated. Thus, the final speedup is 2.1$\times$ over Cache (FIFO) and 2.7$\times$ over No Cache.
+
+\noindent \textbf{Prefix Hit Rate.} We also measure the prefix hit rate (\%) for Cache (FIFO) and Cache (\greedy) for the query types in Figure~\ref{fig:runtimes}. This metric represents the ratio of tokens that can be served from the KV cache over all tokens in the input prompt. It indicates the effectiveness of the KV cache and is directly correlated with latency performance. On the Movie dataset, Cache (\greedy) achieves an average hit rate of 83.8\% while Cache (FIFO)'s average hit rate is 47.4\%. Across queries, Cache (\greedy) provides between a 22.9--45.7\% token hit rate improvement over Cache (FIFO). On the Product dataset, Cache (\greedy) achieves an average hit rate of 83.9\% while Cache (FIFO) has an average hit rate of 48.3\%. Cache (\greedy) overall can achieve 25.1--46.2\% hit rate improvement over Cache (FIFO) across different query types. %\accheng{maybe also add the raw values for context? what's a typical good cache hit rate for KV caches?}
+
+% \subsection{Row-Reordering Ablations}
+% We fix the column ordering for dataset and perform ablation experiments varying the row ordering across different queries. In this experiment, we run the same query as described in the previous section but without constraining the output token length. The end-to-end result shows that our approach achieves up to 2$\times$ on Movie, and 1.5$\times$ speedup on Product.
+
+% \begin{table}[!t]
+%     \begin{tabular}{l|r|r|l}
+%     \toprule
+%     Column Name   & \multicolumn{1}{l|}{ASL} & \multicolumn{1}{l|}{Cardinality} & Score \\ \midrule
+%     ``description'' & 282.56                  & 144                     & 29460.80  \\ \hline
+%     ``reviewText''  & 381.54                  & 12932                  & 442.97  \\ \hline
+%     ``Format''       &  8.93                 & 16                     & 8379.69 \\ \bottomrule
+%     \end{tabular}
+%     \caption{Column statistics for Product table.}
+%     \label{tab:products-alg-values}
+%     \vspace{-2em}
+% \end{table}
+% % 
+
+% \begin{table}[!t]
+%     \begin{tabular}{l|r|r|l}
+%     \toprule
+%     Column Name   & \multicolumn{1}{l|}{ASL} & \multicolumn{1}{l|}{Cardinality} & Score \\ \midrule
+%     ``movie\_info'' & 407.27                  & 68                     &  89946.78 \\ \hline
+%     ``review\_content''  & 131.50                  & 14977                   & 131.86  \\ \hline
+%     ``review\_type''       & 5.3                   & 2                     & 39797.7 \\ \bottomrule
+%     \end{tabular}
+%     \caption{Column statistics for Movie table.}
+%     \label{tab:movies-alg-values}
+%     \vspace{-2em}
+% \end{table}
+
+
+\begin{figure}[t!]
+     \centering
+     \begin{subfigure}[b]{0.48\columnwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/SIGMODfigures/movies_hr.pdf}
+        \caption{Movie Dataset}
+        \label{fig:cdf_size}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\columnwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/SIGMODfigures/products_hr.pdf}
+        \caption{Product Dataset} 
+        \label{fig:cdf_freqs}
+    \end{subfigure}
+    \label{fig:cachehitrate}
+    \caption{Cache Hit Rate Ablation. We illustrate the cache hit rate improvements achieved by Cache (\greedy) compared to Cache (FIFO), showing up to a 46\% increase on both the Product dataset and Movie datasets.}
+\end{figure}
+
+\begin{figure}[t!]
+     \centering
+    \includegraphics[width=.65\linewidth]{figures/SIGMODfigures/order_ablation.pdf}
+    \caption{Request Ordering Ablation. The default request order is the order of the original table. Execution with our algorithm (\greedy Request Order) achieves 2.5$\times$ speedup and 2.9$\times$ speedup on end-to-end query latency on Movie and Product Dataset, respectively.}
+    \label{fig:col_ordering}
+\end{figure}
+
+\subsection{Impact of Request Reordering} 
+% \accheng{Movie and Product naming?}
+To measure the effect of request reordering, we evaluate how overall query latency changes under varying request orders on an LLM projection query similar to Q1. For this set of experiments, three columns provide input data into the LLM invocations from both the Movie and Product datasets. Figure \ref{fig:col_ordering} shows the query latency results for the default request order as well as the best request order outputted by our algorithm. 
+
+For the Movie dataset, we use the \circled{1} \textit{movie\_info}, \circled{2} \textit{review\_type}, and \circled{3} \textit{review\_content} columns in the query. The default column order in execution is \circled{3}:\circled{2}:\circled{1}, whereas the \greedy puts \circled{1} first most often, followed by \circled{2} and then \circled{3}. Unsurprisingly, caching the \textit{movie\_info} column, which is repeated across different reviews of the same movie, produces a large speed-up of 2.5$\times$ over the default ordering (\textit{review\_content} first). While the \textit{review\_type} column has many shared values (there are only two unique values across the entire dataset), the length of each field is one token in length since the value is either ``Fresh'' or ``Rotten''. Due to the quadratic cost of LLM inference in regards to input length, it makes more sense to cache the \textit{movie\_info} column first as it has the longest average token length, resulting in large prefixes that improve performance significantly when they are shared across requests.
+% \accheng{how long is it? why is it short?} 
+
+    % Movies
+    % \begin{enumerate}
+    %     \item For the movies dataset, we choose the \textit{movie\_info}, \textit{review\_type}, and \textit{review\_content} columns. 
+    %     \item Column metadata is shown in Fig \asim{insert column metadata table}.  
+    %     \item Unsurprisingly, caching the \textit{movie\_info} column, which is repeated for multiple reviews on the same movie, produces the fastest query runtime at 2.0x improvement over the worst ordering of \textit{review\_content} first. 
+    %     \item While the \textit{review\_type} column has many shared values across the dataset with only 2 unique values, its length is too short to see prefix caching benefits. 
+    %     \item The \textit{movie\_info} column also has the longest average length, and as a result the prompt prefix to suffix ratio is high. This further improves the speedup in caching this column. 
+    % \end{enumerate}
+
+     % \accheng{why is the formatting of the col names different?}\asim{I use the default column names from the dataset?} 
+
+For the Product dataset, we choose the \circled{1} \textit{description}, \circled{2} \textit{rating}, and \circled{3} \textit{text} columns. The default column order in execution is \circled{3}:\circled{2}:\circled{1}, whereas \greedy puts \circled{1} first most often, followed by \circled{2} and then \circled{3}. Caching the \textit{description} column, which is repeated across reviews of the same product, produces a speed-up of 2.9$\times$ improvement over the default ordering (\textit{text} first). While the \textit{rating} column has many shared values across the dataset (with only five unique values total), its length is too short, containing integer values between one and five, that are one token in length.
+
+
+% \accheng{how long is it? why is it short?}  \accheng{in general or under our query?}
+% thus the ratio of prefix to suffix length for the prompts in the products dataset is lower. \accheng{do you mean reviewText avg len is shorter than movie\_info avg len?} \asim{no, it's longer. that's why there's not as much improvement as in Movie dataset, because here even though the description is cached, the suffixes are longer}
+
+    % Products
+    % \begin{enumerate}
+    %     \item For the products dataset, we choose the \textit{description}, \textit{format}, and \textit{reviewText} columns. 
+    %     \item Column metadata is shown in Fig \asim{insert column metadata table}.  
+    %     \item As expected, caching the \textit{description} column, which is repeated for multiple reviews on the same product, produces the fastest query runtime at 1.5x improvement over the worst ordering of \textit{reviewText} first. 
+    %     \item While the \textit{format} column has many shared values across the dataset with only 17 unique values, its length is too short to see prefix caching benefits. 
+    %     \item The improvement here is less than the movies dataset for two primary reasons: (1) The description column in the products dataset isn't replicated as often for our query. (2) The \textit{reviewText} column has the longest average length, and thus the ratio of prefix to suffix length for the prompts in the products dataset is lower.
+    % \end{enumerate}
+
+\subsection{Impact of Standard Optimizations}
+
+\subsubsection{Deduplication}
+We investigate the effects of basic deduplication in detail for our setting. We construct queries based on Q1 while changing the specific LLM column inputs. Specifically, we vary the selection of columns passed into the LLM for analysis based on their cardinality. 
+% \accheng{vary the column order?} \asim{better?} \accheng{still confused, do you mean: vary which columns are passed in based on their cardinality?} 
+Before LLM invocation, we deduplicate exact input prompt matches and pass only the first occurrence of each distinct prompt into the LLM. Figure~\ref{fig:dedup} shows the results on the Movie and Product datasets.
+
+% \accheng{is this correct (pass in only 2 cols at a time)?} \asim{yes this is how this experiment was run}
+For the Movie dataset, we pass in the \textit{movie\_info} column alongside either the \textit{review\_type}, \textit{review\_score}, or \textit{review\_content} columns. For these columns, the deduplication speedup is 18.4$\times$, 4$\times$, and 1.1$\times$, respectively. This is expected, as the \textit{review\_type} column has only two distinct values while the \textit{review\_score} column has only five distinct values, so the query with these columns is often deduplicated. In contrast, the \textit{review\_content} column contains mostly unique values, with only 99 rows deduplicated out of 15,018.
+
+\begin{figure}[t!]
+     \centering
+     \begin{subfigure}[b]{0.48\columnwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/SIGMODfigures/movies_dedup.pdf}
+        \caption{Movie Dataset}
+        \label{fig:dedup_movie}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\columnwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/SIGMODfigures/products_dedup.pdf}
+        \caption{Product Dataset} 
+        \label{fig:dedup_products}
+    \end{subfigure}
+    \caption{Deduplication Ablation. Exact prompt matches are deduplicated before going into the LLM. For the lowest cardinality column on each of the Movie (review\_type: 2) and Product tables (rating: 5), deduplicating inputs leads to 18.4$\times$ and 9.3$\times$ faster query execution, respectively.}
+    \label{fig:dedup}
+\end{figure}
+
+\begin{figure}[t!]
+% \centering
+% \includegraphics[width=0.48\textwidth]{figures/selectivity.pdf}
+% \caption{Selectivity Ablation. Different columns are filtered on with resulting rows passed into LLM invocation. The lowest selectivity of the non LLM-filter for each the Movie table (0.13) yields a 6.7$\times$ faster query runtime than filtering with the LLM first.}
+    \centering
+     \begin{subfigure}[b]{0.48\columnwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/SIGMODfigures/movies_selectivity.pdf}
+        \caption{Movie Dataset}
+        \label{fig:movie_selectivity}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\columnwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/SIGMODfigures/products_selectivity.pdf}
+        \caption{Product Dataset} 
+        \label{fig:product_selectivity}
+    \end{subfigure}
+    \caption{Selectivity Ablation. Different columns are filtered on with resulting rows passed into LLM invocation. The lowest selectivity of the non-LLM filter for each of the Movie and Product tables (0.3 and 0.2, respectively) yields 4.2$\times$ and 3.4$\times$ faster query runtimes than filtering with the LLM first.}
+    \label{fig:selectivity}
+\end{figure}
+
+For the Product dataset, we pass in the \textit{description} column alongside either the \textit{rating}, \textit{review\_title}, or \textit{text} column.
+% pass in the \textit{description} column with either the \textit{summary} or \textit{reviewText} column as LLM inputs. We also pair the \textit{title} column with the \textit{overall} column as input to the LLM. 
+% \accheng{unclear what this means}
+The \textit{rating} column, which captures the review score, has only five distinct values, so the query with this column has 9.3$\times$ faster runtime than the no deduplication baseline. On the other hand, the \textit{review\_title} and \textit{text} columns do not contain many duplicate values as they are mostly unique to each user. As a result, deduplication achieves only 1.1$\times$ speedup for each. 
+
+% We investigate the effect of deduplicating requests to the LLM in query execution and observe the query runtime. 
+% \begin{enumerate}
+%     \item We construct queries similar to Q1, varying the columns passed in to the LLM for analysis based on the cardinality of the column.
+%     \item Prior to LLM invocation, we deduplicate exact prompt matches and pass only the first occurence of the prompt into the LLM.
+%     \item Movies
+%     \begin{enumerate}
+%         \item We pass in the \textit{movie\_info} column along with the \textit{review\_type}, \textit{review\_score}, and \textit{review\_content} columns.
+%         \item \textit{review\_type} has only 2 distinct values, so the query with this column had a runtime 8.2x faster than no deduplication.
+%         \item \textit{review\_score} similarly has only 5 distinct values, so the query with this column had a runtime 3.3x faster than no deduplication.
+%         \item \textit{review\_content} is mostly unique, with only 99 rows being deduplicated out of 15000. As a result, the differences in runtime for this query with deduplication is negligble.
+%     \end{enumerate}
+%     \item Products
+%     \begin{enumerate}
+%         \item We pass in the \textit{description} column with the \textit{summary} and \textit{reviewText} columns and the \textit{title} column with the \textit{overall} column. 
+%         \item The \textit{overall} column has just 5 values representing a review score, so the query with this column had a runtime 1.9x faster than no deduplication. 
+%         \item Both the \textit{summary} and \textit{reviewText} do not share many duplicate values as they are properties of a user review, and as a result deduplication achieves only 1.1x speedup for each. 
+%     \end{enumerate}
+% \end{enumerate}
+% Figure \ref{fig:multiple-invocations-runtimes} displays end to end time runtime 
+% results for the queries listed in Figure \ref{fig:multi-invoke}. A 2.3x speedup is observed from naive execution to our optimized execution of the query for the movies dataset. A 1.9x speedup is observed with the Amazon products dataset. 
+
+\input{evaluation/table}
+
+\subsubsection{SQL Optimizations}
+Finally, we investigate the effects of our SQL optimizations. Specifically, we evaluate the latency impact of varying the order in which filter clauses for LLM queries are applied. We construct queries identical in structure to Q2 and vary the column(s) to filter on, alongside the LLM predicate of whether the movie/product is suitable for kids. %\accheng{what is the LLM predicate?}). 
+We measure the overall query runtime for two scenarios: (1) the LLM filter and (2) the non-LLM filters are executed first. 
+We choose columns to filter on alongside the LLM based on their \textit{selectivity ratio}, measured as the ratio of LLM input size to the table size. Figure~\ref{fig:selectivity} shows query latency as a factor of selectivity ratio. 
+% \accheng{what does choose columns mean? we just vary the selectivity ratio right?} \asim{different columns are being used to do filtering to get different number of inputs into LLM}
+
+For the Movie dataset, we choose the columns \textit{review\_type} and \textit{top\_critic} to filter on. We construct queries filtering with each possible value in \textit{review\_type} (``Fresh'', ``Rotten'') and as well as a combination of values (\textit{review\_type} == ``Fresh'' \& top\_critic = False). We find that, as expected, query latency decreases as selectivity decreases since fewer inputs are being passed into the LLM. At the lowest selectivity level in this experiment (0.3), applying this filter order optimization yields a 4.2$\times$ faster overall runtime than executing the LLM filter first. For the Product dataset, we choose the columns \textit{rating} and \textit{price}. We construct query filtering with each possible value in \textit{verified} (True, False) along with a filter on \textit{price} > 15. Like the Movie dataset, query latency decreases with fewer inputs being passed in at a lower selectivity. At the lowest selectivity level in this experiment of 0.3, applying this filter order optimization yields a 3.4$\times$ faster runtime overall over executing the LLM filter first. 
+% We investigate the effect of pulling up non-LLM filter clauses prior to the LLM filter clause in an ablation experiment and observe the query runtime.
+% \begin{enumerate}
+    % \item We construct queries identical in structure to Q2, and vary the column(s) to filter on alongside the LLM filter.
+    % \item Written naively, these queries will execute the LLM filter first on the entire table before applying the non-LLM filters. 
+    % \item We collect the runtime in two scenarios: (1) the LLM filter is executed first; (2) the non LLM filters are executed first. 
+    % \item We choose columns to filter on alongside the LLM based on their \textit{selectivity ratio}, measured as the ratio of inputs to the LLM to the table size. \asim{does selectivity ratio need to be explained in a DB paper??}
+    % \item Movies
+    % \begin{enumerate}
+    %     \item We choose the columns \textit{review\_type} and \textit{top\_critic}. We ran queries filtering with each possible value of \textit{review\_type} ("Fresh", "Rotten") and "top\_critic" (True, False), and additionally ran a query filtering with a combination of those values (\textit{review\_type} = Fresh \& top\_critic = True).
+    %     \item We intuitively see that query runtime decreases as selectivity decreases. We were surprised to find that the improvement was linear with the number of requests, indicating similar request token length for different queries constructed in this dataset. 
+    % \end{enumerate}
+%     \item Products \accheng{products results not in yet}
+%     \begin{enumerate}
+%         \item We choose the columns "summary", "verified", and "overall" columns. 
+%         \item We ran queries filtering the 
+%     \end{enumerate}
+% \end{enumerate}
+
+% \todo{Use the stage breakdown plot, plot it in matplotlib, no gray grid, use large font (i.e. 20)}
+
+% \subsubsection{SQL Optimization}
+% We evaluate the speedup in optimizing execution within the SQL engine of complex queries with multiple filter steps at various selectivities for the non LLM filter. Results are shown in Figure \ref{fig:selectivity}. We can see an obvious and intuitive speedup in end-to-end runtime for execution when evaluating the non-LLM filter first, with the speedup increasing as selectivity decreases. 
+
+
+
+\subsection{Algorithm Analysis} %\asim{this title is a bit confusing/vague}
+\subsubsection{Impact of Reordering on Accuracy} %\shu{write in paragraph, no bullet points. for any paragraphs like this with one or two sentences more than a line just rephrase and make it shorter}
+In this section, we evaluate the effect of our reordering algorithm \greedy on the accuracy of LLM queries. Since our algorithm changes the order in which data fields are placed in the prompt inputted into the model, we want to ensure that doing so does not affect the quality of the LLM outputs. We select the Movie and FEVER datasets for our experiment. For the Movie dataset, we run the filter expression from Q2 as described in Section~\ref{llmqueries}. The LLM outputs either "Yes" or "No" on whether a movie is suitable for kids given movie\_info and review\_description fields. We randomly sample 100 rows and manually label them as the ground truth for the query. We run the experiment with two columns (Movies) and seven columns (Movies-Full). For the Product dataset, we run Q5 from Section~\ref{llmqueries} on the Fever Dataset. Given a claim and three pieces of evidence, the LLM is asked to determine if the claim is factually correct, outputting SUPPORTS, REFUTES, or NOT ENOUGH INFO. The FEVER dataset already contains ground truth labels for all 22,682 rows.
+
+We run all three experiments against the Llama-3-8B-Instruct model and GPT-4o. We measure accuracy as the percentage of exact matches between the LLM output and the ground truth labels. As Movies and Movies-Full only have 100 labeled rows, we employ statistical bootstrapping \cite{bootstrapping}. We perform 10,000 bootstrap runs, where on each bootstrap, we sample a new dataset from the original dataset with replacement and calculate the accuracy of this sampled dataset. This gives us a distribution of accuracy measurements across all 10,000 runs.
+
+In Table~\ref{tab:accuracyresults}, we show the mean over all of the bootstrap runs and a 90\% confidence interval for accuracy. Across the board, we see that the accuracy distribution of \greedy ordering is within 5\% accuracy of the original ordering. The only exception is Fever with Llama3-8B, in which the ordering with \greedy performs significantly better than the original. This is due to the \greedy algorithm preferring to place the "claim" column at the end of the prompt instead of at the beginning. However, the same behavior does not hold for GPT-4o, showing that higher-quality models are more robust to column reordering.
+
+\subsubsection{Algorithm Overheads}
+
+Table~\ref{tab:solvertimes} shows the \greedy algorithm overheads on each of our experiment datasets. The solver is run on the Movies, Products, and SQuAD datasets with an early stopping threshold of group size 2. In the recursive process, if the max group found is size two or lower, we fall back to the column orderings for the sub-tables using table statistics.  We use an early stopping threshold of 1,000 on the FEVER dataset. The FEVER dataset requires the longest solving time using \greedy, with a mean solver time of 90 seconds. This dataset has the highest number of unique groups, so the recursive depth is also the highest. The Movies, Products, and SQuAD datasets require a solver time between 20 and 30 seconds, which is small compared to the LLM inference time, which is generally in the range of tens of minutes. Adding deduplication following our algorithm adds only linear time overhead, so its impact on end-to-end latency is minimal. The deduplication step can even be skipped if it is inferred from table statistics that there are many unique values.
+% \shu{Add a few sentences on the algorithm overhead of dedup (over many distinct tables, say if the table statistics indicate that many distinct value, it does not worth doing dedup )} 
+
+%\asim{shu: review this analysis}
+
+\input{evaluation/e2e_runtimes}
+\input{evaluation/rag_e2e_runtimes}

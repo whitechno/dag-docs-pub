@@ -1,0 +1,106 @@
+\begin{itemize}
+    \item \textit{Q1/Q5: LLM Projection}
+    \vspace{8pt}
+\begin{mdframed}[linecolor=black, linewidth=.5pt]
+\begin{minted}[fontsize=\small]{sql}
+SELECT LLM('Recommend movies for the user based on {movie information} and {user review}', m.info, r.review)
+FROM reviews r JOIN movies m ON r.link = m.link
+\end{minted}
+\end{mdframed} 
+\vspace{4pt}
+\begin{mdframed}[linecolor=black, linewidth=.5pt]
+\begin{minted}[fontsize=\small]{sql}
+SELECT LLM('Given the following fields, answer in ONE word, 'Yes' or 'No', whether the movie would be suitable for kids.', 
+    mr.*)
+FROM ( SELECT r.*, m.* FROM reviews r JOIN movies m ON r.link = m.link ) AS mr
+\end{minted}
+\end{mdframed} 
+
+    \vspace{8pt}
+    \item \textit{Q2: LLM Filter}
+    \vspace{8pt}
+    
+    \begin{mdframed}[linecolor=black, linewidth=.5pt]
+    \begin{minted}[fontsize=\small]{sql}
+SELECT m.movie_title
+FROM Movies m JOIN Reviews r ON r.link = m.link
+WHERE LLM('Analyze whether this movie would be suitable for kids based on {movie information} and {user review}', m.info, r.review) = 'Yes'  
+AND r.rtype == 'Fresh'
+    \end{minted}
+    \end{mdframed} 
+    \vspace{8pt}
+
+    
+    \item \textit{Q3: Multi-LLM invocation}
+    \vspace{8pt}
+\begin{mdframed}[linecolor=black, linewidth=.5pt]
+\begin{minted}[fontsize=\small]{sql}
+SELECT LLM('Recommend movies for the user based on {movie information} and {user review}', m.info, r.review) AS recommendations
+FROM Movies m JOIN Reviews r ON r.link = m.link
+WHERE LLM('Analyze whether this movie would be suitable for kids based on {movie information} and {user review}', m.info, r.review) = 'Yes'  
+AND r.rtype = 'Fresh'
+\end{minted}
+\end{mdframed} 
+    \vspace{8pt}
+    
+\item \textit{Q4: LLM Average}
+\vspace{10pt}
+\begin{mdframed}[linecolor=black, linewidth=.5pt]
+\begin{minted}[fontsize=\small]{sql}
+SELECT AVG(LLM('Rate a satisfaction score between 0 (bad) and 5 (good) based on {review} and {info}: ', r.review, m.info)) as AverageScore
+FROM reviews r JOIN movies m ON r.link = m.link
+GROUP BY m.movie_title
+\end{minted}
+\end{mdframed} 
+    \vspace{8pt}
+%     \item \textit{Q5: LLM Projection (Entire Table)}
+% \vspace{10pt}
+% \begin{mdframed}[linecolor=black, linewidth=.5pt]
+% \begin{minted}[fontsize=\small]{sql}
+% SELECT LLM('Given the following fields, answer in ONE word, 'Yes' or 'No', whether the movie would be suitable for kids.', 
+%     mr.*)
+% FROM ( SELECT r.*, m.* FROM reviews r JOIN movies m ON r.link = m.link ) AS mr
+% \end{minted}
+% \end{mdframed} 
+%     \vspace{8pt}
+    \item \textit{Q6: RAG}
+    \vspace{8pt}
+\begin{mdframed}[linecolor=black, linewidth=.5pt]
+\begin{minted}[fontsize=\small]{sql}
+SELECT LLM('Given the following {context}, answer this {question}', VectorDB.similarity_search(s.question), s.question)
+FROM squad s WHERE s.is_impossible = False
+\end{minted}
+\end{mdframed}
+% \begin{mdframed}[linecolor=black, linewidth=.5pt]
+% \begin{minted}[fontsize=\small]{sql}
+% SELECT
+%     LLM("You are given 3 pieces of evidence as {evidence_1}, {evidence_2}, and {evidence_3}. You are also given a claim as {claim}. Answer SUPPORTS if the pieces of evidence support the given {claim}, REFUTES if the evidence refutes the given {claim}, or NOT ENOUGH INFO if there is not enough information to answer. Your answer should just be SUPPORTS, REFUTES, or NOT ENOUGH INFO and nothing else.",
+%         VectorDB.similarity_search(f.claim) AS evidence_1, evidence_2, evidence_3,
+%         f.claim
+%     FROM fever f
+% \end{minted}
+% \end{mdframed}
+%     \vspace{8pt}
+
+%     \item \textit{Q6: Different SQL Operators (Join)} \shu{Not sure this is a good example}
+%     \vspace{8pt}
+% \begin{mdframed}[linecolor=black, linewidth=.5pt]
+% \begin{minted}[fontsize=\small]{sql}
+%  SELECT 
+%     p.product_id, 
+%     p.product_desc, 
+%     r.review_content
+% FROM Reviews r
+% JOIN 
+%     Products p ON p.product_id = (
+%         SELECT product_id
+%         FROM VectorDB.similarity_search(
+%             LLM("Extract product mention from {review}", r.review_content),
+%             p.product_desc
+%         )
+%         LIMIT 1
+%     )
+% \end{minted}
+% \end{mdframed} 
+    \vspace{8pt}
+\end{itemize}

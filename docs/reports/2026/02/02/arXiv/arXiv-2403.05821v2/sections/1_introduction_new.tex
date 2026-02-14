@@ -1,0 +1,98 @@
+\section{Introduction}
+% Shu 
+% Start with MLSys example, one of the most impactful applications of batch inferece is data analysis with LLMs, All the major analytical databases; make it easier to . batch analytics --> large amount of data, for example, database vendors; dataframe. Using this with the new API , users can write a SQL query of the following 
+
+% One of the main use cases (data analysis apps), and say this pattern is not too optimized, even tho we build great servers take the batch and do batching ,aslo need analytical system to do something to optimize the hit rate 
+
+% SQL thing should be shown as an example, with this API, write the query as the following 
+
+% Batch data analytics worklaods
+% Widely used applications for LLMs (to LLM, MLSYs people, one of your applications) 
+
+% A lot of parts still talk about SQL, pick a consistent naming and use it throughout 
+
+% Present it as an insight (what level should we reorder, discover that it is important to do it per row) 
+%%%%%%%%%%%%%%%%%%%%%%%%%
+% \asim{i feel like the first sentence could use some work}
+% Large Language Models (LLMs) are changing the landscape of textual data analysis.
+
+One of the most popular applications of large language model (LLM) batch inference is data analytics. 
+A growing number of analytics platforms now support LLM invocations for complex analytical tasks. 
+For instance, leading database vendors, such as 
+    AWS Redshift~\cite{aws-redshift-llm}, Databricks~\cite{databricks-ai-functions}, and Google BigQuery~\cite{google-bigquery-llm}, have integrated LLM functionality into their SQL APIs. 
+    Similarly, DataFrame libraries and programming frameworks~\cite{langchain, lotus} offer LLM support for querying relational (table-based) data. 
+With these new APIs, users can write queries like the following: 
+% \souj{You could consider starting with - Many leading database vendors...}
+
+\vspace{2pt}
+\begin{mdframed}[linecolor=black, linewidth=.5pt]
+\begin{minted}[fontsize=\small]{sql}
+SELECT user_id, request, support_response, 
+  LLM('Did {support_response} address {request}?', support_response, request) AS success
+FROM customer_tickets 
+WHERE support_response <> NULL
+\end{minted}
+\end{mdframed}
+\vspace{-1pt}
+where the LLM is invoked for each row in the customer ticket table to analyze whether the customer service requests are effectively addressed. 
+Increasingly, analysts wish to leverage LLMs in such queries for tasks including classification, entity extraction, summarization, and translation~\cite{databricks-ai-functions}. Going forward, we will refer to queries that invoke LLMs over relational data as \textit{LLM queries}.
+
+Unfortunately, applying LLMs to real-world datasets (which can contain millions of rows) incurs significant computational and monetary costs.       
+% \souj{Is this dollar cost for 1M or 15K rows? High latency low cost vs low latency but high cost tradeoff isn't coming through} NOT SURE how to deal with this yet
+Accordingly, there has been growing research on LLM inference optimization.
+In particular, recent work~\cite{vllm, sglang, cascade-inference, hydragen, promptcache} leverages prompt caching, a technique that stores the attention states of frequently reused prompt segments in GPU memory, known as key-value (KV) cache ~\cite{attention-is-all-you-need}. Reusing cached state whenever a similar \textit{prefix} of prompts appears again can significantly reduce inference latency~\cite{sglang}. 
+In addition, prompt reuse also brings economic benefits.
+Recently, providers like OpenAI, Anthropic, and Google Gemini~\cite{openai-pricing, anthropicpromptcaching, gemini} have introduced prompt caching as a service, charging 2--10$\times$ less for cached prompts.  
+Therefore, maximizing \textit{prefix hits} in the prompt KV cache is crucial for reducing both LLM request time and monetary costs.
+% Reusing prefixes in the cache has also been shown to have an outsized impact on performance.
+
+However, simply invoking LLMs over relational data within analytical engines and connecting to a backend inference server with a prompt cache often results in low cache hit rates. This approach fails to exploit relational workloads to fully maximize cache reuse. 
+% \shu{@joey: it's not about memory resource only; even with infinite memory, changing field-order improve hit rates; need to address both (columns) to get }
+
+% However, existing LLM inference systems are mostly optimized for online serving workloads---they process requests as soon as they arrive, typically in a first-in, first-out (FIFO) order. Thus, they miss out on opportunities to improve performance by potentially re-ordering requests and taking advantage of the offline relational workloads information. \shu{have batch APIs, vague, change something in the analytical system to maximize cache reuse; take DB that makes LLM requests and connect it with a server with prompt cache, might still get a very low hit rate, in this paper, we show how modifying the analytical engine can greatly improve the hitrate}
+
+% We introduce various techniques that reduce end-to-end query latency, dominated by LLM request latency. 
+In this work, we identify and present solutions to optimize relational data analytics workloads for offline LLM inference.
+In particular, given an LLM query, we propose \textbf{request reordering} at the row and field granularity of the relational data. 
+Our key insight is that, with oracular knowledge of all requests to be sent to the LLM, we can reorder both the requests and the fields inside each request to increase the number of cache hits. 
+In real datasets, there can be many sharing opportunities across rows and fields. For example, joining feature tables, referencing popular items, or repeating similar context in RAG queries~\cite{retrieval-augmented-generation}.
+These common patterns lead to repeating values in different fields, leaving rooms for significantly improving cache hit rates by optimizing request order and format. 
+
+% creating more chances for prompt prefix cache hits when requests are reordered. Optimizing request order and format in these cases can significantly boost cache hit rates.
+
+% Tables with joined user reviews and item metadata are common and include many shared values across metadata fields for each unique review. 
+% In typical datasets, numerous opportunities for sharing across rows and fields naturally arise due to common use cases, such as joining with feature tables, referencing popular items, or retrieving similar contexts in retrieval-augmented generation (RAG) queries. 
+% These settings often include repeating values across fields or rows, such as shared metadata for frequently queried items, which increases the potential for prompt prefix KV cache hits when request order and format are optimized.
+% Changing the order and format of requests will markedly increase the prompt prefix KV cache hit rate in these cases. 
+
+
+
+% For instance, two requests that share the same prefix (which may be non-consecutive under FIFO ordering) should be passed to the LLM together so that the latter can experience a cache hit. 
+% Likewise, in requests that input multiple fields of data (e.g., product name and review) into the LLM, the fields should be ordered to maximize the number of shared prefixes.
+% In real datasets, there can be many sharing opportunities across columns and rows, so changing the order and format of requests will markedly increase the prompt prefix KV cache hit rate.
+
+% 
+% Finding the optimal ordering of requests is challenging due to the exponential number of choices to order the fields and rows of data in a query. For a table with $n$ rows and $m$ fields, there are $n \times m!$ potential orderings. 
+Finding the optimal ordering of requests is challenging due to the exponential number of choices to order the fields and rows of data in a query. For a table with $n$ rows and $m$ fields, there are $n! \times (m!)^n$ potential orderings. 
+One way to reduce this search space is to apply the same field ordering across all rows. However, as we show in Sec~\ref{subsec:casestudy}, this can reduce the prefix hit count by up to a factor of $m$ compared to reordering fields on a more fine-grained, per-row basis.
+% While one could dramatically reduce this number by using the same field reordering for all rows, this is a poor option, as it can reduce the hit rate by as much as $m\times$ compared to reordering the fields per-row basis. 
+% \ion{This is hard to understand. An example would be nice.} \shu{we are going to show it can be as worst as} 
+%While a fixed field ordering for all rows is straightforward, we show that it can yield as much as $m$ times fewer cache hits than tailored field orderings for different rows.
+To support per-row field reordering, we introduce \textbf{Optimal Prefix Hit Recursion (\optimal)}, an algorithm that divides the table into smaller subtables and reorders each subtable to maximize the prefix hits. While \optimal achieves high hit rates, its complexity is exponential, which makes it impractical for large datasets. To address this challenge, we propose \textbf{Greedy Group Recursion (\greedy)}, an approximate algorithm that leverages functional dependencies (such as primary and foreign key relationships from the data schema) and table statistics, which are readily available in many databases and analytics systems, to reduce the search space.
+In particular, functional dependencies help identify correlated fields, reducing the number of fields that need to be reordered at each step, thus decreasing the solver runtime.
+% In particular, we use functional dependencies to identify which fields will be correlated early in the recursive algorithm, thereby reducing the solver runtime. 
+%if we decide on the ordering early 
+% This way, \greedy narrows down the columns it needs to process at each step, reducing runtime while providing close-to-optimal performance. 
+In addition, \greedy leverages the cardinality and length statistics to efficiently approximate the greedy objective. 
+% \souj{Priorities are not introduced and the last line seems too abrupt or too low-level for an intro?} it is talked about in the previous two sentences, table statistics + func dependency 
+
+% , including Amazon Product Review~\cite{amazon-product-review-dataset}, Rotten Tomatoes Movie Dataset~\cite{rotten-tomatoes-movies-dataset}, Stanford Question Answering Dataset (SQuAD)\cite{squad-dataset}, and FEVER Dataset~\cite{}
+We implement our techniques in Apache Spark~\cite{zaharia2012resilient} and use vLLM~\cite{vllm} as the model serving backend. 
+Due to the lack of standard workloads in this area, we build a benchmark suite of 16 LLM queries of different types, spanning selection, projection, multi-LLM invocations, and retrieval-augmented generation (RAG) queries~\cite{retrieval-augmented-generation}. We evaluate these queries on recommendation and question-answering datasets such as Amazon Product Reviews, Rotten Tomatoes Movies, BIRD, Stanford Question Answering Dataset, Public Domain MusicXML, RateBeer Reviews, and Fact Extraction and VERification datasets~\cite{amazon-product-review-dataset, rotten-tomatoes-movies-dataset, li2024can, squad-dataset, pdmx, fever}. Our techniques show 1.5 -- 3.4$\times$ speed-up in end-to-end query latency and reduce costs by up to 32\% on proprietary model APIs, while preserving query semantics. In summary, our contributions are as follows: 
+\vspace{-0.5em}
+\begin{itemize}
+    \item We identify significant opportunities to speed up LLM-based batch data analytics through reordering rows and fields of input tables.  
+    \item We introduce an optimal reordering algorithm (\optimal) that maximizes prefix sharing but with exponential complexity. 
+    We propose an efficient greedy algorithm (\greedy) that approximates \optimal by leveraging functional dependencies and table statistics. We show that a fixed field ordering can yield as much as $m$ (number of fields) times worse cache hits than our solution.
+    \item We present an LLM query benchmark consisting of 16 queries and 7 real-world datasets to represent a range of retrieval and processing tasks. Our evaluation with Llama3-8B and 70B shows up to a 3.4$\times$ speedup in end-to-end query latency compared to naive orderings. With OpenAI and Anthropic prefix cache pricing models, our techniques reduce costs by up to 32\%.
+\end{itemize}

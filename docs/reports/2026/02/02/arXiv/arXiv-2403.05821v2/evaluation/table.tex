@@ -1,0 +1,147 @@
+\renewcommand{\arraystretch}{1} % Adjust row height for better spacing
+
+
+
+% \begin{table}[h]
+%     \centering
+%     \begin{tabularx}{\columnwidth}{lllcc}
+%     \hline
+%     \textbf{Dataset}                      & \textbf{Model}                                                                 & \textbf{Ordering} & \textbf{Mean}              & \textbf{90\% CI}             \\ \hline
+%     \multirow{4}{*}{Movies}      & \multirow{2}{*}{\begin{tabular}[c]{@{}l@{}}Llama-3\\ 8B-Instruct\end{tabular}} & Original          & 88.0\%                     & 82-93\%                     \\
+%                                           &                                                                                & GGR               & 88.0\%                     & 83-93\%                     \\
+%                                           & \multirow{2}{*}{GPT-4o}                                                        & Original          & \multicolumn{1}{l}{89.0\%} & \multicolumn{1}{l}{84-94\%} \\
+%                                           &                                                                                & GGR               & \multicolumn{1}{l}{92.0\%} & \multicolumn{1}{l}{87-96\%} \\ \hline
+%     \multirow{4}{*}{Movies-Full} & \multirow{2}{*}{\begin{tabular}[c]{@{}l@{}}Llama-3\\ 8B-Instruct\end{tabular}} & Original          & 88.0\%                     & 83-93\%                     \\
+%                                           &                                                                                & GGR               & 87.0\%                     & 81-92\%                     \\
+%                                           & \multirow{2}{*}{GPT-4o}                                                        & Original          & \multicolumn{1}{l}{91.0\%} & \multicolumn{1}{l}{86-95\%} \\
+%                                           &                                                                                & GGR               & \multicolumn{1}{l}{93.9\%} & \multicolumn{1}{l}{90-98\%} \\ \hline
+%     \multirow{4}{*}{Fever}       & \multirow{2}{*}{\begin{tabular}[c]{@{}l@{}}Llama-3\\ 8B-Instruct\end{tabular}} & Original          & 44.2\%                     & 44-45\%                     \\
+%                                           &                                                                                & GGR               & 56.5\%                     & 56-57\%                     \\
+%                                           & \multirow{2}{*}{GPT-4o}                                                        & Original          & \multicolumn{1}{l}{73.5\%} & \multicolumn{1}{l}{73-74\%} \\
+%                                           &                                                                                & GGR               & \multicolumn{1}{l}{70.7\%} & \multicolumn{1}{l}{70-71\%} \\ \hline
+%     \end{tabularx}
+%     \vspace{1mm}
+%     \caption{The accuracy of the original column ordering v.s. the GGR ordering. For each order, the LLM output is compared against ground truth labels to determine the accuracy of the responses. For each dataset, we perform statistical bootstrapping \cite{bootstrapping} to get a distribution of accuracy measurements across 10,000 runs. Mean is the average across all the bootstrap runs, and 90\% CI represents a 90\% confidence interval for the accuracy.}
+%     \label{tab:accuracyresults}
+
+%     % \hspace{1cm}
+
+% \end{table}
+% \begin{table*}[ht]
+% \centering
+% \renewcommand{\arraystretch}{1.2}
+% \setlength{\tabcolsep}{4pt} % Adjust column padding for compactness
+% \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} l c cccccc cccccc cccccc}
+% \hline
+% \textbf{Model} & \textbf{Ordering} & \multicolumn{2}{c}{\textbf{Movies}} & \multicolumn{2}{c}{\textbf{Products}} & \multicolumn{2}{c}{\textbf{BIRD}} & \multicolumn{2}{c}{\textbf{PDMX}} & \multicolumn{2}{c}{\textbf{FEVER}} \\
+%  & & \small \textbf{Mean} & \small \textbf{90\% CI} & \small \textbf{Mean} & \small \textbf{90\% CI} & \small \textbf{Mean} & \small \textbf{90\% CI} & \small \textbf{Mean} & \small \textbf{90\% CI} & \small \textbf{Mean} & \small \textbf{90\% CI} \\
+% \hline
+
+% Llama-3-8B-Instruct & Original & \small 94.0\% & \small 93-99\% & \small 95.9\% & \small 92-99\% & \small 67.0\% & \small 59-75\% & \small 81.2\% & \small 75-88\% & \small 44.2\% & \small -- \\
+%  & GGR      & \small 97.0\% & \small 94-99\% & \small 95.0\% & \small 91-98\% & \small 67.0\% & \small 59-75\% & \small 74.0\% & \small 67-81\% & \small 56.5\% & \small -- \\
+% \hline
+
+% Llama-3-70B-Instruct & Original & \small 86.0\% & \small 80-92\% & \small 96.0\% & \small 93-99\% & \small 82.0\% & \small 76-88\% & \small 92.0\% & \small 87-96\% & \small -- & \small -- \\
+%  & GGR      & \small 90.0\% & \small 85-95\% & \small 97.0\% & \small 94-99\% & \small 82.9\% & \small 77-89\% & \small 82.0\% & \small 75-88\% & \small -- & \small -- \\
+% \hline
+
+% GPT-4o & Original & \small 96.0\% & \small 93-99\% & \small 99.0\% & \small 97-100\% & \small 84.0\% & \small 78-90\% & \small 87.9\% & \small 82-93\% & \small -- & \small -- \\
+%  & GGR      & \small 93.0\% & \small 89-97\% & \small 97.0\% & \small 94-99\% & \small 83.0\% & \small 77-89\% & \small 83.0\% & \small 77-89\% & \small -- & \small -- \\
+
+% \hline
+% \end{tabular*}
+% \caption{The accuracy of the original column ordering v.s. the GGR ordering. For each order, the LLM output is compared against ground truth labels to determine the accuracy of the responses. For each dataset, we perform statistical bootstrapping \cite{bootstrapping} to get a distribution of accuracy measurements across 10,000 runs. Mean is the average across all the bootstrap runs, and 90\% CI represents a 90\% confidence interval for the accuracy.}
+% \label{tab:accuracyresults}
+% \end{table*}
+
+% \begin{table*}[ht]
+% \centering
+% \renewcommand{\arraystretch}{1.2}
+% \setlength{\tabcolsep}{2pt} % Reduce column padding for compactness
+% \small
+% \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} p{1.7cm}<{\centering} p{1.5cm}<{\centering} cccccc cccccc cccccc cccccc}
+% \hline
+% \multirow{2}*{\textbf{\small Model}} & \multirow{2}*{\textbf{\small Ordering}}  & \multicolumn{2}{c}{\textbf{\small Movies}} & \multicolumn{2}{c}{\textbf{\small Products}} & \multicolumn{2}{c}{\textbf{\small BIRD}} & \multicolumn{2}{c}{\textbf{\small PDMX}} & \multicolumn{2}{c}{\textbf{\small Beer}} & \multicolumn{2}{c}{\textbf{\small FEVER}} \\
+%  & & \footnotesize Mean & \footnotesize 90\% CI & \footnotesize Mean & \footnotesize 90\% CI & \footnotesize Mean & \footnotesize 90\% CI & \footnotesize Mean & \footnotesize 90\% CI & \footnotesize Mean & \footnotesize 90\% CI & \footnotesize Mean & \footnotesize 90\% CI \\
+% \hline
+
+% \footnotesize{8B-Instruct} & \footnotesize{Original} & \small 94.0\% & \small 93-99\% & \small 95.9\% & \small 92-99\% & \small 67.0\% & \small 59-75\% & \small 81.2\% & \small 75-88\% & \small 86.9\% & \small 81-92\% & \small 44.2\% & \small -- \\
+%  & \footnotesize{GGR}      & \small 97.0\% & \small 94-99\% & \small 95.0\% & \small 91-98\% & \small 67.0\% & \small 59-75\% & \small 74.0\% & \small 67-81\% & \small 81.1\% & \small 74-87\% & \small 56.5\% & \small -- \\
+% \hline
+
+% \footnotesize{70B-Instruct} & \footnotesize{Original} & \small 86.0\% & \small 80-92\% & \small 96.0\% & \small 93-99\% & \small 82.0\% & \small 76-88\% & \small 92.0\% & \small 87-96\% & \small 93.0\% & \small 89-97\% & \small -- & \small -- \\
+%  & \footnotesize{GGR}      & \small 90.0\% & \small 85-95\% & \small 97.0\% & \small 94-99\% & \small 82.9\% & \small 77-89\% & \small 82.0\% & \small 75-88\% & \small 90.0\% & \small 85-95\% & \small -- & \small -- \\
+% \hline
+
+% \footnotesize{GPT-4o} & \footnotesize{Original} & \small 96.0\% & \small 93-99\% & \small 99.0\% & \small 97-100\% & \small 84.0\% & \small 78-90\% & \small 87.9\% & \small 82-96\% & \small 90.0\% & \small 85-95\% & \small -- & \small -- \\
+%  & \footnotesize{GGR}      & \small 93.0\% & \small 89-97\% & \small 97.0\% & \small 94-99\% & \small 83.0\% & \small 77-89\% & \small 83.0\% & \small 77-89\% & \small 87.0\% & \small 81-92\% & \small -- & \small -- \\
+
+% \hline
+% \end{tabular*}
+
+% \caption{The accuracy of the original column ordering v.s. the GGR ordering. For each order, the LLM output is compared against ground truth labels to determine the accuracy of the responses. We achieve \shu{@amog}}
+% \label{tab:accuracy_results}
+% \end{table*}
+
+\begin{figure*}[tbp]
+     \centering
+     \begin{subfigure}[b]{0.33\textwidth}
+        \centering
+        % \includegraphics[width=\textwidth]{figures/movies_runtimes_e2e.pdf}
+        \includegraphics[width=\textwidth]{figures/MLSys_Figures/8b.pdf}
+        \caption{Meta-Llama-3-8B-Instruct}
+        \label{fig:movies-runtimes}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.33\textwidth}
+        \centering
+        % \includegraphics[width=\textwidth]{figures/products_runtimes_e2e.pdf}
+        \includegraphics[width=\textwidth]{figures/MLSys_Figures/70b.pdf}
+        \caption{Meta-Llama-3-70B-Instruct}
+        \label{fig:products-runtimes}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.33\textwidth}
+        \centering
+        % \includegraphics[width=\textwidth]{figures/products_runtimes_e2e.pdf}
+        \includegraphics[width=\textwidth]{figures/MLSys_Figures/gpt.pdf}
+        \caption{OpenAI GPT-4o}
+        \label{fig:products-runtimes}
+    \end{subfigure}
+
+    \vspace{-1em}
+    \caption{Accuracy of original v.s. \greedy ordering: we perform statistical bootstrapping to get a distribution of exact match accuracy measurements across 10,000 runs. The numbers indicate the difference in the median accuracy of \greedy compared to the original ordering.}
+    % \SHU: put this into foot note: Note that since FEVER has 22,665 labeled rows, the bootstrapping results have much less variance compared to the other datasets.
+    % For each dataset, we perform statistical bootstrapping \cite{bootstrapping} to get a distribution of exact match accuracy measurements across 10,000 runs. 
+    % \caption{Box plot of exact match accuracy of the original column ordering v.s. \greedy ordering. For each dataset, we perform statistical bootstrapping \cite{bootstrapping} to get a distribution of exact match accuracy measurements across 10,000 runs. The numbers indicate the difference in median accuracy of \greedy ordering compared to the original ordering. Note that since FEVER has 22,665 labeled rows, the bootstrapping results have much less variance compared to the other datasets. \shu{make this font bigger}}
+    \label{fig:accuracy}
+    \vspace{-0.5em}
+\end{figure*}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% \begin{table}
+%     \centering
+%     \begin{tabularx}{\columnwidth}{X X X X r}
+%         \hline
+%         \textbf{Dataset} & \textbf{Rows} & \textbf{Columns} & \textbf{Mean Solver Runtime (s)} \\ \hline
+%         {Movies}   & 15019   & 7                & 20.7 \\ \hline
+%         {Products} & 15058         & 8                & 26.2  \\ \hline
+%         {SQuAD}    & 19928         & 4                & 33.1   \\ \hline
+%         {FEVER}    & 22681         & 4                & 90.4          \\ \hline
+%     \end{tabularx}
+%     \vspace{1mm}
+%     \caption{\greedy algorithm solver times across datasets. \greedy takes the longest on FEVER, followed by SQuAD, Products, and Movies, which have similar solver times.}   %\shu{re-explain the caption: rows, columns, etc.}} % We collect results with early\_stop as group size 1000 for FEVER and size 2 for the others.
+%     \label{tab:solvertimes}
+% \end{table}
