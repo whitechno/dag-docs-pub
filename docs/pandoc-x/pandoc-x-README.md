@@ -125,3 +125,27 @@ CONTENT_FILTERS = tee # Use this to add sed filters or other piped commands
 $(CONTENT) | $(CONTENT_FILTERS) | $(PANDOC_COMMAND) $(ARGS) $(PDF_ARGS) --resource-path=book -o $@
 ```
 
+Overall workflow
+----------------
+
+In git repo: `.md sources + .svg figures` — all text, all diffable.
+
+Build step (local or CI): `.md → .tex (pandoc) → .pdf (xelatex)`,
+`.svg → .pdf (rsvg-convert)`. You could write a small Makefile or script for
+this.
+
+Overleaf: It's its own git repo under the hood but with a different purpose —
+collaborative LaTeX editing.
+
+Two approaches:
+1. Overleaf as the final stage: Convert your .md to .tex once, upload to
+   Overleaf with the PDF figures, and do final polish there. Overleaf doesn't
+   handle .md or .svg natively.
+2. Keep them separate: Git repo is the source of truth (Markdown + SVG),
+   Overleaf is just for the submission-ready LaTeX. You'd sync manually when
+   ready.
+
+Either way, Overleaf will need .tex and .pdf figures — it can't use .md or .svg
+directly. So the conversion step happens regardless, it's just a question of
+when.
+
