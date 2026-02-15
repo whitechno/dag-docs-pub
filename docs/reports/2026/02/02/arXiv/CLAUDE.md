@@ -75,3 +75,10 @@ rm -rf build
 ```text
 make pdf
 ```
+
+## Added page numbers for easier reference
+
+In `arXiv-2403.05821v2/example_paper.tex` added after line 159:
+```latex
+\fancyfoot[C]{\raisebox{-20pt}{\thepage}} % to show page number at bottom center without affecting the text layout
+```
