@@ -1,0 +1,177 @@
+\vspace{-0.8em}
+\section{Problem Setup}
+% \textbf{LLM Request Structure.} 
+This section introduces the problem setup of maximizing prefix hits in the prompt cache (Sec~\ref{subsec:setup}) and highlights cases where naive fixed field ordering can result in significantly lower hit rates (Sec~\ref{subsec:casestudy}).
+
+
+\begin{figure*}[tbp]
+     \centering
+     \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        % \includegraphics[width=\textwidth]{figures/movies_runtimes_e2e.pdf}
+        \includegraphics[width=\textwidth]{figures/MLSys_Figures/casestudy1.pdf}
+        \caption{Distinct Values in the First Field}
+        \label{fig:cases-1}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        % \includegraphics[width=\textwidth]{figures/products_runtimes_e2e.pdf}
+        \includegraphics[width=\textwidth]{figures/MLSys_Figures/casestudy.pdf}
+        \caption{Group of Identical Values in each Field, $m = 3$}
+        \label{fig:cases-2}
+    \end{subfigure}
+
+    \vspace{-0.5em}
+    \caption{\textbf{Case Study of Fixed Field Ordering:} Comparing the PHC of a fixed field ordering to a better ordering in two scenarios. Green boxes denote cache hits; red boxes indicate cache misses. A box labeled $G_{i}$ signifies consecutive rows share the same values in Field $i$; otherwise, assume values are distinct. Fig~\ref{fig:cases-1} shows fixed field ordering can be $(n-1)(m-1)$ worse in terms of PHC compared to an optimized ordering. Fig~\ref{fig:cases-2} shows fixed field ordering can be $m$ times worse in PHC compared to an optimized ordering, where $m = 3$.}
+    \label{fig:runtimes}
+    \vspace{-1.5em}
+\end{figure*}
+\vspace{-0.5em}
+\subsection{Setup and Objective}
+\label{subsec:setup}
+% \accheng{@shu, is json format common for existing apps/workloads?}
+In this work, we consider a generic LLM operator that takes the text of the prompt as well as a \emph{set} of expressions listing one or more fields $\{T.a, T.b, T.c\}$ or $\{T.*\}$ of the table $T$. This simple design can be easily implemented in most analytics systems and enables us to dynamically reorder fields within these expressions to optimize for cache efficiency. Consider the following example query:
+% Since cache hits occur only for the request prefixes, determining the right order of columns in SQL queries can significantly impact performance. 
+
+\vspace{-0.13em}
+\begin{mdframed}[linecolor=black, linewidth=.5pt]
+\begin{minted}[fontsize=\small]{sql}
+SELECT LLM("Summarize: ", pr.*) 
+FROM (
+    SELECT review, rating, description
+    FROM reviews r JOIN product p ON r.asin = p.asin
+) AS pr
+\end{minted}
+\end{mdframed} 
+\vspace{-0.2em}
+
+This query sends a list of rows, each with fields \textit{review}, \textit{rating}, and \textit{description} from table \textit{pr} to the LLM for a summarization task. 
+
+% Starting with \textit{review} is inefficient due to its many distinct values, which reduces prefix sharing. Placing \textit{description} first increases shared prefixes, as more reviews link to the same product. Effective reordering must balance prefix frequency and length to optimize cache reuse.
+
+
+% \textbf{Objective} 
+\textbf{Objective} The goal of request scheduling is to \textbf{maximize} the \textit{prefix hit count} by optimizing the order of fields and rows of an input table with $n$ rows and $m$ fields. 
+Each row may have a different field order. 
+We represent a request schedule as a list of tuples $L$, where each tuple in $L$ represents a row in the table, and the tuple elements contain the field values. 
+We adjust the row order by rearranging the tuples in $L$, and adjust the field order for that row by rearranging the elements within each tuple. 
+We pass each tuple alongside the user question to form an input request to the LLM. %input requests and a prefix prompt to the LLM, where each row serves as an input request. 
+% Each row is encoded in standard JSON format, with field names prepended to values to indicate their corresponding fields.
+
+
+% Each tuple in $L$ corresponds to a row, and the elements of the tuple correspond to the values within the columns. 
+
+We define the \textit{prefix hit count} (PHC) of $L$ as the number of consecutive field cell values shared with the previous row starting from the first cell, summing over all $n$ rows. 
+Each cell value must exactly match the corresponding cell of the previous row (cannot be a substring), and cell values past the first must match consecutively (must be a prefix). 
+% We assume that the previously seen prefix must match the entire value of a previous cell, and cannot be a substring. 
+Formally, a cell in the list of tuples is denoted as $L[r][f]$, indicating the value in tuple $r$ at position $f$. Then, the PHC for a list of tuples $L$ with $n$ rows and $m$ fields is given by: %\asim{it's a little confusing to me that we use r and c for the indexing but then say n rows and m fields}
+% $\text{PHC}(T) = \sum_{i=1}^{n} \max_{1 \leq j \leq m} \textit{hit}(T_{i,j})
+% $. 
+\vspace{-1.5em}
+
+\begin{equation}
+\text{PHC}(L) = \sum_{r=1}^{n} \textit{hit}(L, r)
+\label{eq:phc}
+\end{equation}
+\vspace{-1.5em}
+
+Here, the function $\textit{hit}(L, r)$ represents the prefix hit count for a single row $r$ in $L$. For simplicity, we assume that the input list is sorted. For each row $r$, the function checks if the value in each field $f$ matches any previously seen value in the same field of the previous row $r-1$. If all previous fields match, the hit count is the sum of the squares of the lengths of the values in those fields until a mismatch occurs. The squared lengths reflect the quadratic complexity of token processing in LLM inference, where each token computation depends on every preceding token and increases computational cost quadratically with input length. 
+% \shu{make it clear about the Tuple index, tuple has order that represents column ordering; have to sort to make things work, previous rows (overlap), simplify by looking at, assuming at least one row fits into KV cache; n-1 (how much overlap, assume cache is large enough to reuse for previous few rows)}
+
+% It is defined as the length of the concatenated string of cell values for row $i$ from column $1$ to $j$, if and only if all the concatenated cell values exactly match the previously seen concatenated cell values in the same columns.
+
+% Defined over all previous rows 
+% \begin{equation}
+% \textit{hit}(L, r) = \max_{0 \leq c < m}
+% \begin{cases} 
+% \sum_{t=0}^{c-1} \text{len}(L[r][t])^2 & \text{if } \FORall t \leq c, L[r][t] = L[x][t] \\
+% & \quad \exists x \text{ s.t., }  0 \leq x < r \\
+% %& \quad \max\left(0, r -q \right) \leq x < r \\
+% 0 & \text{otherwise}
+% \end{cases}
+% \label{eq:hit}
+% \end{equation}
+\vspace{-2em}
+
+\begin{equation}
+\textit{hit}(L, r) = \max_{0 \leq c < m}
+\begin{cases} 
+\sum_{f=1}^{c} \text{len}(L[r][f])^2 & \text{if } \forall f \leq c, \\ & L[r][f]= \\ & L[r-1][f] \\
+
+%& \quad \max\left(0, r -q \right) \leq x < r \\
+0 & \text{otherwise}
+\end{cases}
+\label{eq:hit}
+\end{equation}
+\vspace{-1.5em}
+
+
+To simplify the design, we make two assumptions. 
+First, we make a common assumption that at least one tuple (row) can fit into the KV cache to allow reuse.
+Second, we assume that a cell value only counts as a hit if it exactly matches a previously seen value -- substring matches are not allowed. 
+% Second, we assume that cell values do not have substring hits: a cell value must match the entire value of a previously seen cell to count as a hit. 
+This is a reasonable assumption in relational databases, where exact value repetition is common and extensively leveraged by storage optimization techniques like run-length encoding~\cite{lemire2011reordering}. Column-oriented storage systems such as C-Store and Parquet~\cite{stonebraker2018c} also benefit from many exact repetitions in columnar data.
+These assumptions simplify design and, as shown in Sec.~\ref{sec:evaluation}, demonstrate good real-world performance.
+
+
+% This simplifies the design. 
+% \shu{what are the implications of these assumptions on performance? for this one, can we say we simplify both prefix checks and the structure of hits, in reality this achieves good token hit rate improvements as well even within the field?}
+%\shu{is this enough for justifying just look at previous row and sort?}
+% \shu{pessimistic framing}
+
+
+
+\subsection{Case Study: Fixed Field Ordering}
+\label{subsec:casestudy}
+% \shu{say at the beginning result up front, next we are going to show: can increase the hit rate by $m$ x of hit rate}
+% \begin{figure}
+%     \vspace{-1em}
+%     \centering
+%     % \includegraphics[width=0.49\textwidth]{figures/SIGMODfigures/prefix_hit_maximization.pdf}
+%     \includegraphics[width=0.49\textwidth]{figures/MLSys_Figures/casestudy.pdf}
+%     \vspace{-1.5em}
+%     \caption{\textbf{Example of Fixed Field Ordering:} Comparing the PHC of fixed ordering to a better ordering in a $3x \times 3$ table. The green box represents cache hits of $x$ rows; the red box represents cache misses. The box marked with $G_{i}$ means $x$ rows contain the same values, otherwise assume the values are all distinct.}
+%     \label{fig:optimal}
+% \end{figure}
+
+% For example, columnar storage systems like C-Store and Parquet~\cite{} leverage diverse repetitions in columnar data for compression. Run-length encoding (RLE) methods exploit complex table reordering to group data for storage efficiency~\cite{}. Multi-relational data mining~\cite{} and correlation analysis of tables~\cite{} highlight the existence of diverse data correlations and exploit them for query optimization.
+% Additionally, fields may be filtered or searched differently by queries, leading to different data groupings based on access patterns. Database cracking [Idreos, 2007] and multi-dimensional clustering (MDC) [Chen, 2012], including Delta Lake Z-order [Armbrust, 2020], reorganize data based on workloads to improve query performance.
+
+% Relational data typically has a fixed field order across rows, which can lead to lower hit rates in real-world relational databases that exhibit diversity in data patterns (described in Sec~\ref{sec:motivation}). 
+Relational data typically uses a fixed field order across rows, which can lead to lower hit rates in real-world databases with diverse data patterns (Sec~\ref{sec:motivation}).
+In fact, we show that using a fixed order can reduce the hit rate by up to $m$ times compared to a per-row field reordering.
+To illustrate this, we begin with a simple example and extend it to show the potential impact of a naive fixed field ordering on prefix hit counts (PHC). 
+% we analyze a case study showing 
+% \ion{Say the result upfront, e.g., we show that with fixed re-ordering the hit rate can reduce by $m\times$ as compared to per-row field reordering; then, the rest should be about how you arrive to this result.}
+First, consider a table $T$ with $n$ rows and $m$ fields arranged in an arbitrary (default) order. 
+For simplicity, we assume each value is of length one.
+In many cases, certain fields of an input table may contain highly unique values, like timestamps or IDs. 
+In the worst case, suppose the first field of the table contains only unique values (Fig~\ref{fig:cases-1}), and the remaining $m-1$ fields contain the same value across all rows. 
+This ordering yields $0$ PHC. 
+A more optimized ordering (Fig~\ref{fig:cases-1}) will place the other $m-1$ fields first, yielding a PHC of $(n-1) \times (m-1)$. Each of the $n-1$ rows has a hit after the initial cold miss, and the length of each hit is $m-1$. 
+
+% Suppose there are $k$ groups $G_1, ..., G_{k}$ in field $i$, each with $x$ rows containing the same value where $x < n$.
+% For instance, selecting $G_{1,{i}}$ as the leading field for $x$ rows, and then $G_{2,{i+1}}$ or other groups for subsequent sections can raise the achievable PHC to $m \times (x-1)$. 
+Now consider a scenario where the table contains groups of consecutive rows with identical values (not necessarily in the same field). 
+Suppose each field $i$ has one such group with $x$ consecutive rows of the same value, with other $n-x$ rows having distinct values, where $n$ is the number of rows. 
+We denote the group appearing in the $\text{Field}_i$ as $G_i$, so we have $G1, ..., G_{m}$ groups, where $m$ is the number of fields. 
+Now, consider a scenario where groups in consecutive fields are non-overlapping across rows, as shown in Fig~\ref{fig:cases-2}. 
+With fixed field reordering, the PHC of this structure is limited to $x-1$ no matter which field is prioritized. 
+By contrast, a better ordering would rearrange the field order for different rows to prioritize groups with shared values. 
+Fig~\ref{fig:cases-2} references a table with $3x$ rows and 3 fields. A naive fixed field ordering for all rows will result in misses on two groups, each with $x$ rows in $\text{Field}_{2}$ and $\text{Field}_{3}$. However, a better ordering will pick different $\text{Field}_{j}$ to prioritize for different rows, resulting in a 3 times higher hit rate of $3(x-1)$.
+
+In the above scenario, PHC improvements from optimized field ordering can reach $m$ times that of a fixed field ordering. For example, there can be multiple (instead of just one) such groups in each field. 
+% with equal length and frequency and groups in consecutive columns are non-overlapping rows
+If each field contains roughly the same number of such groups, dynamic reordering for different rows can achieve as much as an $m$-fold improvement in PHC over fixed field ordering. 
+Under the OpenAI pricing model, which charges half price for cached prompts, optimizing field order for a table with nine fields could yield 42\% in cost savings compared to fixed field ordering, assuming fixed ordering has a 10\% hit rate (e.g., $\frac{(x-1)}{n} = 10$). 
+% If we have an input table of 9 fields, the fixed field ordering can be $9$ times worse than a better ordering. If fixed ordering has 10\%, then there is an ordering of hit rate 90\% which translate to 42\% potential cost savings under the OpenAI pricing models.
+This example highlights the benefits of a more complex field reordering mechanism for different rows on PHC.
+
+% This example underscores the performance gains achievable by adapting field order to align with shared prefixes, highlighting the impact of a more complex field reordering mechanism on PHC.
+% Consider a pricing model that charges 2$\times$ less on cached prompt, the cost ratio difference will be $\frac{\frac{x}{2}+(1-x)}{\frac{mx}{2}+(1-mx)}$, which is approximately $1 + \frac{x(1-m)}{2}$. Consider a simple scenario of 
+
+
+
+% Now imagine for example, there are some groups of values in the default ordering, first column, that does have some values. Assume that there are $i$ such groups from $G_1, ..., G_{i}$, each group has $x$ rows where $x < n$. We can always construct a case where if $i == 1$, and each column contains such group with non-overlapping rows compared to the previous or next column, then the PHC of such fixed column orderings is $x - 1$, where $-1$ account for the cold miss of such column. However, an obvious better ordering is to have different column orderings for different set of rows. For example, choosing $G1$ of column $1$ to be first, then for the next set of $x$ rows pick $G3$ of column $2$ to be first. In this case, the hit rate of such ordering will be $m \times (x-1)$. Thus, the ratio of PHCs comparing default orderings and a better orderings will be as high as $m$.  
+

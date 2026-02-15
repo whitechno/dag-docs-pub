@@ -1,0 +1,190 @@
+\vspace{-0.5em}
+\section{Recursive Request Reordering}
+\label{sec:column-reordering}
+
+% We propose an optimal request ordering algorithm, Optimal Prefix Hit Maximization (\optimal), to maximize PHC. 
+% Given the exponentially expensive computational cost of the \optimal algorithm,  we also introduce Greedy Group Recursion (\greedy), an approximation of \optimal that leverages functional dependencies and table statistics to reorder requests for large tables efficiently. 
+% We leverage full workload information from analytical queries to ensure requests sharing the same prefixes are executed consecutively. 
+
+We now introduce our algorithms that re-arrange fields to maximize prefix sharing in the KV cache. 
+We present an optimal recursive reordering algorithm that maximizes PHC (Sec~\ref{sec:optimal}) and 
+introduce a greedy algorithm that efficiently approximates the optimal algorithm  (Sec~\ref{sec:greedy}).
+
+%%%%%%%%%%%%% MLSYS ALGORITHM NEEDS RECONSTURCTION 
+% \begin{algorithm}[t!]
+% \caption{Optimal Prefix Hit Recursion (OPHR)}
+% \begin{algorithmic}[1]
+% \STATE \textbf{Input:} Table $T$
+% \STATE \textbf{Output:} Prefix Hit Count $S$, Reordered List of Tuples $L$
+
+% % \newcommand{\algorithmicfunction}{\textbf{function}}
+% % \newcommand{\algorithmicendfunction}{\algorithmicend\ \algorithmicfunction}
+
+% \FUNCTION{$\textsc{HitCount} (v, c, T)$ }
+%     \STATE $R_v \gets \{i \mid T[i,c] = v\}$
+%     \STATE {\bfseries Return} ${\text{len}(v)}^2 \times (|R_v| - 1)$
+% \ENDFUNCTION
+
+% \item[]
+% \FUNCTION{$\textsc{Recurse}$ ($T$)}
+%     \IF{$|T|_{rows} = 1$}
+%         \STATE return 0, $[T[1]]$
+%     \ENDIF 
+%     \IF{$|T|_{cols} = 1$}
+%         \STATE $S \gets \sum_{v \in \text{distinct}(T[,1])} \textsc{HitCount}(v, 1, T)$ % groupby or sort, choose best group, append 
+%         \STATE {\bfseries Return} $S, sort([T[i] \mid i \in 1 \dots |T|_{rows}])$
+%     \ENDIF
+%     \STATE $max\_phc \gets -1$, $best\_L \gets T$
+
+%     \COMMENT{For each distinct value $v$ in each column $c$}
+%     \FOR{$c \in \text{columns}(T)$, $v \in \text{distinct}(T[,c])$} 
+%         % \STATE $\text{distinct\_values} \gets \{T[i,c] \mid i \in 1 \dots |T|_{rows}\}$
+%         % \FOR{$v \in \text{distinct\_values}$}
+%         \STATE $R_v \gets \{i \mid T[i,c] = v\}$
+%         \STATE $A\_HC, L_A \gets \textsc{Recurse}(T[\text{rows} \setminus R_v, \text{cols}])$
+%         \STATE $B\_HC, L_B \gets \textsc{Recurse}(T[R_v, \text{cols} \setminus \{c\}])$
+%         \STATE $C\_HC \gets \textsc{HitCount}(v, c, T)$
+%         \STATE $phc \gets A\_HC + B\_HC + C\_HC$
+%         \IF{$phc > max\_phc$}
+%             \STATE $\max\_phc = phc$, 
+%             \STATE $best\_L = [[v] + L_A[i] \mid i \in 1 \dots |R_v|] + L_B$
+%         \ENDIF
+%     \ENDFOR
+%     \STATE $\textbf{return } \text{max\_phc}, \text{best\_L}$
+% \ENDFUNCTION
+
+% \STATE 
+% \STATE \textbf{return } \textsc{Recurse}($T$)
+% \end{algorithmic}
+% \label{alg:optimal}
+% \end{algorithm}
+
+
+\begin{algorithm}[t!]
+\caption{Greedy Group Recursion (GGR)}
+\begin{algorithmic}[1]
+\small
+\STATE \textbf{Input:} Table $T$, Functional Dependency $FD$
+\STATE \textbf{Output:} Prefix Hit Count $S$, Reordered List of Tuples $L$
+
+
+\item[]
+\FUNCTION{$\textsc{HitCount} (v, c, T, FD)$}
+    \STATE $R_v \gets \{i \mid T[i,c] = v\}$
+    \STATE $\text{inferred\_cols} \gets \{c' \mid (c, c') \in FD\}$
+    \STATE $\text{tot\_len} = \text{len}(v)^2 + \sum_{\substack{c' \in \text{inferred\_cols}}} \frac{\sum_{r \in R_v} \text{len}(T[r, c'])}{|R_v|}$
+    \STATE \textbf{return } $\text{tot\_len} \times (|R_v| - 1)$, $[c] + \text{inferred\_cols}$
+\ENDFUNCTION
+
+
+\item[]
+\FUNCTION{\textsc{GGR}($T$, $FD$)}
+    % \IF{$|T|_{rows} = 1$ or $|T|_{cols} = 1$}
+    %     \STATE \textbf{return } \text{Base case processing as in \optimal}
+    % \ENDIF
+    \IF{$|T|_{rows} = 1$}
+        \STATE return 0, $[T[1]]$
+    \ENDIF 
+    \IF{$|T|_{cols} = 1$}
+        \STATE $S \gets \sum_{v \in \text{distinct}(T[,1])} \textsc{HitCount}(v, 1, T)$ % groupby or sort, choose best group, append 
+        \STATE {\bfseries Return} $S, sort([T[i] \mid i \in 1 \dots |T|_{rows}])$
+    \ENDIF
+
+    \STATE $max\_HC, b\_v, b\_c, b\_cols \gets -1, \text{None}, \text{None}, []$
+
+    \FOR{$c \in \text{columns}(T)$, $v \in \text{distinct}(T[,c])$}
+        \STATE $HC, cols \gets \textsc{HitCount}(v, c, T, FD)$
+        \IF{$HC > max\_HC$}
+            \STATE $max\_HC, b\_v, b\_c, b\_cols = HC, v, c, cols$
+        \ENDIF
+    \ENDFOR
+    
+    \STATE $R\_v \gets \{i \mid T[i, b\_c] = b\_v\}$
+    \STATE $A\_HC, L\_A \gets \textsc{GGR}(T[\text{rows} \setminus R\_v, \text{cols}], FD)$
+    \STATE $B\_HC, L\_B \gets \textsc{GGR}(T[R\_v, \text{cols} \setminus b\_cols], FD)$
+    \STATE $C\_HC, \_ \gets \textsc{HitCount}(b\_v, b\_c, T, FD)$
+    \STATE $S \gets A\_HC + B\_HC + C\_HC$
+    \STATE $L \gets [[b\_v] + L_A[i] \mid i \in 1 \dots |R\_v|] + L\_B$
+    \STATE \textbf{return } $S, L$
+\ENDFUNCTION
+
+\item[]
+\STATE \textbf{return } \textsc{GGR}($T$, $FD$)
+\end{algorithmic}
+\label{alg:greedy}
+\end{algorithm}
+\vspace{-0.5em}
+\subsection{Optimal Prefix Hit Recursion (OPHR) } \label{sec:optimal}
+
+%%%%%%%%%%%%%%%%%% Matei's feedback 
+% \shu{need to explain: consider reordering rows but also columns, and doing it differently for each row. Why is it important to do it differently, if you don't add it you'll get $c$ times worse, show some base cases; might be losing accuracy. 
+
+% Motivate: necessary to reorder both rows and columns somewhere (differently across different records), that's the new thing; why is that --> we prove that if you use a fixed column order, can be off by a factor of $c$ by hit rate. Imagine there's a group in each column. 
+
+% Then: now that we know we need to choose different orders even within each row (optimal --> GGR) 
+
+% Don't need to put the algorithm of optimal. Don't need. Example of how it can be off by a factor of c, show the picture. Motivate this. What's the claim (scientific question), obvious cases it does poorly 
+
+% Don't add too many appendix, sglang it is ok to mention it is similar. Queries can be in there. }
+%%%%%%%%%%%%%%%%%% Matei's feedback 
+% It finds the \textit{optimal} PHC for a given table $T$ by assigning column orders for each row (Algorithm~\ref{alg:\optimal}). 
+% table layout algorithm, table ordering algorithm 
+Our Optimal Prefix Hit Maximization (\optimal) algorithm is a recursive algorithm that finds the \textit{optimal} PHC for a given table $T$ by considering all possible ways to split the table into a group of cells with the same value and two sub-tables. 
+The algorithm takes as input a table $T$ and computes the optimal PHC $S$ along with a reordered list of tuples $L$. 
+If $T$ only has one row or field, \optimal computes PHC and trivially returns the sorted $T$. 
+
+In the recursive case, for each field $c$ in $T$, the algorithm identifies all distinct values $v$ in the field and the rows $R_v$ for which the field value is $v$. For each distinct value $v$, the table is split into two sub-tables: one of $T$ excluding rows $R_v$ and one of $R_v$ excluding field $c$. PHC for the currently selected value $v$ is calculated as the sum of the PHC of the sub-tables and the PHC contribution of $v$. \optimal evaluates all possible groups of distinct values in each field and selects the value that yields the maximum PHC. 
+
+% \amog{If possible, writing the recurrence relation formula might be easier to digest instead of or in addition to describing in sentences? $PHC(T) = max_v(PHC(R_v[v]) + PHC(R_v[!v]) + PHC(T \setminus R_v))$}
+
+Notably, the \optimal algorithm has exponential complexity with respect to the number of rows and fields due to its recursive nature and the combinatorial explosion of possible distinct value groupings (we present a more efficient algorithm in Sec~\ref{sec:greedy}). 
+
+
+
+
+\begin{figure}
+    \centering
+    % \includegraphics[width=0.49\textwidth]{figures/SIGMODfigures/prefix_hit_maximization.pdf}
+    \includegraphics[width=0.49\textwidth]{figures/MLSys_Figures/prefix_hit_maximization.pdf}
+    \vspace{-1.5em}
+    \caption{GGR picks the group with the maximum hit count at each step and calculates PHC as the sum of PHC of the elected group values (yellow box), the sub-table $T$ excluding rows $R_v$ (green box), and the sub-table of rows $R_v$ excluding the field where the value is located in (blue box).}
+    \label{fig:optimal}
+    \vspace{-2em}
+\end{figure}
+
+\textbf{Optimality Proof}
+In the base case, the \optimal algorithm trivially computes the best PHC: for the single row case, the PHC is 0; for the single field case, the PHC is the sum of the squared lengths of distinct values multiplied by their occurrences minus one, which accounts for the initial miss when a value is seen the first time. 
+Next, we prove optimality by induction.
+For the inductive case, assume that the \optimal algorithm is optimal for any table with $k \leq n$ rows and $l \leq m$ fields. 
+For a table $T$ with $n+1$ rows and $m+1$ fields, the algorithm iterates through each field $c$. For each distinct value $v$ in field $c$, we split $T$ into two sub-tables: $T_A$ (rows not containing $v$), and $T_B$ (rows containing $v$ but excluding field $c$). Based on the inductive hypothesis, \optimal optimally computes PHC for both sub-tables because it is optimal for tables with fewer rows and fields. The PHC for $T$ is the sum of PHC for $T_A$ and $T_B$, plus the contribution of $v$. When the distinct value $v$ is used to partition the table, its full contribution to the PHC is captured. If the table were not split based on distinct values, this contribution could be fragmented or lost due to non-contiguous groupings, leading to suboptimal PHC.
+Thus, the \optimal algorithm ensures optimal reordering by selecting the best from all possible configurations.
+\vspace{-0.5em}
+\subsection{Greedy Group Recursion (\greedy) Algorithm}
+\label{sec:greedy}
+Due to the computational complexity of the \optimal, we propose a Greedy Group Recursion (\greedy) algorithm (Algorithm~\ref{alg:greedy}) that approximates \optimal.  
+The \greedy algorithm takes an input table $T$ and returns the PHC $S$ along with a reordered list of tuples $L$. It has the same base case as the \optimal algorithm if $T$ only has one row or one field. At a high level, the \greedy algorithm recursively selects the value $b_v$ with the maximum prefix hit count (lines 3-8) at each recursion step (lines 17-23) rather than iterating through all possible distinct values in the entire table. 
+It then prioritizes the field $b_c$ where this $b_v$ is in, splits the table into groups of cells of the same values and recurses on the two sub-tables (lines 24-26) and calculates the total PHC as the sum of PHC of the subtables and contributions of $b_v$ (line 28) similar to the \optimal algorithm. 
+
+Since \greedy does not iterate through all possible distinct values but instead selects the one that gives the highest hit count at each step, the number of recursive calls is significantly reduced (i.e. the maximum depth of recursion is $O(\min(n, m))$, where the algorithm reduces dimensions of the table at each recursive step). However, at each recursive step, the cost of scanning to determine distinct values can result in quadratic complexity in terms of table size.
+
+\vspace{-0.5em}
+\subsubsection{Functional Dependencies} We leverage functional dependencies to reduce the number of fields the \greedy algorithm needs to consider at each recursion step. This insight helps improve both the approximation and efficiency of the algorithm, bringing it closer to the optimal solution without the need for extensive backtracking as in the \optimal algorithm. 
+A functional dependency (FD) is a constraint between two sets of attributes in a relation from the data. For example, let $R$ be a relation schema and let $X$ and $Y$ be nonempty sets of attributes in $R$. We define an instance $r$ of $R$ that satisfies the FD $X \leftrightarrow Y$ if for every pair of tuples $t_1$ and $t_2$ in $r$: if $t_1.X = t_2.X$ then $t_1.Y = t_2.Y$ and vice versa. In our \greedy algorithm, FDs help narrow down the fields that must be considered at each recursion step. Specifically, when a value $v$ in field $f$ is selected for a given row, all fields functionally dependent on $f$ are ordered directly besides $f$ in the final ordering for that row (lines 5-6). As an example, if $R(A,B,C)$ is a table with attributes (fields) $A,B,C$ where we have an FD $A \leftrightarrow C$, field $C$ is not in consideration in our recursive steps when $A$ has already been included in the prefix.%, as $C$ will not provide a different PHC. and an $FD$ of $A \rightarrow C$ means that the only need to be processed once (lines 5-6). As an example, if $R(A,B,C)$ is a table with attributes (fields) $A,B,C$, $A$ and $C$ are considered functional dependencies if two rows have the same value for $A$, then they must have the same value for $C$, and vice versa. In the example where $A \rightarrow C$,
+\vspace{-0.5em}
+
+\subsubsection{Table Statistics} 
+% \shu{we need to talk about these statistics are common, etc.}
+% \accheng{don't be DB person, describe table statistics as fallback, put statistics first before mechanism}
+To further reduce the algorithm runtime, we introduce an early stopping mechanism that halts recursion by specific recursion depth (row-wise sub-table recursion, column-wise sub-table recursion) or when a threshold $\mathtt{HITCOUNT}$ score calculated using table statistics is not exceeded. These statistics are generally widely available, such as the number of unique entries (i.e., cardinality) and the distribution of length of values for each field.
+With this information, our \greedy algorithm estimates a $\mathtt{HITCOUNT}$ score for each field $c$ with $\mathtt{HITCOUNT}(C) = \mathtt{avg}(\mathtt{len}(c))^2$. This score denotes the expected contribution of a field to the PHC, accounting for the average length of the values and their frequency. Using these statistics, the algorithm can prioritize fields more likely to contribute to the PHC. 
+Additionally, we can further improve the quality of the solution by establishing a fixed field ordering for the subtables using table statistics once the recursion stops. 
+% Databases typically maintain statistics on stored data, such as the number of unique entries (i.e., cardinality) and the distribution of length of values for each field. \asim{do we want to mention databases here still?}
+Early termination and falling back to table statistics allows \greedy to avoid scanning the table and performing recursion on real-world workloads. 
+% \souj{consider discussing the use of table statistics before the early stopping mechanism!} 
+
+\vspace{-0.5em}
+\subsubsection{Achieving Optimal PHC} While our \greedy approximates the \optimal algorithm, it can achieve optimal PHC in certain cases. 
+When the table has only one row or one field, \greedy matches \optimal by construction. 
+When functional dependencies are accurate and cover all the fields of a table, \greedy can also identify the optimal solution. For instance, if one field $A$ functionally determines all other fields, then \greedy prioritize groups of values in $A$ due to the accumulated \texttt{HITCOUNT} score (line 3 in Algorithm~\ref{alg:greedy}), capturing key correlations early and producing the optimal reordering.
+However, when fields tie in \texttt{HITCOUNT}, \greedy may be suboptimal, as it lacks the exhaustive search used by \optimal to resolve such ties. 
+%We show more empirical results in real-world datasets comparing PHC between \greedy and \optimal in Appendix~\ref{appendix:hit-rate}.

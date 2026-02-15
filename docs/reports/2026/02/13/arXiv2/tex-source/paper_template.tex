@@ -1,0 +1,277 @@
+%%%%%%%%%%%%% ML-SYS
+%%%%%%%% mlsys 2024 EXAMPLE LATEX SUBMISSION FILE %%%%%%%%%%%%%%%%%
+
+\documentclass{article}
+
+% Recommended, but optional, packages for figures and better typesetting:
+\usepackage{microtype}
+\usepackage{graphicx}
+% \usepackage{subfigure}
+\usepackage{booktabs} % for professional tables
+
+%%%%%%%%%%%%% PACKAGE
+\usepackage{tabularx}
+\usepackage{array}
+\setlength{\tabcolsep}{3pt} % Adjust horizontal padding if needed
+\usepackage{makecell}
+
+\usepackage{tcolorbox}
+\tcbuselibrary{listingsutf8}
+
+\usepackage{url}
+\def\UrlBreaks{\do\/\do-}
+\usepackage{color}
+\usepackage{listings} % Make sure this is included
+% \usepackage{minted}
+% \usepackage[finalizecache,cachedir=.]{minted}
+% \usepackage[frozencache,cachedir=.]{minted}
+
+% \usepackage[finalizecache,cachedir=minted-cache]{minted}
+\usepackage[frozencache,cachedir=minted-cache]{minted}
+% \usepackage[noend]{algorithmic}
+
+\usepackage{mdframed}
+%\usepackage{array}
+% \usepackage{sectsty}
+% \usepackage{algorithm}
+% \usepackage{algpseudocode}
+
+\usepackage{eqparbox}
+% subfigures
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{amsthm,thmtools}
+\usepackage{multirow}
+%\usepackage{tabularx}
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+            \node[shape=circle,draw,inner sep=1pt] (char) {#1};}}
+
+\declaretheoremstyle[
+  headfont=\bfseries,
+  bodyfont=\itshape,
+]{myplain}
+\declaretheoremstyle[
+  headfont=\bfseries,
+  bodyfont=\normalfont,
+]{mydefinition}
+\declaretheoremstyle[
+  headfont=\itshape,
+  bodyfont=\normalfont,
+]{myremark}
+
+\declaretheorem[
+  style=myplain,
+  name=Theorem,
+]{theorem}
+\declaretheorem[
+  style=mydefinition,
+  name=Problem,
+]{problem}
+\declaretheorem[
+  style=myremark,
+  unnumbered,
+  name=Solution,
+]{solution}
+
+\setminted[sql]{breaklines, framesep=3mm, fontsize=\footnotesize, numbersep=5pt}
+
+% Define your colors
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+% Define the listing style
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2,
+    lineskip=-1pt
+}
+
+
+
+%% The following content must be adapted for the final version
+% paper-specific
+
+\newif\ifcomments
+% comment below to remove comments, uncomment to add comments
+% \commentstrue
+\ifcomments
+    % add name and specify color to have individual comment command
+    \providecommand{\ion}[1]{{\color{teal}{[ion: #1]}}}
+    \providecommand{\matei}[1]{{\color{green}{[matei: #1]}}}
+    \providecommand{\joey}[1]{{\color{magenta}{[joey: #1]}}}
+    \providecommand{\shu}[1]{{\color{cyan}{[shu: #1]}}}
+    \providecommand{\souj}[1]{{\color{red}{[souj: #1]}}}
+    \providecommand{\asim}[1]{{\color{blue}{[asim: #1]}}}
+    \providecommand{\simon}[1]{{\color{orange}{[simon: #1]}}}
+    \providecommand{\accheng}[1]{{\color{purple}{[accheng: #1]}}}
+    \providecommand{\amog}[1]{{\color{orange}{[amog: #1]}}}
+    \newcommand{\todo}[1]{\textcolor{red}{TODO: #1}}
+\else
+    \providecommand{\ion}[1]{}
+    \providecommand{\joey}[1]{}
+    \providecommand{\shu}[1]{}
+    \providecommand{\asim}[1]{}
+    \providecommand{\simon}[1]{}
+    \providecommand{\accheng}[1]{}
+\fi
+\newcommand{\SYS}{}
+\def\SYS/{SYS}
+\newcommand{\sys}{SYS }
+
+\usepackage{xspace}
+\newcommand{\optimal}{OPHR\xspace}
+\newcommand{\greedy}{GGR\xspace}
+\newcommand{\pluseq}{\mathrel{+}=}
+
+% hyperref makes hyperlinks in the resulting PDF.
+% If your build breaks (sometimes temporarily if a hyperlink spans a page)
+% please comment out the following usepackage line and replace
+% \usepackage{mlsys2024} with \usepackage[nohyperref]{mlsys2024} above
+\usepackage{hyperref}
+
+% Attempt to make hyperref and algorithmic work together better:
+\newcommand{\theHalgorithm}{\arabic{algorithm}}
+
+% Use the following line for the initial blind version submitted for review:
+% \usepackage{mlsys2025}
+% \pagestyle{empty}
+
+
+% If accepted, instead use the following line for the camera-ready submission:
+\usepackage[accepted]{mlsys2025}
+\fancyfoot[C]{\raisebox{-20pt}{\thepage}} % to show page number at bottom center without affecting the text layout
+
+% The \mlsystitle you define below is probably too long as a header.
+% Therefore, a short form for the running title is supplied here:
+% \mlsystitlerunning{Submission and Formatting Instructions for MLSys 2025}
+
+\begin{document}
+\lstset{style=mystyle}
+
+% \makeatletter
+% \algnewcommand{\LineComment}[1]{\Statex \hskip\ALG@thistlm \(\triangleright\) #1}
+% \makeatother
+
+\twocolumn[
+\mlsystitle{Optimizing LLM Queries in Relational Data Analytics Workloads}
+
+% It is OKAY to include author information, even for blind
+% submissions: the style file will automatically remove it for you
+% unless you've provided the [accepted] option to the mlsys2024
+% package.
+
+% List of affiliations: The first argument should be a (short)
+% identifier you will use later to specify author affiliations
+% Academic affiliations should list Department, University, City, Region, Country
+% Industry affiliations should list Company, City, Region, Country
+
+% You can specify symbols, otherwise they are numbered in order.
+% Ideally, you should not use this facility. Affiliations will be numbered
+% in order of appearance and this is the preferred way.
+\mlsyssetsymbol{equal}{*}
+
+\begin{mlsysauthorlist}
+\mlsysauthor{Shu Liu}{equal,to}
+\mlsysauthor{Asim Biswal}{equal,to}
+\mlsysauthor{Amog Kamsetty}{to}
+\mlsysauthor{Audrey Cheng}{to}
+\mlsysauthor{Luis Gaspar Schroeder}{to,goo}
+\end{mlsysauthorlist}
+\begin{mlsysauthorlist}
+\mlsysauthor{Liana Patel}{ed}
+\mlsysauthor{Shiyi Cao}{to}
+\mlsysauthor{Xiangxi Mo}{to}
+\mlsysauthor{Ion Stoica}{to}
+\mlsysauthor{Joseph E. Gonzalez}{to}
+\mlsysauthor{Matei Zaharia}{to}
+\end{mlsysauthorlist}
+
+\mlsysaffiliation{to}{UC Berkeley}
+\mlsysaffiliation{goo}{Technical University of Munich}
+\mlsysaffiliation{ed}{Stanford University}
+
+\mlsyscorrespondingauthor{Shu Liu}{lshu@berkeley.edu}
+% \mlsyscorrespondingauthor{Eee Pppp}{ep@eden.co.uk}
+
+% You may provide any keywords that you
+% find helpful for describing your paper; these are used to populate
+% the "keywords" metadata in the PDF but will not be shown in the document
+\mlsyskeywords{Machine Learning, MLSys}
+
+\vskip 0.3in
+
+% V2
+\begin{abstract}
+
+Batch data analytics is a growing application for Large Language Models (LLMs).
+LLMs enable users to perform a wide range of natural language tasks, such as classification, entity extraction, and translation, over large datasets.
+However, LLM inference is highly costly and slow:
+for example, an NVIDIA L4 GPU running Llama3-8B can only process 6 KB of text per second, taking about a day to handle 15 GB of data; processing a similar amount of data costs around \$10K on OpenAI's GPT-4o.
+In this paper, we propose novel techniques that can significantly reduce the cost of LLM calls for relational data analytics workloads.
+Our key contribution is developing efficient algorithms for reordering the rows and the fields within each row of an input table to maximize key-value (KV) cache reuse when performing LLM serving.
+As such, our approach can be easily applied to existing analytics systems and serving platforms. Our evaluation shows that our solution can yield up to 3.4$\times$ improvement in job completion time on a benchmark of diverse LLM-based queries using Llama 3 models. Our solution also achieves a 32\% cost savings under OpenAI and Anthropic pricing models.
+
+\end{abstract}
+
+]
+
+
+
+% this must go after the closing bracket ] following \twocolumn[ ...
+
+% This command actually creates the footnote in the first column
+% listing the affiliations and the copyright notice.
+% The command takes one argument, which is text to display at the start of the footnote.
+% The \mlsysEqualContribution command is standard text for equal contribution.
+% Remove it (just {}) if you do not need this facility.
+
+% \printAffiliationsAndNotice{}  % leave blank if no need to mention equal contribution
+\printAffiliationsAndNotice{\mlsysEqualContribution} % otherwise use the standard text.
+
+
+%\input{sections/1_introduction_new}
+% \input{sections/1_introduction}
+% \input{sections/2_background}
+%\input{sections/2_background_new}
+\input{sections/3_1_0_problem_setup}
+\input{sections/3_1_1_sol_workload_shape}
+%\input{sections/5_implementation_new}
+% \input{sections/6_evaluation}
+%\input{sections/6_new_evaluation}
+% \input{sections/7_discussion}
+% \input{sections/8_related-work}
+%\input{sections/8_related-work-update}
+%\input{sections/9_conclusion}
+%\input{sections/ack}
+
+% \received{20 February 2007}
+% \received[revised]{12 March 2009}
+% \received[accepted]{5 June 2009}
+
+\bibliography{reference}
+\bibliographystyle{mlsys2025}
+
+%% If your work has an appendix, this is the place to put it.
+% \appendix
+% \input{sections/fixed_proof}
+
+\end{document}
+\endinput
