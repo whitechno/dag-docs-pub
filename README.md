@@ -1,3 +1,3 @@
 # dag-docs-pub
 
-Notes about data analytics.
+Collection of notes and references about data analytics.
