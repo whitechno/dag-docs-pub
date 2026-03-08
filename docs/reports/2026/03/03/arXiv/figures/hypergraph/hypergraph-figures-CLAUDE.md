@@ -7,7 +7,7 @@ Create SVG figure that matches exactly the PDF figure in
 
 Save it in this directory as `figure_lncs.svg`.
 
-## Figure description
+### Figure description
 
 The figure illustrates the tight lower bound construction for the 1/d
 approximation guarantee (Lemma 2 in the paper). It shows a hypergraph with 2d
@@ -21,16 +21,27 @@ matching of weight 1+ε. The optimal matching instead picks all d weight-1 pairs
 yielding weight d. The ratio (1+ε)/d → 1/d as ε → 0, showing the approximation
 bound is tight.
 
+![figure_lncs.svg](figure_lncs.svg)
+
 ## hypergraph-01.svg
 
 A simple example hypergraph with 6 vertices and 3 weighted hyperedges: (1,2,3)
-with weight 10, (2,3,4) with weight 20, and (4,5,6) with weight 30. Vertices
-are drawn as white circles with numeric labels. Each hyperedge is depicted as a
+with weight 10, (2,3,4) with weight 20, and (4,5,6) with weight 30. Vertices are
+drawn as white circles with numeric labels. Each hyperedge is depicted as a
 semi-transparent rounded blob (fattened triangle) with its weight label shown
 inside: (1,2,3) in orange, (2,3,4) in blue, (4,5,6) in green. Overlapping
 regions are color-blended — orange+blue where hyperedges (1,2,3) and (2,3,4)
 share vertices 2 and 3, and blue+green where (2,3,4) and (4,5,6) share vertex 4.
 
 The layout is symmetric: vertices 1 and 4 are apex vertices on the left and
-right, vertices 2,3 are shared between the first two hyperedges, and vertex 4
-is shared between the last two.
+right, vertices 2,3 are shared between the first two hyperedges, and vertex 4 is
+shared between the last two.
+
+![hypergraph-01.svg](hypergraph-01.svg)
+
+## Tech Notes
+
+Resume this session with:
+```text
+claude --resume e8e00ee8-135c-4892-9da0-b3bc048fa2a1
+```
