@@ -5,9 +5,9 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
 cycle_labels = [
-    "000","001","011","012","010","020","021","121","101",
-    "111","112","122","102","100","110","120","220","221",
-    "201","202","200","210","211","212","222","022","002",
+    "000","010","110","111","121","221","222","202","002",
+    "012","022","122","120","100","200","201","211","011",
+    "021","001","101","102","112","212","210","220","020",
     "000"
 ]
 cycle = [(int(s[0]), int(s[1]), int(s[2])) for s in cycle_labels]
@@ -59,9 +59,8 @@ cmap = plt.cm.cool
 # Manual overrides for control points that produce visual collisions.
 # Key: p0 tuple; value: control point array.
 ctrl_overrides = {
-    (1, 2, 1): np.array([0.2, 1.0, 1.0]),   # arc 121->101: smaller bow, keeps 011 clearly to the right
-    (0, 0, 2): np.array([-0.6, 0.0, 1.0]),  # arc 002->000: reduced bow, keeps 011/121/122 right, 112/001 left
-    (0, 1, 2): np.array([-1.2, 1.0, 1.0]),  # arc 012->010: reduced bow, 021 right (sx=1.23), 011 left (sx=0.62)
+    (2, 1, 2): np.array([2.3, 0.75, 1.0]),  # arc 212->210: passes between 201/211, min clearance 0.20
+    (2, 1, 1): np.array([1.0, 0.75, 1.25]), # arc 211->011: passes between 121/111, min clearance 0.16
 }
 
 for s in range(n):
@@ -108,7 +107,7 @@ for s in range(n):
     color = cmap(0.2 + 0.7 * t)
     wax = wrap_axis(p0, p1)
     if wax >= 0:
-        ctrl = control_point(p0, p1, wax)
+        ctrl = ctrl_overrides.get(p0, control_point(p0, p1, wax))
         pts = bezier_pts(p0, ctrl, p1)
         mx,my,mz = pts[40]
     else:
@@ -140,11 +139,11 @@ ax.view_init(elev=15, azim=52)
 
 fig.text(0.5, 0.97, "Knuth's Hamiltonian Cycle on the 3×3×3 Cayley Digraph",
          ha='center', va='top', color='#7eb8f7', fontsize=17, fontfamily='serif', style='italic')
-fig.text(0.5, 0.925, "27 vertices  ijk  ·  curved arcs = wraparound (coordinate 2→0 mod 3)  ·  cycle c=0",
+fig.text(0.5, 0.925, "27 vertices  ijk  ·  curved arcs = wraparound (coordinate 2→0 mod 3)  ·  cycle c=1",
          ha='center', va='top', color='#a0b8d0', fontsize=13, fontfamily='monospace')
 
 plt.tight_layout(rect=[0,0,1,0.93])
-plt.savefig('fig-src/outputs/hamiltonian_cycle_3d.svg',
+plt.savefig('fig-src/outputs/hamiltonian_cycle_3d_c1.svg',
             bbox_inches='tight', facecolor='#0a0c10', edgecolor='none')
 
 # Debug: print control points for wrap arcs
@@ -152,7 +151,7 @@ for s in range(n):
     p0, p1 = cycle[s], cycle[s+1]
     wax = wrap_axis(p0, p1)
     if wax >= 0:
-        ctrl = control_point(p0, p1, wax)
+        ctrl = ctrl_overrides.get(p0, control_point(p0, p1, wax))
         print(f"Step {s+1}: {cycle_labels[s]}->{cycle_labels[s+1]}  wax={wax}  ctrl={ctrl}")
 
 print("Saved.")
