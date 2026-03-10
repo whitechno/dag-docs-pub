@@ -6,6 +6,34 @@ March 6, 2026
 https://www-cs-faculty.stanford.edu/~knuth/papers/claude-cycles.pdf
 ) by Don Knuth, Stanford Computer Science Department
 (28 February 2026; revised 06 March 2026)
+(Also available here [references/Knuth-claude-cycles.pdf](
+references/Knuth-claude-cycles.pdf))
+
+A solution for even m was found by Ho Boon Suan using GPT-5.4 Pro. The record of
+the entire interaction is available online
+<https://chatgpt.com/share/69aaab4b-888c-8003-9a02-d1df80f9c791>
+including a link to a beautifully formatted and apparently flawless 14-page
+paper containing the desired exposition and proof. (Note that all download links
+in the shared chat are inactive, so the "apparently flawless" paper is not
+available for download. :( )
+
+Also see [Keston Aquino-Michaels' detailed exploration](
+https://github.com/no-way-labs/residue/blob/main/paper/completing_claudes_cycles.pdf
+) of the Claude-like decompositions, where he interacted with two data-sharing
+LLM agents that have complementary skills, namely GPT and Claude. The result was
+yet another valid decomposition for the case of odd m, together with an elegant
+decomposition for the case of even m that’s considerably simpler than [5].
+Particularly important is the methodological contribution of the work. It
+documents how these constructions were produced by two LLM agents operating
+under a shared structured exploration prompt, with an orchestrator agent (a
+third Claude Opus 4.6 Thinking instance) mediating between them. The same prompt
+applied to GPT-5.4 Thinking and Claude Opus 4.6 Thinking produced radically
+different mathematical strategies. The full exploration logs are included as
+appendices.
+> "The dual contribution is deliberate. The mathematical result is a solved
+> problem; the methodological result is a documented process. We believe the
+> logs are as important as the theorems—they provide a controlled comparison of
+> LLM mathematical reasoning under identical scaffolding conditions."
 
 ## Problem Statement
 
