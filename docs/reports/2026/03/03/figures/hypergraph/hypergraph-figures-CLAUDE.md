@@ -39,6 +39,16 @@ shared between the last two.
 
 ![hypergraph-01.svg](hypergraph-01.svg)
 
+## Hypergraph-wikipedia.svg
+
+![Hypergraph-wikipedia.svg](Hypergraph-wikipedia.svg)
+An example of an undirected hypergraph with 7 vertices and 4 edges.
+
+## PAOH_hypergraph_representation.png
+
+Create an SVG image equivalent to the PNG image in
+`figures/hypergraph/PAOH_hypergraph_representation.png`.
+
 ## Tech Notes
 
 Resume this session with:
