@@ -48,6 +48,21 @@ IEEE Transactions on Visualization and Computer Graphics, 2021, 27 (1), pp.1-13.
 https://hal.inria.fr/hal-02264960/file/Paohvis.pdf
 ```
 
+- [On an Erdős--Lov'asz problem: 3-critical 3-graphs of minimum degree 7](
+  https://arxiv.org/abs/2512.24850
+  )
+```text
+@misc{li2025erdhoslovaszproblem3critical3graphs,
+      title={On an Erd\H{o}s--Lov'asz problem: 3-critical 3-graphs of minimum degree 7}, 
+      author={Ruiliang Li},
+      year={2025},
+      eprint={2512.24850},
+      archivePrefix={arXiv},
+      primaryClass={cs.DM},
+      url={https://arxiv.org/abs/2512.24850}, 
+}
+```
+
 Hypergraph Concepts
 -------------------
 
