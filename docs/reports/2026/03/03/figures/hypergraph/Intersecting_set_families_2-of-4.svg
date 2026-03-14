@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="372.333px" height="155.333px" viewBox="0 0 372.333 155.333" enable-background="new 0 0 372.333 155.333"
+	 xml:space="preserve">
+<ellipse opacity="0.5" fill="#FEC200" cx="294.526" cy="38.793" rx="69.717" ry="24.208"/>
+<ellipse opacity="0.5" fill="#FEC200" cx="77.616" cy="110.792" rx="69.717" ry="24.208"/>
+<ellipse opacity="0.5" fill="#FEC200" cx="39.333" cy="78.717" rx="24.208" ry="69.717"/>
+<ellipse opacity="0.5" fill="#FEC200" cx="328.243" cy="78.717" rx="24.208" ry="69.717"/>
+<ellipse transform="matrix(0.7071 -0.7071 0.7071 0.7071 -29.7571 73.9799)" opacity="0.5" fill="#FEC200" cx="74.423" cy="72.91" rx="82.5" ry="29.999"/>
+<ellipse transform="matrix(-0.7071 -0.7071 0.7071 -0.7071 448.8893 331.7557)" opacity="0.5" fill="#FEC200" cx="293.153" cy="72.91" rx="82.499" ry="29.999"/>
+<circle fill="#0081CD" stroke="#231F20" stroke-miterlimit="10" cx="39.333" cy="36" r="9"/>
+<circle fill="#0081CD" stroke="#231F20" stroke-miterlimit="10" cx="111.333" cy="36" r="9"/>
+<circle fill="#0081CD" stroke="#231F20" stroke-miterlimit="10" cx="39.333" cy="108" r="9"/>
+<circle fill="#0081CD" stroke="#231F20" stroke-miterlimit="10" cx="111.333" cy="108" r="9"/>
+<circle fill="#0081CD" stroke="#231F20" stroke-miterlimit="10" cx="256.243" cy="36" r="9"/>
+<circle fill="#0081CD" stroke="#231F20" stroke-miterlimit="10" cx="328.243" cy="36" r="9"/>
+<circle fill="#0081CD" stroke="#231F20" stroke-miterlimit="10" cx="256.243" cy="108" r="9"/>
+<circle fill="#0081CD" stroke="#231F20" stroke-miterlimit="10" cx="328.243" cy="108" r="9"/>
+<ellipse fill="none" stroke="#939598" stroke-miterlimit="10" cx="294.526" cy="38.793" rx="69.717" ry="24.207"/>
+<ellipse fill="none" stroke="#939598" stroke-miterlimit="10" cx="77.616" cy="110.792" rx="69.717" ry="24.208"/>
+<ellipse fill="none" stroke="#939598" stroke-miterlimit="10" cx="39.333" cy="78.717" rx="24.208" ry="69.717"/>
+<ellipse fill="none" stroke="#939598" stroke-miterlimit="10" cx="328.243" cy="78.717" rx="24.208" ry="69.717"/>
+<ellipse transform="matrix(0.7071 -0.7071 0.7071 0.7071 -29.7573 73.9798)" fill="none" stroke="#939598" stroke-miterlimit="10" cx="74.423" cy="72.91" rx="82.499" ry="29.999"/>
+<ellipse transform="matrix(-0.7071 -0.7071 0.7071 -0.7071 448.8892 331.7562)" fill="none" stroke="#939598" stroke-miterlimit="10" cx="293.153" cy="72.91" rx="82.499" ry="29.999"/>
+</svg>

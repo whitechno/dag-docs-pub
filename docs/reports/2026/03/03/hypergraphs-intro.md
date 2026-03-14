@@ -92,13 +92,13 @@ corresponding hyperedges share at least one vertex.
 We assume that vertices with degree $0$ have been removed during the
 preprocessing phase. Therefore, $\Delta > 0$ or else the hypergraph is empty.
 
-A subset of hyperedges $M \subseteq E$ is a matching, if all hyperedges are
+A subset of hyperedges $M \subseteq E$ is a matching if all hyperedges are
 pairwise disjoint. The weight of a matching $M$ is defined
 by $w(M):= \sum_{e\in M}w(e)$. A matching $M$ is called maximal if no hyperedge
 can be added without violating the matching property. A maximum matching
 possesses the largest possible weight of all matchings. If the weight of each
-hyperedge is exactly the same, the problem is referred to as \emph{maximum
-cardinality~matching}, maximizing $|M|$. Finding a cardinality matching or the
+hyperedge is exactly the same, the problem is referred to as _maximum
+cardinality~matching_, maximizing $|M|$. Finding a cardinality matching or the
 more general weighted hypergraph matching is NP-hard~
 \cite{approxresult}. This is in contrast to ordinary graphs, for which the
 problem can be solved in polynomial time~\cite{edmonds_1965}.

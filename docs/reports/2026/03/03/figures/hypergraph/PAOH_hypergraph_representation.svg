@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 355 285">
+
+  <!-- Column header labels (e1–e4) -->
+  <text x="65"  y="15" font-family="Arial,sans-serif" font-size="13" text-anchor="middle" dominant-baseline="central">e1</text>
+  <text x="95"  y="15" font-family="Arial,sans-serif" font-size="13" text-anchor="middle" dominant-baseline="central">e2</text>
+  <text x="125" y="15" font-family="Arial,sans-serif" font-size="13" text-anchor="middle" dominant-baseline="central">e3</text>
+  <text x="155" y="15" font-family="Arial,sans-serif" font-size="13" text-anchor="middle" dominant-baseline="central">e4</text>
+
+  <!-- Row backgrounds (alternating gray) -->
+  <rect x="0" y="38"  width="260" height="34" fill="#EBEBEB"/>
+  <rect x="0" y="72"  width="260" height="34" fill="white"/>
+  <rect x="0" y="106" width="260" height="34" fill="#EBEBEB"/>
+  <rect x="0" y="140" width="260" height="34" fill="white"/>
+  <rect x="0" y="174" width="260" height="34" fill="#EBEBEB"/>
+  <rect x="0" y="208" width="260" height="34" fill="white"/>
+  <rect x="0" y="242" width="260" height="34" fill="#EBEBEB"/>
+
+  <!-- Row labels -->
+  <text x="8" y="55"  font-family="Arial,sans-serif" font-size="14" dominant-baseline="central">v1</text>
+  <text x="8" y="89"  font-family="Arial,sans-serif" font-size="14" dominant-baseline="central">v2</text>
+  <text x="8" y="123" font-family="Arial,sans-serif" font-size="14" dominant-baseline="central">v3</text>
+  <text x="8" y="157" font-family="Arial,sans-serif" font-size="14" dominant-baseline="central">v5</text>
+  <text x="8" y="191" font-family="Arial,sans-serif" font-size="14" dominant-baseline="central">v6</text>
+  <text x="8" y="225" font-family="Arial,sans-serif" font-size="14" dominant-baseline="central">v4</text>
+  <text x="8" y="259" font-family="Arial,sans-serif" font-size="14" dominant-baseline="central">v7</text>
+
+  <!-- Connecting lines (gray, drawn before circles) -->
+  <!-- e1: v1-v2-v3 -->
+  <line x1="65"  y1="55"  x2="65"  y2="123" stroke="#FFD700" stroke-width="2"/>
+  <!-- e2: v2-v3 -->
+  <line x1="95"  y1="89"  x2="95"  y2="123" stroke="#FF8800" stroke-width="2"/>
+  <!-- e3: v3-v5-v6 -->
+  <line x1="125" y1="123" x2="125" y2="191" stroke="#44CC44" stroke-width="2"/>
+
+  <!-- Circles (drawn on top of lines) -->
+  <!-- e1: yellow, rows v1, v2, v3 -->
+  <circle cx="65"  cy="55"  r="8" fill="#FFD700" stroke="black" stroke-width="1.5"/>
+  <circle cx="65"  cy="89"  r="8" fill="#FFD700" stroke="black" stroke-width="1.5"/>
+  <circle cx="65"  cy="123" r="8" fill="#FFD700" stroke="black" stroke-width="1.5"/>
+  <!-- e2: orange, rows v2, v3 -->
+  <circle cx="95"  cy="89"  r="8" fill="#FF8800" stroke="black" stroke-width="1.5"/>
+  <circle cx="95"  cy="123" r="8" fill="#FF8800" stroke="black" stroke-width="1.5"/>
+  <!-- e3: green, rows v3, v5, v6 -->
+  <circle cx="125" cy="123" r="8" fill="#44CC44" stroke="black" stroke-width="1.5"/>
+  <circle cx="125" cy="157" r="8" fill="#44CC44" stroke="black" stroke-width="1.5"/>
+  <circle cx="125" cy="191" r="8" fill="#44CC44" stroke="black" stroke-width="1.5"/>
+  <!-- e4: purple, row v4 only -->
+  <circle cx="155" cy="225" r="8" fill="#9944CC" stroke="black" stroke-width="1.5"/>
+
+</svg>

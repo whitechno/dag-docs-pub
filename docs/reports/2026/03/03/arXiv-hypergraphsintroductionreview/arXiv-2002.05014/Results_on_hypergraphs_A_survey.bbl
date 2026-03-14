@@ -1,0 +1,649 @@
+\begin{thebibliography}{74}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Ad{\'a}mek et~al.(2004)Ad{\'a}mek, Herrlich, and
+  Strecker]{adamek2004abstract}
+Ji{\v r}{\'i} Ad{\'a}mek, Horst Herrlich, and George~E Strecker.
+\newblock Abstract and concrete categories. {The} joy of cats.
+\newblock 2004.
+\newblock URL \url{http://katmat.math.uni-bremen.de/acc/acc.pdf}.
+
+\bibitem[Alsallakh et~al.(2016)Alsallakh, Micallef, Aigner, Hauser, Miksch, and
+  Rodgers]{alsallakh2016stateoftheart}
+Bilal Alsallakh, Luana Micallef, Wolfgang Aigner, Helwig Hauser, Silvia Miksch,
+  and Peter Rodgers.
+\newblock The {State}-of-the-{Art} of {Set} {Visualization}: {The}
+  {State}-of-the-{Art} of {Set} {Visualization}.
+\newblock \emph{Computer Graphics Forum}, 35\penalty0 (1):\penalty0 234--260,
+  February 2016.
+\newblock ISSN 01677055.
+\newblock \doi{10.1111/cgf.12722}.
+\newblock URL \url{https://doi.org/10.1111/cgf.12722}.
+
+\bibitem[Ballard et~al.(2016)Ballard, Druinsky, Knight, and
+  Schwartz]{ballard2016hypergraph}
+Grey Ballard, Alex Druinsky, Nicholas Knight, and Oded Schwartz.
+\newblock Hypergraph {Partitioning} for {Sparse} {Matrix}-{Matrix}
+  {Multiplication}.
+\newblock \emph{ACM Transactions on Parallel Computing}, 3\penalty0
+  (3):\penalty0 1--34, December 2016.
+\newblock ISSN 23294949.
+\newblock \doi{10.1145/3015144}.
+\newblock URL \url{https://doi.org/10.1145/3015144}.
+
+\bibitem[Bendersky and Croft(2012)]{bendersky2012modeling}
+Michael Bendersky and W.~Bruce Croft.
+\newblock Modeling higher-order term dependencies in information retrieval
+  using query hypergraphs.
+\newblock In \emph{Proceedings of the 35th international {ACM} {SIGIR}
+  conference on {Research} and development in information retrieval - {SIGIR}
+  '12}, page 941, Portland, Oregon, USA, 2012. ACM Press.
+\newblock ISBN 978-1-4503-1472-5.
+\newblock \doi{10.1145/2348283.2348408}.
+\newblock URL \url{https://doi.org/10.1145/2348283.2348408}.
+
+\bibitem[Benson et~al.(2018)Benson, Abebe, Schaub, Jadbabaie, and
+  Kleinberg]{benson2018simplicial}
+Austin~R. Benson, Rediet Abebe, Michael~T. Schaub, Ali Jadbabaie, and Jon
+  Kleinberg.
+\newblock Simplicial closure and higher-order link prediction.
+\newblock \emph{Proceedings of the National Academy of Sciences}, 115\penalty0
+  (48):\penalty0 E11221--E11230, November 2018.
+\newblock ISSN 0027-8424, 1091-6490.
+\newblock \doi{10.1073/pnas.1800683115}.
+\newblock URL \url{https://doi.org/10.1073/pnas.1800683115}.
+
+\bibitem[Berge(1967)]{berge1967graphes}
+Claude Berge.
+\newblock Graphes et hypergraphes. 1970.
+\newblock \emph{Dunod, Paris}, 1967.
+
+\bibitem[Berge(1973)]{berge1973graphs}
+Claude Berge.
+\newblock \emph{Graphs and hypergraphs}, volume~7.
+\newblock North-Holland publishing company Amsterdam, 1973.
+
+\bibitem[Bertault and Eades(2001)]{bertault2001drawing}
+Fran{\c c}ois Bertault and Peter Eades.
+\newblock Drawing {Hypergraphs} in the {Subset} {Standard} ({Short} {Demo}
+  {Paper}).
+\newblock In \emph{Graph {Drawing}}, volume 1984, pages 164--169. Springer
+  Berlin Heidelberg, Berlin, Heidelberg, 2001.
+\newblock ISBN 978-3-540-41554-1 978-3-540-44541-8.
+\newblock \doi{10.1007/3-540-44541-2_15}.
+\newblock URL \url{https://doi.org/DOI: 10.1007/3-540-44541-2_15}.
+
+\bibitem[Blondel et~al.(2008)Blondel, Guillaume, Lambiotte, and
+  Lefebvre]{blondel2008fast}
+Vincent~D Blondel, Jean-Loup Guillaume, Renaud Lambiotte, and Etienne Lefebvre.
+\newblock Fast unfolding of communities in large networks.
+\newblock \emph{Journal of Statistical Mechanics: Theory and Experiment},
+  2008\penalty0 (10):\penalty0 P10008, October 2008.
+\newblock ISSN 1742-5468.
+\newblock \doi{10.1088/1742-5468/2008/10/P10008}.
+\newblock URL \url{https://doi.org/10.1088/1742-5468/2008/10/P10008}.
+
+\bibitem[Bretto(2013)]{bretto2013hypergraph}
+Alain Bretto.
+\newblock \emph{Hypergraph {Theory}}.
+\newblock Mathematical {Engineering}. Springer International Publishing,
+  Heidelberg, 2013.
+\newblock ISBN 978-3-319-00079-4 978-3-319-00080-0.
+\newblock \doi{10.1007/978-3-319-00080-0}.
+\newblock URL \url{https://doi.org/10.1007/978-3-319-00080-0}.
+
+\bibitem[Bu et~al.(2010)Bu, Tan, Chen, Wang, Wu, Zhang, and He]{bu2010music}
+Jiajun Bu, Shulong Tan, Chun Chen, Can Wang, Hao Wu, Lijun Zhang, and Xiaofei
+  He.
+\newblock Music recommendation by unified hypergraph: combining social media
+  information and music content.
+\newblock In \emph{Proceedings of the international conference on {Multimedia}
+  - {MM} '10}, page 391, Firenze, Italy, 2010. ACM Press.
+\newblock ISBN 978-1-60558-933-6.
+\newblock \doi{10.1145/1873951.1874005}.
+\newblock URL \url{https://doi.org/10.1145/1873951.1874005}.
+
+\bibitem[Bujt{\'a}s et~al.(2015)Bujt{\'a}s, Tuza, and
+  Voloshin]{bujtas2015hypergraph}
+Csilla Bujt{\'a}s, Zsolt Tuza, and Vitaly Voloshin.
+\newblock Hypergraph colouring.
+\newblock In \emph{Topics in {Chromatic} {Graph} {Theory}}, pages 230--254.
+  Cambridge University Press, Cambridge, 2015.
+\newblock ISBN 978-1-139-51979-3.
+\newblock \doi{10.1017/CBO9781139519793.014}.
+\newblock URL \url{https://doi.org/10.1017/CBO9781139519793.014}.
+
+\bibitem[Catalyurek and
+  Aykanat(1999)]{catalyurek1999hypergraphpartitioningbased}
+U.V. Catalyurek and C.~Aykanat.
+\newblock Hypergraph-partitioning-based decomposition for parallel
+  sparse-matrix vector multiplication.
+\newblock \emph{IEEE Transactions on Parallel and Distributed Systems},
+  10\penalty0 (7):\penalty0 673--693, July 1999.
+\newblock ISSN 10459219.
+\newblock \doi{10.1109/71.780863}.
+\newblock URL \url{https://doi.org/10.1109/71.780863}.
+
+\bibitem[Chauve et~al.(2013)Chauve, Patterson, and
+  Rajaraman]{chauve2013hypergraph}
+Cedric Chauve, Murray Patterson, and Ashok Rajaraman.
+\newblock Hypergraph {Covering} {Problems} {Motivated} by {Genome} {Assembly}
+  {Questions}.
+\newblock In \emph{Combinatorial {Algorithms}}, volume 8288, pages 428--432.
+  Springer Berlin Heidelberg, Berlin, Heidelberg, 2013.
+\newblock ISBN 978-3-642-45277-2 978-3-642-45278-9.
+\newblock \doi{10.1007/978-3-642-45278-9_37}.
+\newblock URL \url{https://doi.org/10.1007/978-3-642-45278-9_37}.
+
+\bibitem[Chazelle and Friedman(1988)]{chazelle1988deterministic}
+B.~Chazelle and J.~Friedman.
+\newblock A deterministic view of random sampling and its use in geometry.
+\newblock In \emph{[{Proceedings} 1988] 29th {Annual} {Symposium} on
+  {Foundations} of {Computer} {Science}}, pages 539--549, White Plains, NY,
+  USA, 1988. IEEE.
+\newblock ISBN 978-0-8186-0877-3.
+\newblock \doi{10.1109/SFCS.1988.21970}.
+\newblock URL \url{https://doi.org/10.1109/SFCS.1988.21970}.
+
+\bibitem[Devine et~al.(2006)Devine, Boman, Heaphy, Bisseling, and
+  Catalyurek]{devine2006parallel}
+K.D. Devine, E.G. Boman, R.T. Heaphy, R.H. Bisseling, and U.V. Catalyurek.
+\newblock Parallel hypergraph partitioning for scientific computing.
+\newblock In \emph{Proceedings 20th {IEEE} {International} {Parallel} \&
+  {Distributed} {Processing} {Symposium}}, page 10 pp., Rhodes Island, Greece,
+  2006. IEEE.
+\newblock ISBN 978-1-4244-0054-6.
+\newblock \doi{10.1109/IPDPS.2006.1639359}.
+\newblock URL \url{https://doi.org/10.1109/IPDPS.2006.1639359}.
+
+\bibitem[D{\"o}rfler and Waller(1980)]{dorfler1980categorytheoretical}
+W.~D{\"o}rfler and D.~A. Waller.
+\newblock A category-theoretical approach to hypergraphs.
+\newblock \emph{Archiv der Mathematik}, 34\penalty0 (1):\penalty0 185--192,
+  December 1980.
+\newblock ISSN 0003-889X, 1420-8938.
+\newblock \doi{10.1007/BF01224952}.
+\newblock URL \url{https://doi.org/10.1007/BF01224952}.
+
+\bibitem[Drewes et~al.(1997)Drewes, Kreowski, and Habel]{drewes1997hyperedge}
+F.~Drewes, H.-J. Kreowski, and A.~Habel.
+\newblock Hyperedge replacement graph grammars.
+\newblock In \emph{Handbook of {Graph} {Grammars} and {Computing} by {Graph}
+  {Transformation}}, pages 95--162. WORLD SCIENTIFIC, February 1997.
+\newblock ISBN 978-981-02-2884-2 978-981-238-472-0.
+\newblock \doi{10.1142/9789812384720_0002}.
+\newblock URL \url{https://doi.org/10.1142/9789812384720_0002}.
+
+\bibitem[Eschbach et~al.(2006)Eschbach, Guenther, and
+  Becker]{eschbach2006orthogonal}
+Thomas Eschbach, Wolfgang Guenther, and Bernd Becker.
+\newblock Orthogonal {Hypergraph} {Drawing} for {Improved} {Visibility}.
+\newblock \emph{Journal of Graph Algorithms and Applications}, 10\penalty0
+  (2):\penalty0 141--157, 2006.
+\newblock ISSN 1526-1719.
+\newblock \doi{10.7155/jgaa.00122}.
+\newblock URL \url{https://doi.org/10.7155/jgaa.00122}.
+
+\bibitem[Estrada and Rodriguez-Velazquez(2005)]{estrada2005complex}
+Ernesto Estrada and Juan~A Rodriguez-Velazquez.
+\newblock Complex networks as hypergraphs.
+\newblock \emph{arXiv preprint physics/0505137}, 2005.
+
+\bibitem[Gao et~al.(2012)Gao, Wang, Tao, Ji, and Dai]{gao20123d}
+Yue Gao, Meng Wang, Dacheng Tao, Rongrong Ji, and Qionghai Dai.
+\newblock 3-{D} {Object} {Retrieval} and {Recognition} {With} {Hypergraph}
+  {Analysis}.
+\newblock \emph{IEEE Transactions on Image Processing}, 21\penalty0
+  (9):\penalty0 4290--4303, September 2012.
+\newblock ISSN 1057-7149, 1941-0042.
+\newblock \doi{10.1109/TIP.2012.2199502}.
+\newblock URL \url{https://doi.org/10.1109/TIP.2012.2199502}.
+
+\bibitem[Garey and Johnson(2002)]{garey2002computers}
+Michael~R Garey and David~S Johnson.
+\newblock \emph{Computers and intractability}, volume~29.
+\newblock wh freeman New York, 2002.
+
+\bibitem[Ghaemi et~al.(2009)Ghaemi, Sulaiman, Ibrahim, Mustapha, and
+  {others}]{ghaemi2009survey}
+Reza Ghaemi, Md~Nasir Sulaiman, Hamidah Ibrahim, Norwati Mustapha, and
+  {others}.
+\newblock A survey: clustering ensembles techniques.
+\newblock \emph{World Academy of Science, Engineering and Technology},
+  50:\penalty0 636--645, 2009.
+
+\bibitem[Gould and Gatrell(1979)]{gould1979structural}
+Peter Gould and Anthony Gatrell.
+\newblock A structural analysis of a game: {The} {Liverpool} v {Manchester}
+  united cup final of 1977.
+\newblock \emph{Social Networks}, 2\penalty0 (3):\penalty0 253--273, January
+  1979.
+\newblock ISSN 03788733.
+\newblock \doi{10.1016/0378-8733(79)90017-0}.
+\newblock URL \url{https://doi.org/10.1016/0378-8733(79)90017-0}.
+
+\bibitem[Grigori et~al.(2010)Grigori, Boman, Donfack, and
+  Davis]{grigori2010hypergraphbased}
+Laura Grigori, Erik~G. Boman, Simplice Donfack, and Timothy~A. Davis.
+\newblock Hypergraph-{Based} {Unsymmetric} {Nested} {Dissection} {Ordering} for
+  {Sparse} {LU} {Factorization}.
+\newblock \emph{SIAM Journal on Scientific Computing}, 32\penalty0
+  (6):\penalty0 3426--3446, January 2010.
+\newblock ISSN 1064-8275, 1095-7197.
+\newblock \doi{10.1137/080720395}.
+\newblock URL \url{https://doi.org/10.1137/080720395}.
+
+\bibitem[Grossman and Ion(1995)]{grossman1995portion}
+Jerrold~W Grossman and Patrick~DF Ion.
+\newblock On a portion of the well-known collaboration graph.
+\newblock \emph{Congressus Numerantium}, pages 129--132, 1995.
+
+\bibitem[Gy{\'a}rf{\'a}s and S{\'a}rk{\"o}zy(2013)]{gyarfas2013monochromatic}
+Andr{\'a}s Gy{\'a}rf{\'a}s and G{\'a}bor~N S{\'a}rk{\"o}zy.
+\newblock Monochromatic path and cycle partitions in hypergraphs.
+\newblock \emph{the electronic journal of combinatorics}, 20\penalty0
+  (1):\penalty0 18, 2013.
+
+\bibitem[Habel and Kreowski(1987)]{habel1987structural}
+Annegret Habel and Hans-J{\"o}rg Kreowski.
+\newblock Some structural aspects of hypergraph languages generated by
+  hyperedge replacement.
+\newblock In Franz~J. Brandenburg, Guy Vidal-Naquet, and Martin Wirsing,
+  editors, \emph{{STACS} 87}, volume 247, pages 207--219. Springer-Verlag,
+  Berlin/Heidelberg, 1987.
+\newblock ISBN 978-3-540-17219-2.
+\newblock \doi{10.1007/BFb0039608}.
+\newblock URL \url{https://doi.org/10.1007/BFb0039608}.
+
+\bibitem[Hatcher(2005)]{hatcher2005algebraic}
+Allen Hatcher.
+\newblock \emph{Algebraic topology}.
+\newblock 2005.
+
+\bibitem[Isah and Tella(2015)]{isah2015concept}
+Ahmed Isah and Y.~Tella.
+\newblock The {Concept} of {Multiset} {Category}.
+\newblock \emph{British Journal of Mathematics \& Computer Science}, 9\penalty0
+  (5):\penalty0 427--437, January 2015.
+\newblock ISSN 22310851.
+\newblock \doi{10.9734/BJMCS/2015/18415}.
+\newblock URL \url{https://doi.org/10.9734/bjmcs/2015/18415}.
+
+\bibitem[Jacomy et~al.(2014)Jacomy, Venturini, Heymann, and
+  Bastian]{jacomy2014forceatlas2}
+Mathieu Jacomy, Tommaso Venturini, Sebastien Heymann, and Mathieu Bastian.
+\newblock {ForceAtlas2}, a {Continuous} {Graph} {Layout} {Algorithm} for
+  {Handy} {Network} {Visualization} {Designed} for the {Gephi} {Software}.
+\newblock \emph{PLoS ONE}, 9\penalty0 (6):\penalty0 e98679, June 2014.
+\newblock ISSN 1932-6203.
+\newblock \doi{10.1371/journal.pone.0098679}.
+\newblock URL \url{https://dx.plos.org/10.1371/journal.pone.0098679}.
+
+\bibitem[Jin et~al.(2015)Jin, Yu, You, Zeng, Li, and Yu]{jin2015lowrank}
+Taisong Jin, Jun Yu, Jane You, Kun Zeng, Cuihua Li, and Zhengtao Yu.
+\newblock Low-rank matrix factorization with multiple {Hypergraph} regularizer.
+\newblock \emph{Pattern Recognition}, 48\penalty0 (3):\penalty0 1011--1022,
+  March 2015.
+\newblock ISSN 00313203.
+\newblock \doi{10.1016/j.patcog.2014.09.002}.
+\newblock URL \url{https://doi.org/10.1016/j.patcog.2014.09.002}.
+
+\bibitem[Johnson and Pollak(1987)]{johnson23hypergraph}
+D.~S. Johnson and H.~O. Pollak.
+\newblock Hypergraph planarity and the complexity of drawing venn diagrams.
+\newblock \emph{Journal of Graph Theory}, 11\penalty0 (3):\penalty0 309--325,
+  1987.
+\newblock ISSN 03649024, 10970118.
+\newblock \doi{10.1002/jgt.3190110306}.
+\newblock URL \url{http://doi.wiley.com/10.1002/jgt.3190110306}.
+
+\bibitem[Junghans(2008)]{junghans2008visualization}
+Martin Junghans.
+\newblock \emph{Visualization of hyperedges in fixed graph layouts}.
+\newblock {PhD} {Thesis}, Master{\textbackslash}rqs thesis, Brandenburg
+  University of Technology, Cottbus, 2008.
+
+\bibitem[Kajino(2018)]{kajino2018molecular}
+Hiroshi Kajino.
+\newblock Molecular hypergraph grammar with its application to molecular
+  optimization.
+\newblock \emph{arXiv preprint arXiv:1809.02745}, 2018.
+
+\bibitem[Karypis et~al.(1999)Karypis, Aggarwal, Kumar, and
+  Shekhar]{karypis1999multilevel}
+G.~Karypis, R.~Aggarwal, V.~Kumar, and S.~Shekhar.
+\newblock Multilevel hypergraph partitioning: applications in {VLSI} domain.
+\newblock \emph{IEEE Transactions on Very Large Scale Integration (VLSI)
+  Systems}, 7\penalty0 (1):\penalty0 69--79, March 1999.
+\newblock ISSN 1063-8210, 1557-9999.
+\newblock \doi{10.1109/92.748202}.
+\newblock URL \url{https://doi.org/10.1109/92.748202}.
+
+\bibitem[Karypis and Kumar(2000)]{karypis2000multilevel}
+George Karypis and Vipin Kumar.
+\newblock Multilevel k-way {Hypergraph} {Partitioning}.
+\newblock \emph{VLSI Design}, 11\penalty0 (3):\penalty0 285--300, January 2000.
+\newblock ISSN 1065-514X, 1563-5171.
+\newblock \doi{10.1155/2000/19436}.
+\newblock URL \url{https://doi.org/10.1155/2000/19436}.
+
+\bibitem[Kaufmann et~al.(2009)Kaufmann, van Kreveld, and
+  Speckmann]{kaufmann2009subdivision}
+Michael Kaufmann, Marc van Kreveld, and Bettina Speckmann.
+\newblock Subdivision {Drawings} of {Hypergraphs}.
+\newblock In David Hutchison, Takeo Kanade, Josef Kittler, Jon~M. Kleinberg,
+  Friedemann Mattern, John~C. Mitchell, Moni Naor, Oscar Nierstrasz,
+  C.~Pandu~Rangan, Bernhard Steffen, Madhu Sudan, Demetri Terzopoulos, Doug
+  Tygar, Moshe~Y. Vardi, Gerhard Weikum, Ioannis~G. Tollis, and Maurizio
+  Patrignani, editors, \emph{Graph {Drawing}}, volume 5417, pages 396--407.
+  Springer Berlin Heidelberg, Berlin, Heidelberg, 2009.
+\newblock ISBN 978-3-642-00218-2 978-3-642-00219-9.
+\newblock \doi{10.1007/978-3-642-00219-9_39}.
+\newblock URL \url{https://doi.org/10.1007/978-3-642-00219-9_39}.
+
+\bibitem[Kerren and Jusufi(2013)]{kerren2013novel}
+Andreas Kerren and Ilir Jusufi.
+\newblock A novel radial visualization approach for undirected hypergraphs.
+\newblock \emph{Eurographics Association}, pages 25--29, 2013.
+
+\bibitem[Kierstead and Rodl(1996)]{kierstead1996applications}
+H.A. Kierstead and V.~Rodl.
+\newblock Applications of hypergraph coloring to coloring graphs not inducing
+  certain trees.
+\newblock \emph{Discrete Mathematics}, 150\penalty0 (1-3):\penalty0 187--193,
+  April 1996.
+\newblock ISSN 0012365X.
+\newblock \doi{10.1016/0012-365X(95)00187-2}.
+\newblock URL \url{https://doi.org/10.1016/0012-365X(95)00187-2}.
+
+\bibitem[Lee(2010)]{lee2010introduction}
+John Lee.
+\newblock \emph{Introduction to topological manifolds}, volume 202.
+\newblock Springer Science \& Business Media, 2010.
+
+\bibitem[Lu(2004)]{lu2004deterministic}
+Chi-Jen Lu.
+\newblock Deterministic hypergraph coloring and its applications.
+\newblock \emph{SIAM Journal on Discrete Mathematics}, 18\penalty0
+  (2):\penalty0 320--331, 2004.
+
+\bibitem[L{\"u} et~al.(2012)L{\"u}, Medo, Yeung, Zhang, Zhang, and
+  Zhou]{lu2012recommender}
+Linyuan L{\"u}, Mat{\'u}{\v s} Medo, Chi~Ho Yeung, Yi-Cheng Zhang, Zi-Ke Zhang,
+  and Tao Zhou.
+\newblock Recommender systems.
+\newblock \emph{Physics reports}, 519\penalty0 (1):\penalty0 1--49, 2012.
+
+\bibitem[Luerssen and Powers(2007)]{luerssen2007graph}
+Martin~H Luerssen and David~MW Powers.
+\newblock Graph design by graph grammar evolution.
+\newblock In \emph{2007 {IEEE} {Congress} on {Evolutionary} {Computation}},
+  pages 386--393. IEEE, 2007.
+
+\bibitem[M{\"a}kinen(1990)]{makinen1990how}
+Erkki M{\"a}kinen.
+\newblock How to draw a hypergraph.
+\newblock \emph{International Journal of Computer Mathematics}, 34\penalty0
+  (3-4):\penalty0 177--185, 1990.
+\newblock \doi{10.1080/00207169008803875}.
+\newblock URL \url{https://doi.org/10.1080/00207169008803875}.
+
+\bibitem[Newman(2001{\natexlab{a}})]{newman2001scientific}
+M.~E.~J. Newman.
+\newblock Scientific collaboration networks. {II}. {Shortest} paths, weighted
+  networks, and centrality.
+\newblock \emph{Physical Review E}, 64\penalty0 (1):\penalty0 016132, June
+  2001{\natexlab{a}}.
+\newblock ISSN 1063-651X, 1095-3787.
+\newblock \doi{10.1103/PhysRevE.64.016132}.
+\newblock URL \url{https://link.aps.org/doi/10.1103/PhysRevE.64.016132}.
+
+\bibitem[Newman(2001{\natexlab{b}})]{newman2001scientifica}
+M.~E.~J. Newman.
+\newblock Scientific collaboration networks. {I}. {Network} construction and
+  fundamental results.
+\newblock \emph{Physical Review E}, 64\penalty0 (1):\penalty0 016131, June
+  2001{\natexlab{b}}.
+\newblock ISSN 1063-651X, 1095-3787.
+\newblock \doi{10.1103/PhysRevE.64.016131}.
+\newblock URL \url{https://doi.org/10.1103/PhysRevE.64.016131}.
+
+\bibitem[Nikolaev(2016)]{nikolaev2016modeling}
+Alexey Nikolaev.
+\newblock Modeling and analysis of higher-order interactions in collaborative
+  networks.
+\newblock 2016.
+
+\bibitem[Ouvrard et~al.(2017)Ouvrard, Le~Goff, and
+  Marchand-Maillet]{ouvrard2017networks}
+Xavier Ouvrard, Jean-Marie Le~Goff, and St{\'e}phane Marchand-Maillet.
+\newblock Networks of {Collaborations}: {Hypergraph} {Modeling} and
+  {Visualisation}.
+\newblock \emph{arXiv preprint arXiv:1707.00115}, 2017.
+
+\bibitem[Papa and Markov(2007)]{papa2007hypergraph}
+David Papa and Igor Markov.
+\newblock Hypergraph {Partitioning} and {Clustering}.
+\newblock In Teofilo Gonzalez, editor, \emph{Handbook of {Approximation}
+  {Algorithms} and {Metaheuristics}}, volume 20073547, pages 61--1--61--19.
+  Chapman and Hall/CRC, May 2007.
+\newblock ISBN 978-1-58488-550-4 978-1-4200-1074-9.
+\newblock \doi{10.1201/9781420010749.ch61}.
+\newblock URL \url{https://doi.org/10.1201/9781420010749.ch61}.
+
+\bibitem[Paquette and Tokuyasu(2011)]{paquette2011hypergraph}
+Jesse Paquette and Taku Tokuyasu.
+\newblock Hypergraph visualization and enrichment statistics: how the {EGAN}
+  paradigm facilitates organic discovery from big data.
+\newblock page 78650E, San Francisco Airport, California, USA, February 2011.
+\newblock \doi{10.1117/12.890220}.
+\newblock URL \url{https://doi.org/10.1117/12.890220}.
+
+\bibitem[Ramasco et~al.(2004)Ramasco, Dorogovtsev, and
+  Pastor-Satorras]{ramasco2004selforganization}
+Jos{\'e}~J. Ramasco, S.~N. Dorogovtsev, and Romualdo Pastor-Satorras.
+\newblock Self-organization of collaboration networks.
+\newblock \emph{Physical Review E}, 70\penalty0 (3):\penalty0 036106, September
+  2004.
+\newblock ISSN 1539-3755, 1550-2376.
+\newblock \doi{10.1103/PhysRevE.70.036106}.
+\newblock URL \url{https://doi.org/10.1103/PhysRevE.70.036106}.
+
+\bibitem[Salnikov et~al.(2018)Salnikov, Cassese, Lambiotte, and
+  Jones]{salnikov2018cooccurrence}
+Vsevolod Salnikov, Daniele Cassese, Renaud Lambiotte, and Nick~S. Jones.
+\newblock Co-occurrence simplicial complexes in mathematics: identifying the
+  holes of knowledge.
+\newblock \emph{Applied Network Science}, 3\penalty0 (1):\penalty0 37, December
+  2018.
+\newblock ISSN 2364-8228.
+\newblock \doi{10.1007/s41109-018-0074-3}.
+\newblock URL \url{https://doi.org/10.1007/s41109-018-0074-3}.
+
+\bibitem[Seymour(1974)]{seymour1974twocolouring}
+P.~D. Seymour.
+\newblock On the two-colouring of hypergraphs.
+\newblock \emph{The Quarterly Journal of Mathematics}, 25\penalty0
+  (1):\penalty0 303--311, 1974.
+\newblock ISSN 0033-5606, 1464-3847.
+\newblock \doi{10.1093/qmath/25.1.303}.
+\newblock URL \url{https://doi.org/10.1093/qmath/25.1.303}.
+
+\bibitem[Stell(2012)]{stell2012relations}
+John~G. Stell.
+\newblock Relations on {Hypergraphs}.
+\newblock In \emph{Relational and {Algebraic} {Methods} in {Computer}
+  {Science}}, volume 7560, pages 326--341. Springer Berlin Heidelberg, Berlin,
+  Heidelberg, 2012.
+\newblock ISBN 978-3-642-33313-2 978-3-642-33314-9.
+\newblock \doi{10.1007/978-3-642-33314-9_22}.
+\newblock URL \url{https://doi.org/10.1007/978-3-642-33314-9_22}.
+
+\bibitem[Taramasco et~al.(2010)Taramasco, Cointet, and
+  Roth]{taramasco2010academic}
+Carla Taramasco, Jean-Philippe Cointet, and Camille Roth.
+\newblock Academic team formation as evolving hypergraphs.
+\newblock \emph{Scientometrics}, 85\penalty0 (3):\penalty0 721--740, December
+  2010.
+\newblock ISSN 0138-9130, 1588-2861.
+\newblock \doi{10.1007/s11192-010-0226-4}.
+\newblock URL \url{https://doi.org/10.1007/s11192-010-0226-4}.
+
+\bibitem[Temkin et~al.(1996)Temkin, Zeigarnik, and Bonchev]{temkin1996chemical}
+Oleg~N Temkin, Andrew~V Zeigarnik, and DG~Bonchev.
+\newblock \emph{Chemical reaction networks: a graph-theoretical approach}.
+\newblock CRC Press, 1996.
+
+\bibitem[Venn(1881)]{venn1881diagrammatic}
+John Venn.
+\newblock On the {Diagrammatic} and {Mechanical} {Representation} of
+  {Propositions} and {Reasonings}.
+\newblock 1881.
+
+\bibitem[Voloshin(1993)]{voloshin1993mixed}
+VI~Voloshin.
+\newblock The mixed hypergraphs.
+\newblock \emph{Computer Science Journal of Moldova}, 1\penalty0 (1):\penalty0
+  1, 1993.
+
+\bibitem[Voloshin(2002)]{voloshin2002coloring}
+Vitaly Voloshin.
+\newblock \emph{Coloring {Mixed} {Hypergraphs}: {Theory}, {Algorithms} and
+  {Applications}}, volume~17 of \emph{Fields {Institute} {Monographs}}.
+\newblock American Mathematical Society, Providence, Rhode Island, June 2002.
+\newblock ISBN 978-0-8218-2812-0 978-1-4704-3144-0.
+\newblock \doi{10.1090/fim/017}.
+\newblock URL \url{https://doi.org/10.1090/fim/017}.
+
+\bibitem[Voloshin(2009)]{voloshin2009introduction}
+Vitaly~I Voloshin.
+\newblock \emph{Introduction to graph and hypergraph theory}.
+\newblock Nova Science Publ., 2009.
+\newblock ISBN 978-1-60692-372-6.
+
+\bibitem[Wang et~al.(2018)Wang, Zhu, Qian, and Han]{wang2018joint}
+Yaxiong Wang, Li~Zhu, Xueming Qian, and Junwei Han.
+\newblock Joint {Hypergraph} {Learning} for {Tag}-{Based} {Image} {Retrieval}.
+\newblock \emph{IEEE Transactions on Image Processing}, 27\penalty0
+  (9):\penalty0 4437--4451, September 2018.
+\newblock ISSN 1057-7149, 1941-0042.
+\newblock \doi{10.1109/TIP.2018.2837219}.
+\newblock URL \url{https://doi.org/10.1109/TIP.2018.2837219}.
+
+\bibitem[Wasserman and Faust(1994)]{wasserman1994social}
+Stanley Wasserman and Katherine Faust.
+\newblock \emph{Social {Network} {Analysis}: {Methods} and {Applications}}.
+\newblock Cambridge University Press, 1 edition, November 1994.
+\newblock ISBN 978-0-521-38707-1 978-0-521-38269-4 978-0-511-81547-8.
+\newblock \doi{10.1017/CBO9780511815478}.
+\newblock URL \url{https://doi.org/10.1017/CBO9780511815478}.
+
+\bibitem[Wu et~al.(2018)Wu, Kwong, Zhou, Jia, and Gao]{wu2018nonnegative}
+Wenhui Wu, Sam Kwong, Yu~Zhou, Yuheng Jia, and Wei Gao.
+\newblock Nonnegative matrix factorization with mixed hypergraph regularization
+  for community detection.
+\newblock \emph{Information Sciences}, 435:\penalty0 263--281, April 2018.
+\newblock ISSN 00200255.
+\newblock \doi{10.1016/j.ins.2018.01.008}.
+\newblock URL \url{https://doi.org/10.1016/j.ins.2018.01.008}.
+
+\bibitem[Xu et~al.(2016)Xu, Du, Ye, and Fan]{xu2016multifeature}
+Zihang Xu, Junping Du, Lingfei Ye, and Dan Fan.
+\newblock Multi-feature indexing for image retrieval based on hypergraph.
+\newblock In \emph{2016 4th {International} {Conference} on {Cloud} {Computing}
+  and {Intelligence} {Systems} ({CCIS})}, pages 494--500, Beijing, China,
+  August 2016. IEEE.
+\newblock ISBN 978-1-5090-1256-5.
+\newblock \doi{10.1109/CCIS.2016.7790309}.
+\newblock URL \url{https://doi.org/10.1109/CCIS.2016.7790309}.
+
+\bibitem[Yang et~al.(2017)Yang, Wang, Bhuiyan, and Choo]{yang2017hypergraph}
+Wenyin Yang, Guojun Wang, Md~Zakirul~Alam Bhuiyan, and Kim-Kwang~Raymond Choo.
+\newblock Hypergraph partitioning for social networks based on information
+  entropy modularity.
+\newblock \emph{Journal of Network and Computer Applications}, 86:\penalty0
+  59--71, May 2017.
+\newblock ISSN 10848045.
+\newblock \doi{10.1016/j.jnca.2016.10.002}.
+\newblock URL \url{https://doi.org/10.1016/j.jnca.2016.10.002}.
+
+\bibitem[Yasen and Ueda(2018)]{yasen2018name}
+Alimujiang Yasen and Kazunori Ueda.
+\newblock Name {Binding} is {Easy} with {Hypergraphs}.
+\newblock \emph{IEICE Transactions on Information and Systems}, E101.D\penalty0
+  (4):\penalty0 1126--1140, 2018.
+\newblock ISSN 0916-8532, 1745-1361.
+\newblock \doi{10.1587/transinf.2017EDP7257}.
+\newblock URL \url{https://doi.org/10.1587/transinf.2017edp7257}.
+
+\bibitem[{Yuchi Huang} et~al.(2011){Yuchi Huang}, {Qingshan Liu}, {Fengjun Lv},
+  {Yihong Gong}, and Metaxas]{yuchihuang2011unsupervised}
+{Yuchi Huang}, {Qingshan Liu}, {Fengjun Lv}, {Yihong Gong}, and Dimitris~N
+  Metaxas.
+\newblock Unsupervised {Image} {Categorization} by {Hypergraph} {Partition}.
+\newblock \emph{IEEE Transactions on Pattern Analysis and Machine
+  Intelligence}, 33\penalty0 (6):\penalty0 1266--1273, June 2011.
+\newblock ISSN 0162-8828, 2160-9292.
+\newblock \doi{10.1109/TPAMI.2011.25}.
+\newblock URL \url{https://doi.org/10.1109/TPAMI.2011.25}.
+
+\bibitem[Zeng et~al.(2014)Zeng, Yu, Li, You, and Jin]{zeng2014image}
+Kun Zeng, Jun Yu, Cuihua Li, Jane You, and Taisong Jin.
+\newblock Image clustering by hyper-graph regularized non-negative matrix
+  factorization.
+\newblock \emph{Neurocomputing}, 138:\penalty0 209--217, August 2014.
+\newblock ISSN 09252312.
+\newblock \doi{10.1016/j.neucom.2014.01.043}.
+\newblock URL \url{https://doi.org/10.1016/j.neucom.2014.01.043}.
+
+\bibitem[Zheng et~al.(2018)Zheng, Luo, Sun, Ding, and Zhang]{zheng2018novel}
+Xiaoyao Zheng, Yonglong Luo, Liping Sun, Xintao Ding, and Ji~Zhang.
+\newblock A novel social network hybrid recommender system based on hypergraph
+  topologic structure.
+\newblock \emph{World Wide Web}, 21\penalty0 (4):\penalty0 985--1013, July
+  2018.
+\newblock ISSN 1386-145X, 1573-1413.
+\newblock \doi{10.1007/s11280-017-0494-5}.
+\newblock URL \url{https://doi.org/10.1007/s11280-017-0494-5}.
+
+\bibitem[Zhou et~al.(2007)Zhou, Huang, and Sch{\"o}lkopf]{zhou2007learning}
+Denny Zhou, Jiayuan Huang, and Bernhard Sch{\"o}lkopf.
+\newblock Learning with hypergraphs: {Clustering}, classification, and
+  embedding.
+\newblock In \emph{Advances in neural information processing systems}, pages
+  1601--1608, 2007.
+
+\bibitem[Zhu et~al.(2015)Zhu, Shen, Jin, Zheng, and Xie]{zhu2015contentbased}
+Lei Zhu, Jialie Shen, Hai Jin, Ran Zheng, and Liang Xie.
+\newblock Content-{Based} {Visual} {Landmark} {Search} via {Multimodal}
+  {Hypergraph} {Learning}.
+\newblock \emph{IEEE Transactions on Cybernetics}, 45\penalty0 (12):\penalty0
+  2756--2769, December 2015.
+\newblock ISSN 2168-2267, 2168-2275.
+\newblock \doi{10.1109/TCYB.2014.2383389}.
+\newblock URL \url{https://doi.org/10.1109/TCYB.2014.2383389}.
+
+\bibitem[Zhu et~al.(2016)Zhu, Guan, Tan, Liu, Cai, and
+  He]{zhu2016heterogeneous}
+Yu~Zhu, Ziyu Guan, Shulong Tan, Haifeng Liu, Deng Cai, and Xiaofei He.
+\newblock Heterogeneous hypergraph embedding for document recommendation.
+\newblock \emph{Neurocomputing}, 216:\penalty0 150--162, December 2016.
+\newblock ISSN 09252312.
+\newblock \doi{10.1016/j.neucom.2016.07.030}.
+\newblock URL
+  \url{https://linkinghub.elsevier.com/retrieve/pii/S0925231216307755}.
+
+\bibitem[Zykov(1974)]{zykov1974hypergraphs}
+A~A Zykov.
+\newblock Hypergraphs.
+\newblock \emph{Russian Mathematical Surveys}, 29\penalty0 (6):\penalty0
+  89--156, December 1974.
+\newblock ISSN 0036-0279, 1468-4829.
+\newblock \doi{10.1070/RM1974v029n06ABEH001303}.
+\newblock URL \url{https://doi.org/10.1070/RM1974v029n06ABEH001303}.
+
+\end{thebibliography}
