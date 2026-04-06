@@ -2,61 +2,74 @@
 
 ## 1. Basic Definitions
 
-**Definition 1.1 (Hypergraph).** A *hypergraph* is a pair $H = (V, \mathcal{E})$
+**Definition 1.1 (Hypergraph).** A *hypergraph* is a pair $H = (V, E)$
 where:
-- $V$ is a finite non-empty set of *vertices*
-- $\mathcal{E} = \{E_1, E_2, \ldots, E_m\} \subseteq 2^V \setminus \{\emptyset\}$
+- $V$ is a finite non-empty set of $n$ *vertices*
+- $E = \{e_1, e_2, \ldots, e_m\} \subseteq 2^V \setminus \{\emptyset\}$
   is a family of *hyperedges*
 
-There are $2^n - 1$ possible non-empty subsets of $V$ and it is a maximum
-possible $m$.
+There are $2^n - 1$ possible non-empty subsets of $V$, and it is the maximum
+possible number of hyperedges that can be in a hypergraph with $n$ vertices.
+$0 \leq m \leq 2^n - 1$.
 
-When every $|E_i| = 2$, $H$ reduces to an ordinary graph. Hyperedges of size $k$
+The size of a hyperedge $e$ is denoted by $|e|$.
+$1 \leq \left|e\right| \leq n$ for any $e \in E$. Note that hypergraphs allow
+hyperedges of size $1$.
+
+When every $|e_i| = 2$, $H$ reduces to an ordinary graph. Hyperedges of size $k$
 are called *$k$-edges*.
 
-**Definition 1.2 ($k$-uniform Hypergraph).** $H$ is *$k$-uniform* if $|E_i| = k$
+The maximum size of a hyperedge, also called the _rank_ of a hypergraph, is
+defined by $rank := \max_{e \in E}\left|e\right|$.
+
+**Definition 1.2 ($k$-uniform Hypergraph).** $H$ is *$k$-uniform* if $|e_i| = k$
 for all $i$. A 2-uniform hypergraph is precisely a simple graph.
 
+The maximum possible number of hyperedges that can be in a $k$-uniform
+hypergraph with $n$ vertices is $\binom{n}{k}$. (Note
+that $\binom{n}{k} = \frac{n!}{k!\,(n-k)!}$.)
+
+A $k$-uniform hypergraph with $n$ vertices is _complete_ when it has maximum
+possible hyperedges ($m = \binom{n}{k}$) and denoted by $K_n^{(k)}$. Example:
+Tetrahedron $K_4^{(3)}$ is a complete 3-uniform hypergraph on 4 vertices - it
+has a vertex set $\{1,2,3,4\}$ and edges $\{123, 124, 134, 234\}$.
+
 **Definition 1.3 (Incidence Matrix).** The *incidence
-matrix* $M \in \{0,1\}^{|V| \times |\mathcal{E}|}$ is defined by $M_{v,e} = 1$
+matrix* $M \in \{0,1\}^{|V| \times |E|}$ is defined by $M_{v,e} = 1$
 iff $v \in e$.
 
 ---
 
 ## 2. Degree and Regularity
 
-**Definition 2.1.** The *degree* of a vertex $v$
-is $d(v) = |\{e \in \mathcal{E} : v \in e\}|$. The *degree sequence* of $H$ is
-the multiset $\{d(v)\}_{v \in V}$.
+**Definition 2.1.** $E[v]$ is the set of all hyperedges incident
+to $v$: $E[v] = \{e \in E : v \in e\}$. The *degree* of a vertex $v$
+is $d(v) = |E[v]|$. The *degree sequence* of $H$ is the
+multiset $\{d(v)\}_{v \in V}$. The maximum degree is denoted
+by $\Delta := \max_{v \in V}d(v)$, and the minimum degree
+is $\delta := \min_{v \in V}d(v)$.
 
-Since $\mathcal{E} \subseteq 2^V \setminus \{\emptyset\}$, there are $2^n - 1$
+Since $E \subseteq 2^V \setminus \{\emptyset\}$, there are $2^n - 1$
 possible non-empty subsets of $V$, and a vertex $v$ belongs to exactly $2^{n-1}$
-of them. So the maximum degree is:
+of them. So the maximum possible degree is $2^{n-1}$ achieved when $E$ contains
+every non-empty subset of $V$ that includes $v$.
+$0 \leq d(v) \leq 2^{n-1}$ for all $v \in V$.
 
-$$d_{\max} = 2^{n-1}$$
-
-achieved when $\mathcal{E}$ contains every non-empty subset of $V$ that
-includes $v$.
-
-**$k$-uniform hypergraph.** Every edge has size exactly $k$, and $v$ can appear
-in at most $\binom{n-1}{k-1}$ edges (choose the remaining $k-1$ vertices from
-the other $n-1$ vertices). So:
-
-$$d_{\max} = \binom{n-1}{k-1}$$
-
-This recovers the graph case: for $k=2$, $\binom{n-1}{1} = n-1$. ✓
-
-Note that
-$$\binom{n}{k} = \frac{n!}{k!\,(n-k)!}$$
+For **$k$-uniform hypergraph**, every edge has size exactly $k$, and $v$ can
+appear in at most $\binom{n-1}{k-1}$ edges (choose the remaining $k-1$ vertices
+from the other $n-1$ vertices). So $d(v) \leq \binom{n-1}{k-1}$. This recovers
+the graph case: for $k=2$, $\binom{n-1}{1} = n-1$. ✓
 
 **Proposition 2.2 (Handshaking Lemma for Hypergraphs).**
-$$\sum_{v \in V} d(v) = \sum_{e \in \mathcal{E}} |e|$$
+$$\sum_{v \in V} d(v) = \sum_{e \in E} |e|$$
 
 *Proof.* Count the incidence pairs $(v, e)$ with $v \in e$ in two
 ways. $\square$
 
 **Definition 2.3.** $H$ is *$r$-regular* if $d(v) = r$ for all $v \in V$. For
-a $k$-uniform $r$-regular hypergraph: $r|V| = k|\mathcal{E}|$.
+a $k$-uniform $r$-regular hypergraph: $r|V| = k|E|$.
+
+A complete $k$-uniform hypergrap $K_n^{(k)}$ is $\binom{n-1}{k-1}$-regular.
 
 ---
 
@@ -79,10 +92,10 @@ one vertex) is called *linear*.
 
 ## 4. Duality
 
-**Definition 4.1 (Dual Hypergraph).** The *dual* of $H = (V, \mathcal{E})$
-is $H^* = (\mathcal{E}, \mathcal{V}^*)$
+**Definition 4.1 (Dual Hypergraph).** The *dual* of $H = (V, E)$
+is $H^* = (E, \mathcal{V}^*)$
 where $\mathcal{V}^* = \{V_v : v \in V\}$
-and $V_v = \{e \in \mathcal{E} : v \in e\}$.
+and $V_v = \{e \in E : v \in e\}$.
 
 The incidence matrix of $H^*$ is $M^T$. Duality is an
 involution: $(H^*)^* \cong H$.
@@ -96,7 +109,7 @@ and $k$-regular.
 
 **Definition 5.1 (Proper Coloring).** A *proper vertex $q$-coloring* is a
 map $c: V \to [q]$ such that no hyperedge is monochromatic: for
-all $e \in \mathcal{E}$, $c$ is non-constant on $e$.
+all $e \in E$, $c$ is non-constant on $e$.
 
 The *chromatic number* $\chi(H)$ is the smallest $q$ for which a proper coloring
 exists.
@@ -109,13 +122,13 @@ number* $\chi_s(H) \geq \chi(H)$.
 Bernstein) if $\chi(H) \leq 2$, i.e., $V$ can be 2-colored so no hyperedge is
 monochromatic.
 
-**Theorem 5.4 (Erdős, 1963).** If $H$ is $k$-uniform
-with $|\mathcal{E}| < 2^{k-1}$, then $H$ has Property B.
+**Theorem 5.4 (Erdős, 1963).** If $H$ is $k$-uniform with $|E| < 2^{k-1}$,
+then $H$ has Property B.
 
 *Proof sketch.* Color each vertex independently and uniformly at random
 in $\{0,1\}$. For each $k$-edge $e$, $\Pr[e \text{ monochromatic}] = 2^{1-k}$.
 By union bound,
-$\Pr[\exists \text{ monochromatic edge}] < |\mathcal{E}| \cdot 2^{1-k} < 1$.
+$\Pr[\exists \text{ monochromatic edge}] < |E| \cdot 2^{1-k} < 1$.
 $\square$
 
 **Theorem 5.5 (Erdős–Hajnal).** For every $k \geq 3$, there exist $k$-uniform
@@ -127,11 +140,11 @@ $m(k) = \Theta(2^k \sqrt{k})$.
 ## 6. Transversals and Matchings
 
 **Definition 6.1.** A *transversal* (or *hitting set*) of $H$ is a
-set $T \subseteq V$ with $T \cap e \neq \emptyset$ for all $e \in \mathcal{E}$.
-The *transversal number* $\tau(H)$ is the minimum size of a transversal.
+set $T \subseteq V$ with $T \cap e \neq \emptyset$ for all $e \in E$. The
+*transversal number* $\tau(H)$ is the minimum size of a transversal.
 
-**Definition 6.2.** A *matching* is a set $\mathcal{M} \subseteq \mathcal{E}$ of
-pairwise disjoint edges. The *matching number* $\nu(H)$ is the maximum size of a
+**Definition 6.2.** A *matching* is a set $\mathcal{M} \subseteq E$ of pairwise
+disjoint edges. The *matching number* $\nu(H)$ is the maximum size of a
 matching.
 
 **Proposition 6.3 (Weak Duality).**
@@ -140,8 +153,26 @@ $$\nu(H) \leq \tau(H)$$
 *Proof.* Any transversal must hit all edges of any matching, requiring at least
 one vertex per edge. $\square$
 
-**Definition 6.4.** $H$ is *$\tau$-critical* if removing any vertex
-decreases $\tau$.
+**Edge and vertex removal.**
+
+If $e \in E$, we express removing $e$ from $H$ as:
+$$
+H-e := \bigl( V, E \setminus \{e\} \bigr).
+$$
+
+If $v\in V$, then $H-v$ denotes the induced subhypergraph obtained by
+deleting $v$ and all $v$-incident edges:
+$$
+H-v := \bigl( V \setminus \{v\}, E \setminus E[v] \bigr).
+$$
+
+**Definition 6.4.** $H$ is (edge) *$\tau$-critical* if removing any edge
+decreases $\tau$:
+
+$$\tau(H-e) < \tau(H), \quad \forall e \in E$$
+
+There is an alternative vertex-critical definition:
+$$\tau(H-v) < \tau(H), \quad \forall v \in V$$
 
 **Theorem 6.5 (König's Theorem — Bipartite case).** For bipartite graphs
 (2-uniform): $\nu = \tau$. This equality *fails* in general for hypergraphs.
@@ -169,7 +200,11 @@ inequalities can be strict.
 **Definition 8.1 (Adjacency Tensor).** For a $k$-uniform hypergraph, define the
 *adjacency tensor* $\mathcal{A} \in \mathbb{R}^{n^k}$ by:
 
-$$\mathcal{A}_{i_1 i_2 \cdots i_k} = \begin{cases} \frac{1}{(k-1)!} & \text{if } \{i_1,\ldots,i_k\} \in \mathcal{E} \\ 0 & \text{otherwise} \end{cases}$$
+$$
+\mathcal{A}_{i_1 i_2 \cdots i_k} = \begin{cases}  
+\frac{1}{(k-1)!} & \text{if } \{i_1,\ldots,i_k\} \in E \\ 0 & \text{otherwise}  
+\end{cases}
+$$
 
 **Definition 8.2 ($\mathcal{A}$-eigenvalues).** A
 scalar $\lambda \in \mathbb{C}$ and vector $\mathbf{x} \neq \mathbf{0}$ satisfy
@@ -184,7 +219,7 @@ where $(\mathcal{A}\mathbf{x}^{k-1})_i = \sum_{i_2,\ldots,i_k} \mathcal{A}_{i\, 
 where $\mathcal{D}$ is the diagonal degree tensor.
 
 **Theorem 8.4 (Perron–Frobenius for Tensors, Qi 2005 / Lim 2005).**
-If $\mathcal{A}$ is a nonneg­ative irreducible tensor, then its spectral
+If $\mathcal{A}$ is a nonnegative irreducible tensor, then its spectral
 radius $\rho(\mathcal{A})$ is an eigenvalue with a unique positive eigenvector (
 up to scaling).
 
@@ -235,7 +270,7 @@ problems in combinatorics.
 ## 11. Sunflowers
 
 **Definition 11.1.** A *sunflower* (or $\Delta$-system) with $p$ petals is a
-family $\{E_1,\ldots,E_p\} \subseteq \mathcal{E}$ such that $E_i \cap E_j = Y$
+family $\{E_1,\ldots,E_p\} \subseteq E$ such that $E_i \cap E_j = Y$
 for all $i \neq j$ (the *core* $Y$).
 
 **Theorem 11.2 (Sunflower Lemma, Erdős–Ko–Rado 1960).** If $\mathcal{F}$ is a
@@ -244,10 +279,67 @@ then $\mathcal{F}$ contains a sunflower with $p$ petals.
 
 **Conjecture 11.3 (Erdős–Ko–Rado).** The bound $k!(p-1)^k$ can be improved
 to $(p-1)^k \cdot k^{O(1)}$, or even $O(p)^k$. The case $p=3$ and
-achieving $c^k$ for $c < k$ is the basis of recent breakthrough results (
-Alweiss–Lovett–Wu–Zhang, 2020), which proved:
+achieving $c^k$ for $c < k$ is the basis of recent breakthrough results
+(Alweiss–Lovett–Wu–Zhang, 2020), which proved:
 
-$$|\mathcal{F}| > (O(p \log k))^k \implies \mathcal{F} \text{ contains a } p\text{-sunflower}$$
+$$
+|\mathcal{F}| > (O(p \log k))^k \implies  
+\mathcal{F} \text{ contains a } p\text{-sunflower}
+$$
+
+<https://en.wikipedia.org/wiki/Sunflower_(mathematics)>
+
+[The Sunflower Lemma - Extremal Combinatorics](
+https://extremalcombinatorics.com/notes/sec_sunflower.html)
+
+[Institute for Advanced Study, PCMI lecture series: from sunflowers to thresholds](
+https://www.ias.edu/sites/default/files/Sunflowers%20Lecture%20Notes_1.pdf
+)
+
+These are lecture notes for a mini-course given at PCMI in July 2025. The main
+topics are the sunflower conjecture, threshold phenomena, their connection using
+the notion of spreadness, and an application of these notions in **complexity
+theory**.
+
+History of the Erd˝os-Rado sunflower conjecture (below c denotes some global
+constant):
+- Sunflower lemma: SF(n, r) ≤ n! · (r − 1)^n ≈ (rn)^n
+- Kostochka [Kos96] improved bound for constant r to n^(1−o(1))n.
+- Fukuyama [Fuk18] improved bound for r = 3 to ≈ n^{(3/4)n}.
+- Alweiss, Lovett, Wu, Zhang [ALWZ21] improved to
+  `(cr log(rn))^n · (log log n)^O(n)`.
+- Frankston, Kahn, Narayanan, Park [FKNP21] improved bound to (cr log(rn))^n;
+  used technique to prove the “fractional Kahn-Kalai conjecture”.
+- Proof re-cast in language of information theory by Rao [Rao20] and
+  Tao [Tao20].
+- Bell, Chueluecha, Warnke [BCW21] improved the bound to (cr log n)^n.
+- Park and Pham [PP24] refined the technique and proved the full Kahn-Kalai
+  conjecture.
+
+[The sunflower lemma via Shannon entropy - Terence Tao](
+https://terrytao.wordpress.com/2020/07/20/the-sunflower-lemma-via-shannon-entropy/
+)
+
+[Special cases of Shannon entropy - Terence Tao](
+https://terrytao.wordpress.com/2017/03/01/special-cases-of-shannon-entropy/
+)
+
+
+[Improved bounds for the sunflower lemma](https://arxiv.org/abs/1908.08483)
+Ryan Alweiss, Shachar Lovett, Kewen Wu, Jiapeng Zhang
+```text
+@misc{alweiss2021improvedboundssunflowerlemma,
+      title={Improved bounds for the sunflower lemma}, 
+      author={Ryan Alweiss and Shachar Lovett and Kewen Wu and Jiapeng Zhang},
+      year={2021},
+      eprint={1908.08483},
+      archivePrefix={arXiv},
+      primaryClass={math.CO},
+      url={https://arxiv.org/abs/1908.08483}, 
+}
+```
+[Kewen Wu Improved bounds for the sunflower lemma](
+https://shlw.github.io/slides/Sunflower.pdf)
 
 ---
 
@@ -266,10 +358,17 @@ $$|\mathcal{F}| > (O(p \log k))^k \implies \mathcal{F} \text{ contains a } p\tex
 
 ---
 
+## References
+
 The theory of hypergraphs remains an extraordinarily active area, with deep
 connections to combinatorics, algebra, theoretical computer science, and
 information theory. Open problems — especially around Turán densities,
 sunflowers, and property B thresholds — continue to drive fundamental research.
+
+[Math 426/529: Extremal Combinatorics by Jonathan A. Noel](
+https://extremalcombinatorics.com/notes/root-1-2.html)
+
+---
 
 ## Side note about directed hypergraphs (hyperdigraphs)
 
@@ -292,7 +391,6 @@ so the contrast is clear:
 None of those appeared in the introduction — all definitions (degrees,
 colorings, transversals, matchings, spectra via the adjacency tensor, Turán
 numbers, sunflowers, etc.) were stated for the standard undirected model where
-hyperedges are plain subsets $E \subseteq V$. So you have exactly what you asked
-for.
+hyperedges are plain subsets $E \subseteq V$.
 
 ---
