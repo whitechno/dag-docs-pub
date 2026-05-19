@@ -77,10 +77,10 @@ modifying Maxwell's equations.
 A crucial bibliographic point Giacomini stresses: Lorentz's 1904 memoir was
 widely diffused — translated into German for the *Encyklopädie der
 mathematischen Wissenschaften* (May 1905), discussed by Wien, Abraham, Cohn,
-Sommerfeld, and reviewed in February 1905 in the *Beiblätter* by **Richard Gans
-**. Gans's one-page review concisely conveyed local time, length contraction,
-clock slowing, and the explanation of the negative experiments to any
-German-speaking reader. Most historians have ignored this review; Giacomini
+Sommerfeld, and reviewed in February 1905 in the *Beiblätter* by
+**Richard Gans**. Gans's one-page review concisely conveyed local time, length
+contraction, clock slowing, and the explanation of the negative experiments to
+any German-speaking reader. Most historians have ignored this review; Giacomini
 argues it would have been "highly improbable" for any physicist following the
 *Annalen* to overlook it.
 
@@ -119,8 +119,8 @@ habits between 1899 and 1902:
 - Frequent use of the **library of the Istituto Lombardo** in Milan (Palazzo
   Brera), which carried Lorentz, Poincaré, Planck, Wien, Drude, Boltzmann.
 - Discovery there of the 1900 *Festschrift* for Lorentz's twenty-fifth doctoral
-  anniversary, with contributions from most leading physicists of the time (
-  including Lorentz's own paper extending his electron theory).
+  anniversary, with contributions from most leading physicists of the time
+  (including Lorentz's own paper extending his electron theory).
 - An April 1901 letter asking Mileva Marić to mail Kirchhoff's treatise on heat
   from Zurich.
 - A **December 1901 letter** to Mileva (largely ignored by historians) in which
@@ -194,8 +194,8 @@ of partial results. Einstein, by contrast, left no preparatory manuscripts: from
 the spring of 1905 there are only scattered remarks in his correspondence, then
 in late June a complete paper. Michel Paty: *"Einstein's work seems to have
 appeared fully formed... The genesis of special relativity seems shrouded in
-mystery."* This contrast nourished the "lightning-like act of genius" image (
-Stachel, Norton, Holton).
+mystery."* This contrast nourished the "lightning-like act of genius" image
+(Stachel, Norton, Holton).
 
 ## The "Lorentz–Einstein theory" and Poincaré's eclipse
 
@@ -207,8 +207,8 @@ Minkowski (1908) — but no Poincaré. Minkowski's 1908 Cologne lecture *Space a
 Time*, despite geometrizing ideas that Poincaré had already published, did not
 mention him. The 1923 English (Methuen / later Dover) edition with Sommerfeld's
 commentaries cemented the Anglophone narrative without Poincaré. In that same
-1923 edition, Einstein inserted an unusual note declaring that Lorentz's "
-detailed memoir... was not known to me at the time of writing" — eighteen years
+1923 edition, Einstein inserted an unusual note declaring that Lorentz's
+"detailed memoir... was not known to me at the time of writing" — eighteen years
 after publication.
 
 Two notable exceptions to the marginalization of Poincaré:
@@ -247,10 +247,10 @@ conceptually heavier.
 ## Conclusion
 
 The historical impact of the postulate-vs-theorem inversion was enormous:
-Einstein became the "founder by principles," while Poincaré was cast as a "
-dynamical theorist" of the electron. Yet, Giacomini argues, both constructions
+Einstein became the "founder by principles," while Poincaré was cast as a
+"dynamical theorist" of the electron. Yet, Giacomini argues, both constructions
 flow directly from Maxwell's electrodynamics. Special relativity did not arise
-*ex nihilo*; it was the practically inevitable consequence of a coherent
+*ex nihilo*; it was the practically inevitable consequence of coherent
 electrodynamics already in place. In Einstein's own 1907 reasoning: if Maxwell's
 equations retain their form in all inertial frames, then the value of $c$ they
 imply must be identical for every observer — the principle of relativity plus
