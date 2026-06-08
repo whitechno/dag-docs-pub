@@ -20,10 +20,11 @@ This brief introduction to hypergraphs is based on the following references:
 
 - [Efficient Parallel Algorithms for Hypergraph Matching](
   https://arxiv.org/abs/2602.22976)
-```text
+```bibtex
 @misc{reinstädtler2026efficientparallelalgorithmshypergraph,
       title={Efficient Parallel Algorithms for Hypergraph Matching}, 
-      author={Henrik Reinstädtler and Christian Schulz and Nodari Sitchinava and Fabian Walliser},
+      author={Henrik Reinstädtler and Christian Schulz and Nodari Sitchinava 
+              and Fabian Walliser},
       year={2026},
       eprint={2602.22976},
       archivePrefix={arXiv},
@@ -31,6 +32,9 @@ This brief introduction to hypergraphs is based on the following references:
       url={https://arxiv.org/abs/2602.22976}, 
 }
 ```
+
+- [wiki Matching in hypergraphs](
+  https://en.wikipedia.org/wiki/Matching_in_hypergraphs)
 
 - Valdivia, Paola; Buono, Paolo; Plaisant, Catherine; Dufournaud, Nicole;
   Fekete, Jean-Daniel (2020). "Analyzing Dynamic Hypergraphs with Parallel
