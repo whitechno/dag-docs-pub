@@ -1,5 +1,6 @@
 Hacker News Alternatives
 ========================
+June 8, 2026
 
 While [Hacker News](https://news.ycombinator.com/) is widely regarded as the
 gold standard for long-form discussion on computer science and entrepreneurship,
@@ -21,11 +22,10 @@ Several browser extensions exist specifically to add sorting functionality
 directly to the Hacker News header. They allow you to reorder the current page's
 posts by points, time, or comment count without leaving the site.
 
-* **[Hacker News Sorted](
-  https://chromewebstore.google.com/detail/hacker-news-sorted/djkcnbncofmjekhlhemlkinfpkamlkaj
-  ):** A popular Chrome extension that adds sorting buttons (Points, Time,
-  Comments, Default) directly to the top of any Hacker News page. It also offers
-  keyboard shortcuts ($P$, $T$, $C$, $D$) to switch views instantly.
+* **[Hacker News Sorted][hn-sorted]:** A popular Chrome extension that adds
+  sorting buttons (Points, Time, Comments, Default) directly to the top of any
+  Hacker News page. It also offers keyboard shortcuts (`P`, `T`, `C`, `D`) to
+  switch views instantly.
 
 ### 2. Algolia Search (For Advanced Filtering)
 
@@ -36,19 +36,20 @@ historical data and apply specific filters.
 * **How to use it:** You can use the search bar to filter by date range, post
   type (story vs. comment), and sort by "Date" or "Popularity" (which acts as a
   points-based filter).
-* **Pro Tip:** If you are trying to follow a specific long-running thread, you
-  can use a search query like `story:[ID]` (replacing `[ID]` with the number
-  from the thread's URL) and set the sort to "Date" to see the most recent
-  comments at the top.
+* **Pro Tip:** If you are trying to follow a specific long-running thread, open
+  the story on [hn.algolia.com](https://hn.algolia.com/) and sort its comments
+  by "Date" to see the most recent comments at the top. (If you build custom
+  queries, the underlying Algolia API also supports filtering by a `story_<ID>`
+  tag.)
 
 ### 3. Native "Best" View
 
 For a quick view of high-performing content, you can use the built-in `/best`
 page, which ranks stories by point totals.
 
-* **[Top Links](https://news.ycombinator.com/best):** This shows the most
-  upvoted stories from the last 48 hours. You can adjust the time window by
-  adding a URL parameter, such as `?h=24` for the last 24 hours.
+* **[Top Links](https://news.ycombinator.com/best):** This shows the
+  highest-voted recent stories. The page only supports pagination (`?p=2`,
+  `?p=3`, and so on), so for custom time windows use the Algolia search above.
 
 If you are looking for more complex filtering—such as setting "minimum points"
 or "minimum comment" thresholds—you may need to look for additional third-party
@@ -56,10 +57,18 @@ tools like
 [Hacker News Filter & Sort](https://www.tweeks.io/t/97e72c6de5c14906a1351abd),
 which adds a custom filter panel to the top of the interface.
 
+Two more options worth knowing about:
+
+* **[hckrnews.com](https://hckrnews.com/):** A chronological view of the Hacker
+  News front page with one-click filters for the top 10/20/50% of stories by
+  points or comment count.
+* **[Hacker News API](https://github.com/HackerNews/API):** The official public
+  API, useful if you want to build your own filtering or sorting tools.
+
 ## Alternatives to Hacker News
 
-Depending on what you are looking for - whether it's breaking news, technical
-depth, or community discussion - here are the most relevant alternatives:
+Depending on what you are looking for—whether it's breaking news, technical
+depth, or community discussion—here are the most relevant alternatives:
 
 ### Community-Driven & Discussion-Oriented
 
@@ -77,6 +86,16 @@ depth, or community discussion - here are the most relevant alternatives:
   It is much more "friendly" and collaborative than the sometimes-critical tone
   of HN, with a strong focus on professional growth and sharing personal
   technical projects.
+* **[Reddit](https://www.reddit.com/):** The closest Reddit counterparts are
+  **[r/programming](https://www.reddit.com/r/programming/)** for programming
+  links and discussion, and
+  **[r/technology](https://www.reddit.com/r/technology/)** for general tech
+  news. The tone is more casual than HN, but the sheer size of these communities
+  means major stories rarely slip through unnoticed.
+* **[Tildes](https://tildes.net/):** An invite-only, non-profit,
+  discussion-first community that is often mentioned alongside Lobsters. It is
+  smaller and covers general topics beyond tech, with a strong emphasis on
+  thoughtful conversation over engagement metrics.
 
 ### Curated News & Professional Aggregators
 
@@ -91,8 +110,11 @@ depth, or community discussion - here are the most relevant alternatives:
   tutorials.
 * **[Hashnode](https://hashnode.com/):** A community built around blogging and
   knowledge sharing. If you are interested in seeing what engineers are writing
-  about their personal projects, technical stacks, or career lessons, this is an
-  excellent high-regard community.
+  about their personal projects, technical stacks, or career lessons, this is a
+  well-regarded community.
+* **[daily.dev](https://daily.dev/):** A developer news aggregator that pulls
+  posts from hundreds of sources into a single personalized feed, available as a
+  browser extension and as mobile apps.
 
 ### Product & Startup-Specific
 
@@ -108,28 +130,26 @@ depth, or community discussion - here are the most relevant alternatives:
 
 It is worth noting that part of why Hacker News is in "high regard" is its
 specific moderation style and lack of typical social media features (like
-gamified profiles or excessive notification bells). Many of the sites above -
-especially **Lobsters** - are frequently cited as the best alternatives because
-they replicate this "discussion-first, bloat-second" philosophy.
+gamified profiles or excessive notification bells). Many of the sites
+above—especially **Lobsters**—are frequently cited as the best alternatives
+because they replicate this "discussion-first, bloat-second" philosophy.
 
 ## Reading on iPhone
 
-Most of the platforms discussed do not have official iOS apps, as they
-prioritize web-based interfaces. However, the tech community has developed
-highly regarded third-party clients that provide a much better reading
-experience on iPhone than using a mobile web browser.
+Several of these platforms lack official iOS apps, as they prioritize web-based
+interfaces. However, the tech community has developed highly regarded
+third-party clients that provide a much better reading experience on iPhone than
+using a mobile web browser.
 
 ### Hacker News
 
 Hacker News has no official app, but it has the most robust ecosystem of
 third-party readers.
 
-* **Top Recommendations:** Apps like **[HACK for Hacker News](
-  https://apps.apple.com/us/app/hack-for-hacker-news-yc-reader/id1464477788
-  )** and **[Hacker News - Latest in Tech](
-  https://apps.apple.com/us/app/hacker-news-latest-in-tech/id1573004386)** are
-  widely praised for their clean design, dark modes, threaded comment support,
-  and "readability" modes that strip away clutter from linked articles.
+* **Top Recommendations:** Apps like **[HACK for Hacker News][hack-app]** and
+  **[Hacker News - Latest in Tech][hn-latest-app]** are widely praised for their
+  clean design, dark modes, threaded comment support, and "readability"
+  modes that strip away clutter from linked articles.
 * **Pro Tip:** If you prefer not to install a dedicated app, use **Safari’s
   "Reader View"** (tap the 'AA' icon in the URL bar) when browsing the site. It
   makes the text much easier to read on a small screen.
@@ -142,27 +162,25 @@ third-party readers.
   designed to be responsive, which is the officially recommended way to view it
   on an iPhone.
 
-### **DEV Community**
+### DEV Community
 
-* **Status:** **Available.**
-* **App:** There is an official **[DEV Community app](
-  https://apps.apple.com/us/app/dev-to/id1536933197)** (often listed as "dev.to"
-  or "DEV Community") available on the App Store. It allows you to browse posts,
-  manage your account, and engage with the community.
+* **DEV Community:** There is an official **[DEV Community app][dev-app]**
+  (often listed as "dev.to" or "DEV Community") available on the App Store. It
+  allows you to browse posts, manage your account, and engage with the
+  community.
 
 ### Techmeme & HackerNoon
 
-* **Techmeme:** There is a third-party app called **[Techmemer](
-  https://apps.apple.com/us/app/techmemer/id6748340148)** which is designed to
-  provide a native reader experience for the Techmeme feed.
-* **HackerNoon:** HackerNoon has an official app available on the **[App Store](
-  https://apps.apple.com/us/developer/hackernoon/id1588140053)**
-  for reading their tech news and guides on the go.
+* **Techmeme:** There is a third-party app called
+  **[Techmemer][techmemer-app]** which is designed to provide a native reader
+  experience for the Techmeme feed.
+* **HackerNoon:** HackerNoon has an official
+  **[HackerNoon app][hackernoon-app]** on the App Store for reading their tech
+  news and guides on the go.
 
-### **Hashnode**
+### Hashnode
 
-* **Status:** **Not Available.**
-* **Details:** Hashnode does not have an official iOS app. While you may find
+* **Hashnode:** Hashnode does not have an official iOS app. While you may find
   third-party wrappers or community-built projects on GitHub, these are not
   official and often offer limited functionality. For the best experience, it is
   recommended to use the Hashnode website through Safari or another mobile
@@ -171,22 +189,26 @@ third-party readers.
 ### Product Hunt
 
 * **Product Hunt:** Unlike the others, Product Hunt has a fully featured,
-  **[official iOS app](
-  https://help.producthunt.com/en/articles/6494278-are-ios-and-android-available
-  )** available for download, which is generally the best way to browse and
-  upvote new products.
+  **[official iOS app][ph-app]** available for download, which is generally the
+  best way to browse and upvote new products.
 
-### **Indie Hackers**
+### Indie Hackers
 
-* **Status:** **Not Available.**
-* **Details:** Indie Hackers does not have an official iOS app. Like Hashnode,
-  it is designed to be accessed via the web, and the mobile-responsive version
-  of their site is the officially intended way to read and participate in
-  discussions on an iPhone.
+* **Indie Hackers:** Indie Hackers does not have an official iOS app. Like
+  Hashnode, it is designed to be accessed via the web, and the mobile-responsive
+  version of their site is the officially intended way to read and participate
+  in discussions on an iPhone.
 
----
+### Reddit, Tildes & daily.dev
 
-### **Pro Tip for Mobile Access**
+* **Reddit:** Reddit has a fully featured official iOS app, which is the most
+  practical way to follow r/programming and r/technology on an iPhone.
+* **Tildes:** There is no official app; the lightweight, text-centric site works
+  well in a mobile browser.
+* **daily.dev:** daily.dev offers an official mobile app in addition to its
+  browser extension and web feed.
+
+### Pro Tip for Mobile Access
 
 If you want a "native-like" experience for sites without an app (like Hashnode
 or Indie Hackers), you can easily create your own "web app" on your iPhone:
@@ -208,3 +230,17 @@ method is to use a **dedicated RSS reader app** like
 2. **Clean Experience:** These apps will automatically format the articles into
    a clean, readable layout, often allowing you to save articles for offline
    reading or sync your progress across devices.
+
+[hn-sorted]: https://chromewebstore.google.com/detail/hacker-news-sorted/djkcnbncofmjekhlhemlkinfpkamlkaj
+
+[hack-app]: https://apps.apple.com/us/app/hack-for-hacker-news-yc-reader/id1464477788
+
+[hn-latest-app]: https://apps.apple.com/us/app/hacker-news-latest-in-tech/id1573004386
+
+[dev-app]: https://apps.apple.com/us/app/dev-to/id1536933197
+
+[techmemer-app]: https://apps.apple.com/us/app/techmemer/id6748340148
+
+[hackernoon-app]: https://apps.apple.com/us/app/hackernoon/id6447998105
+
+[ph-app]: https://help.producthunt.com/en/articles/6494278-are-ios-and-android-available
