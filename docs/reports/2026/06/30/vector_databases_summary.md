@@ -1,7 +1,7 @@
 # 15 Vector Databases That Matter in Mid-2026 — A Curated Guide
 
 See the corresponding
-[Vector Databases Infographic](vector_databases_infographic.svg).
+[_Vector Databases Infographic_](vector_databases_infographic.svg).
 
 A critically curated list — all production-usage and momentum claims were
 verified via web search against official case studies, customer pages,
@@ -385,8 +385,9 @@ reference enterprise momentum.
 
 ANN *libraries* — engines you embed, not databases you run — are covered
 separately for scope consistency: see
-[Vector Search Libraries Summary](vector_search_libraries_summary.md) and
-[Vector Search Libraries Infographic](vector_search_libraries_infographic.svg)
+[_Vector Search Libraries Summary_](../../07/01/vector_search_libraries_summary.md)
+and
+[_Vector Search Libraries Infographic_](../../07/01/vector_search_libraries_infographic.svg)
 (FAISS, hnswlib, Turbovec, ScaNN, DiskANN, Annoy, Voyager, usearch, NVIDIA
 cuVS).
 

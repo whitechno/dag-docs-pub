@@ -2,7 +2,7 @@
 
 See the corresponding [_Vector Search Libraries Infographic_](
 vector_search_libraries_infographic.svg) and companion
-[*Vector Databases Summary*](vector_databases_summary.md).
+[*Vector Databases Summary*](../../06/30/vector_databases_summary.md).
 
 These are ANN (Approximate Nearest Neighbor) **libraries** — engines you embed
 in your own process, not databases you run: no server, no persistence
