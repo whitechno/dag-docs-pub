@@ -1,0 +1,491 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1500" height="2622" viewBox="0 0 1500 2622" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">
+<rect width="1500" height="2622" fill="#F3F5F9"/>
+<text x="750.0" y="92" text-anchor="middle" font-size="46" font-weight="800" fill="#0F172A">15 Vector Databases That Matter in Mid-2026</text>
+<text x="750.0" y="132" text-anchor="middle" font-size="19" fill="#475569">A curated guide — what they are, where they shine, and who runs them in production</text>
+<text x="750.0" y="162" text-anchor="middle" font-size="14.5" fill="#64748B">Curation criteria: verified production adoption · momentum (GitHub traction, funding, revenue) · developer mindshare — as of July 2026</text>
+<rect x="690.0" y="182" width="120" height="5" rx="2.5" fill="#6366F1"/>
+<g>
+<rect x="42" y="236" width="456" height="432" rx="14" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
+<rect x="42" y="236" width="456" height="7" rx="3.5" fill="#1C17FF"/>
+<text x="476" y="288" text-anchor="end" font-size="30" font-weight="800" fill="#1C17FF" fill-opacity="0.28">01</text>
+<rect x="64" y="260" width="64" height="64" rx="12" fill="#F8FAFC" stroke="#EEF2F7"/>
+<svg x="72.0" y="268.0" width="48" height="48" viewBox="0 0 256 288" preserveAspectRatio="xMidYMid meet">
+    <title>Pinecone</title>
+    <g>
+        <path d="M108.633615,254.43629 C117.713862,254.43629 125.074857,261.797284 125.074857,270.877532 C125.074857,279.957779 117.713862,287.318774 108.633615,287.318774 C99.5533677,287.318774 92.1923728,279.957779 92.1923728,270.877532 C92.1923728,261.797284 99.5533677,254.43629 108.633615,254.43629 Z M199.849665,224.438339 L216.09705,229.252379 L203.199913,272.780219 C202.072982,276.58361 198.458049,279.095992 194.500389,278.826397 L190.516677,278.552973 L190.419263,278.633409 L149.02918,275.728903 L150.180842,258.822508 L177.989056,260.709686 L159.783784,234.447622 L173.709616,224.792379 L191.938895,251.08702 L199.849665,224.438339 Z M23.0126771,194.347476 L39.9158866,195.544979 L37.935897,223.348728 L64.1501315,205.120082 L73.8271476,219.030793 L47.578736,237.278394 L74.3707554,245.173037 L69.5818063,261.427835 L25.8485266,248.543243 C22.0304448,247.418369 19.5101155,243.787479 19.7913963,239.817092 L23.0126771,194.347476 Z M132.151306,170.671396 L162.658679,207.503468 L148.909247,218.891886 L130.753266,196.972134 L124.866941,230.673893 L107.280249,227.599613 L113.172232,193.845272 L88.7296311,208.256891 L79.6674587,192.874434 L120.745504,168.674377 C124.522104,166.449492 129.355297,167.295726 132.151306,170.671396 Z M217.504528,145.960198 L232.744017,137.668804 L254.94482,178.473633 C256.889641,182.048192 256.088221,186.494171 253.017682,189.164674 L249.876622,191.878375 L217.826246,219.77131 L206.441034,206.680621 L227.988588,187.934494 L195.893546,182.152609 L198.972402,165.078949 L231.044844,170.857793 L217.504528,145.960198 Z M37.7821805,103.299272 L49.2622123,116.306888 L28.0106317,135.050179 L60.1668233,140.664193 L57.1863573,157.755303 L24.9947229,152.136967 L38.822104,177.134576 L23.6411026,185.532577 L1.08439616,144.756992 C-0.885025494,141.196884 -0.115545265,136.746375 2.93488097,134.054184 L37.7821805,103.299272 Z M146.476311,89.8796828 L176.88045,126.612847 L163.1271,137.996532 L144.975445,116.067101 L139.08912,149.778947 L121.502428,146.704666 L127.374238,113.081452 L103.025237,127.354817 L93.9976317,111.952048 L131.398812,90.0233663 L131.435631,89.880899 L131.600545,89.9023265 L135.085833,87.870141 C138.861877,85.6569913 143.68556,86.5079996 146.476311,89.8796828 Z M185.655786,71.8143168 L192.305535,55.7902703 L235.318239,73.6399229 C239.072486,75.1978811 241.2415,79.1537636 240.536356,83.1568091 L239.820231,87.1385839 L232.47517,128.919545 L215.389188,125.909819 L220.312646,97.9413879 L191.776157,113.7129 L183.390302,98.5251862 L211.981072,82.7408038 L185.655786,71.8143168 Z M103.71696,40.2373824 L104.456513,57.5706533 L76.0432671,58.785006 L97.4730368,83.2749086 L84.4165529,94.6993319 L62.9507932,70.1728358 L57.949673,98.1737132 L40.8716575,95.1191088 L49.0561498,49.3603563 C49.771444,45.3612115 53.1664633,42.3942036 57.2253811,42.2210231 L61.246149,42.0411642 L61.3363168,41.9758 L103.71696,40.2373824 Z M161.838155,3.27194826 L192.104824,40.2369789 L178.291207,51.5474574 L160.327329,29.6043227 L154.268381,63.2715157 L136.697231,60.1096121 L142.766468,26.3665075 L118.24002,40.7062765 L109.232678,25.2916494 L150.427675,1.21987397 C154.218286,-0.995121237 159.056796,-0.124957814 161.838155,3.27194826 Z" fill="#201D1E"></path>
+    </g>
+</svg>
+<text x="144" y="292" font-size="25" font-weight="750" fill="#0F172A">Pinecone</text>
+<text x="144" y="315" font-size="13.5" font-weight="600" fill="#64748B" letter-spacing="0.2">Managed · Serverless SaaS</text>
+<line x1="64" y1="340" x2="476" y2="340" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="64" y="366" font-size="15" fill="#334155">Fully managed, serverless vector database that</text>
+<text x="64" y="387" font-size="15" fill="#334155">separates storage from compute — no</text>
+<text x="64" y="408" font-size="15" fill="#334155">infrastructure to run. Delivers low-latency</text>
+<text x="64" y="429" font-size="15" fill="#334155">queries at billion-vector scale with live index</text>
+<text x="64" y="450" font-size="15" fill="#334155">freshness, metadata filtering, and hybrid dense</text>
+<text x="64" y="471" font-size="15" fill="#334155">+ sparse retrieval. The category pioneer and</text>
+<text x="64" y="492" font-size="15" fill="#334155">still the default managed choice.</text>
+<text x="64" y="523" font-size="15" fill="#334155"><tspan font-weight="700" fill="#1C17FF">Best for:</tspan> Production RAG and semantic search</text>
+<text x="64" y="544" font-size="15" fill="#334155">with zero ops overhead, scaling from prototype</text>
+<text x="64" y="565" font-size="15" fill="#334155">to enterprise.</text>
+<line x1="64" y1="624" x2="476" y2="624" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="64" y="648" font-size="13.5" fill="#475569"><tspan font-weight="700" fill="#0F172A">In production:</tspan> <tspan font-weight="600">Notion · Gong · CustomGPT.ai</tspan></text>
+</g>
+<g>
+<rect x="522" y="236" width="456" height="432" rx="14" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
+<rect x="522" y="236" width="456" height="7" rx="3.5" fill="#FB915F"/>
+<text x="956" y="288" text-anchor="end" font-size="30" font-weight="800" fill="#FB915F" fill-opacity="0.28">02</text>
+<rect x="544" y="260" width="64" height="64" rx="12" fill="#F8FAFC" stroke="#EEF2F7"/>
+<svg x="552.0" y="268.0" width="48" height="48" viewBox="0 0 213 131" preserveAspectRatio="xMidYMid meet" fill="none">
+<g clip-path="url(#turbopufferclip0_678_1937)">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M65 52.75H54.75V58H65V52.75ZM59.75 63.25H50.75V73H59.75V63.25ZM70 69.75H80.5V81H91V86H96.25V95.75H105.75V105.75H169.5V121H157.75V126H111V121H95V111H85.25V101.25H80.25V96.25H75V81H70V69.75Z" fill="#9CDAE0"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M90.25 38.75H203.5V85.5V86.75V90.75H198V96.25V101H192.75V105.75H187.5V111.25H182.25V116.25H140.25V111.25H126.25V105.75H111V101H105.5V96.25H90.25V86.75V84.5V38.75Z" fill="#B7E2F4"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M112 -0.5H158V3.75H164.25V13.75H177V18.75H187.25V28.5H192.75V52H187.25H180H177H174.5H164.25H158H151.5H146.5H131.25H118V66H80V32.75H85.25V18.75H100.5V13.75H105.5V8.75H112V-0.5ZM54.75 33.5H59.75V42.25H65V49.25H59.75V52.75H54.75V33.5Z" fill="#D6BFA2"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M149.5 4.25H158.5V9H149.5V4.25ZM149.5 14H135.75V9H149.5V14ZM149.5 14H154.25V18.75H164V13.75H169.25V18.75H164.25V23.5H178.25V29H174V38.75H169.25V29H159V23.5H149.5V19V18.75V14ZM187.75 28.75H178.75V38.5H187.75V28.75ZM159 43.25H151.75V52V52.25V61H146V65.5H131H126.25V61H121.25V52H116.25V61H111V65.25H105.5V70.5H111V80.5H116.25V75.75H121V85.75H126.25V90.75H131H135.75V85.5H131V80.5H140.5V85.75H145.75V90.75H149.5V95.75H159.25V90.75H164.25V95.75H183.25V90.75H193H208V55.25H186V43.25H170.25V52H159V43.25ZM183.25 60.5H170.25V61V65.5H165.5V75.5L168.75 80.125H171.375V85.5H183.25V60.5ZM87.25 50.5H90.5V55.25H100V56.75H87.25V55.25V50.5ZM191.5 38.5H198.5V48H191.5V38.5ZM116.25 14H121.25V18.75H116.25V14ZM149.5 23.75H140.25V28.5H135.75V33.5H145.75V38.25H159V33.5H154.25V28.5H149.5V23.75ZM126.25 23.75H135.5V28.75H126.25V23.75ZM145.75 38.5H136V48H145.75V38.5Z" fill="#FFFFF3"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M105.5 23.75H111V28.5H105.5V23.75ZM54.75 28.5H46.25V58H54.75V28.5ZM100 55.25H87.25V50.5H85.5V55.25H80.5V65.25H85.25V75.25H100V65.25V55.25ZM121.25 28.75H116V33.5H121.25V28.75ZM100.75 80.5H111V85.75H100.75V80.5ZM140.5 80.5H131V85.5H135.75V90.5H131V95.75H140.25V100.75H149.5V95.75V90.5H140.5V85.5V80.5ZM121 85.75H126.25V90.75H121V85.75ZM149.75 101H159V106H149.75V101ZM174 101H169.25V95.75H159V101H164.25V105.75H174V101ZM174 101H188V95.75H193V90.75H183.25V95.75H174V101ZM203.25 80.75H198.5V85.5H203.25V80.75ZM174.5 55.75H183.25V60.5H170.25L170.75 59.375L174.5 55.75ZM208 70.5H203.25V75.25H208V70.5Z" fill="#FFE295"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M54.75 35.5H50.5V38.5V43.25H59.5V38.5H54.75V35.5Z" fill="#FFFFF3"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M100.25 23.5H95L90.5 28V28.75H100.25V23.5ZM70.25 43.25H75V51.5H70.25V43.25ZM65 63.25H70V68.25H65V63.25ZM90.25 80.5H85V85.5H90.25V80.5ZM193 95.75H188V101H193V95.75ZM182.25 106H177.25V111.25H182.25V106ZM169.5 111H176.75V116H169.5V111ZM116 121H111V126H116V121ZM102.5 101H111V106H102.5V101ZM59.75 68H54.75V73H59.75V68Z" fill="#213260"/>
+<rect x="-0.5" y="29" width="4" height="4.25" fill="#FFF3CC"/>
+<rect x="8.25" y="43.5" width="3.5" height="4.25" fill="#FFF3CC"/>
+<rect x="16.75" y="43.5" width="3" height="4.25" fill="#FFF3CC"/>
+<rect x="20.75" y="106.5" width="8.5" height="4.25" fill="#FFF3CC"/>
+<rect x="34" y="106.5" width="35.5" height="4.25" fill="#FFF3CC"/>
+<rect x="51.5" y="97" width="3.75" height="4.25" fill="#FFF3CC"/>
+<rect x="65" y="96.5" width="10" height="4.75" fill="#FFF3CC"/>
+<rect y="106.5" width="7.75" height="4.25" fill="#FFF3CC"/>
+<rect x="12.5" y="92.25" width="57.5" height="4.25" fill="#FFF3CC"/>
+<rect x="21.25" y="43.5" width="25" height="4.25" fill="#FFF3CC"/>
+<rect y="59.5" width="24.75" height="4.25" fill="#FFF3CC"/>
+<rect x="20.75" y="68.75" width="25.5" height="4.25" fill="#FFF3CC"/>
+<rect x="16.75" y="82.75" width="48.25" height="4.25" fill="#FFF3CC"/>
+<rect x="4" y="82.75" width="8" height="4.25" fill="#FFF3CC"/>
+<rect x="8.25" y="29" width="4" height="4.25" fill="#FFF3CC"/>
+<rect x="16.5" y="29" width="4" height="4.25" fill="#FFF3CC"/>
+<rect y="43.5" width="3.5" height="4.25" fill="#FFF3CC"/>
+<rect x="25.25" y="29" width="21" height="4.25" fill="#FFF3CC"/>
+<rect x="62.75" y="28.5" width="12.25" height="4.75" fill="#FFF3CC"/>
+<rect x="4" y="68.75" width="3.75" height="4.25" fill="#FFF3CC"/>
+<rect x="29.5" y="59.5" width="3.75" height="4.25" fill="#FFF3CC"/>
+<rect y="92.25" width="3.5" height="4.25" fill="#FFF3CC"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M116 4.25H111.5V9H116V4.25ZM100.5 9H105.75V14H100.5V18.75H95.25V13.75H100.5V9ZM80.25 28.5H85.25V38.25H80.25V55H75.25V58V63.25V71.25H70V63.25H65V58H70V51.5H75V43.25H70.25V38.5H75V33.25H80.25V28.5ZM85.25 28.5L89.75 23.5H85.25V28.5ZM59.75 58H46.25V63.25H59.75V58ZM105.5 60.75H100V68.5H105.5V60.75ZM90 70.25H94.75V75.25H90V70.25ZM75 81.5H70V86.75H75V81.5ZM75 91H80.25V96.25H75V91ZM85.25 101H80.25V106H85.25V101ZM100.75 116H105.75V121H100.75V116ZM100.25 38.5H95.25V40.5L90.25 45.25H94.75V48.25H100.25V46V45.25V38.75H105.75V33.5H100.25V38.5ZM105.5 48.25H111L109.25 52H105.5L100.25 55.25V50.5H100.5L105.5 45.75V48.25ZM131 4.25H135.75V9H131V4.25ZM111 18.75H121.25V23.75V28.75H116V23.75H111V18.75ZM131 13.75H126.25V18.75H131V13.75ZM135.5 18.75H140.25V23.75H135.5V18.75ZM149.5 14H145V19H149.5V14ZM149.5 23.5H159V28.5H149.5V23.5ZM164 13.75H158.75V18.75H164V13.75ZM164 13.75H169.25V8.75H164V13.75ZM174 18.75H169.25V23.5H174V18.75ZM174 29H178.75V33.75H174V29ZM169.25 33.5H164.25V38.5H169.25V33.5ZM159 43H164V48H159V43ZM179 43.25L174 48V52H179V43.25ZM65 38.25H59.5V43.25H65V38.25ZM59.75 47.5H65V52.75H56.25V51H57.75V50H58.5V49H59.75V47.5ZM59.5 28.5H54.75V33.5H59.5V28.5ZM94.75 18.75H90.25V23.75L94.75 18.75ZM116 38.5H111.5L116 33.5V38.5ZM121.25 43.25L111 53.5V56.375H116.25V52H121.25V43.25Z" fill="#6D6A94"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M131 -0.5H111V3.75H105.75V9H111.5V4.25H131V-0.5ZM95.25 9.25H100.5V13.75H95.25V18.75H90.25V23.5H85.25V18.5H90.25V13.5H95.25V9.25ZM80.25 28.5V23.5H85.25V28.5H80.25ZM75 33.25V28.5H80.25V33.25H75ZM65 58V38H70.25V33.25H75V38.5H70.25V58H65ZM80.25 96.25V101.25H75V96.5H70V87H65V68.75H62.75V73.25H59.5V78H50.5V73.25H46.25V63.25H50.75V73H59.5V68.25H59.75V58H65V68.25H70V86.75H75V96.25H80.25ZM80.25 96.25V91H85V96.25H80.25ZM50.5 23.75H59.25V28.5H50.75V33.5H46.25V28.5H50.5V23.75ZM62.75 28.5H59.5V38.25H62.75V28.5ZM111 85.75H100.75V90.75H111V85.75ZM149.25 105.75H140.5V110.75H149.25V105.75ZM154 111H159.25V116H154V111ZM135.75 -0.5H158.5V3.75H164.25V9H158.5V4.25H135.75V-0.5ZM169.25 9H176.75V13.5H182V18.5H187.5V23.5H192.75V28.25H197.5V33.25H202.75V38.5H207.25V43.25H208V55H213V75.5H208.25V90.75H203.25V101H198V106.25H192.75V111.25H187.5V116H182.25V111H187.5V105.75H192.75V100.75H198V90.25H203.25V75.25H208V55.5H202.75V60.5H198V65.5H193V60.5H189V55.25H186V48.75V43.25V38.5H191.5V43.25H194.5V48H198.5V43.75V43.25V38.5H197.5H192.75V28.75H187.5V23.75H182V18.75H176.75V13.75H169.25V9ZM182.25 116V121H169.75V126H158V130.75H111.25V126H157.75V121H169.5V116H182.25ZM176.25 60.5H170.25V65.25H165.5V75.25H170.25V76.5L173.75 80H185.5C187.019 80 188.25 78.7688 188.25 77.25V75.25H192.75V70.25H188.5V65.25H176.25V60.5ZM176.25 65.25V70.25H188.25V75.25H170.25V65.25H176.25ZM101 121H111V125.5H101V121ZM100.75 116H95.25V111H100.25V105.75H95.25V111H85.25V106H90.25V100.75H85.25V106H80.5V111H85.25V116H91.25V121H100.75V116ZM95.25 90.5H90.25V96H95.25V90.5ZM75 81H80.25V86.5H75V81ZM80.25 55H75.25V69.75H80.5V80.5H85.25H90.25V85.75H94.75V80.5V75.5H100.25V70.25H94.75V75.25H85.25V65.25H94.75V60.5H85V65.25H80.5V55.25H85.5V50.5H90.5V55.25H100V60.75H105.5V55.25H100.25V50.5H94.75V45.25H85.25V50.25H80.25V55ZM105.5 43H111V48.25H105.5V43ZM85 33.5H90.25V38.5H85.25V43.25H80V38.25H85V33.5ZM105.5 28.5H110.75V33.5H105.5V28.5ZM121.25 33.5H116V38.5H121.25V33.5ZM105.75 13.75H111V18.75H105.75V13.75ZM126.5 9H121.25V14H126.5V9ZM126.25 56.25V60.75H130.5V65.5H136H140.25H146V56.5H147.25H150.25H151.75V43.25H150.25V38.25H145.75V33.5H136H130.5V38.5H126.25V43.25H121.25V56.25H126.25ZM136 38.5V43.25H140.25V48H145.75V38.5H136ZM41.75 53H46.25V58H41.75V53ZM55.75 43.25H50.5V48H55.75V43.25ZM121 95.75H116V101H121V95.75ZM121.25 106H126.25V111.25H121.25V106ZM150 116H145V121.25H150V116ZM116 115.75H121V121H116V115.75ZM111 111H105.75V116H111V111Z" fill="#010529"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M176.25 60.5H183.25V65.25H176.25V60.5ZM176.25 70.25V65.25H170.25V70.25H176.25ZM176.25 70.25V75.25H183.25V70.25H176.25Z" fill="#FB915F"/>
+<rect x="170.25" y="70.25" width="6" height="5" fill="#9C4987"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M70 75.75H75V81.5H70V75.75ZM126.25 121H143.75V126H126.25V121ZM140.25 111.25H130.75V116.25H140.25V111.25ZM152.25 121H157.75V126H152.25V121ZM169.5 116H164V121H169.5V116Z" fill="#59A6C7"/>
+</g>
+<defs>
+<clipPath id="turbopufferclip0_678_1937">
+<rect width="213" height="131" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+<text x="624" y="292" font-size="25" font-weight="750" fill="#0F172A">turbopuffer</text>
+<text x="624" y="315" font-size="13.5" font-weight="600" fill="#64748B" letter-spacing="0.2">Serverless · Built on object storage</text>
+<line x1="544" y1="340" x2="956" y2="340" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="544" y="366" font-size="15" fill="#334155">Serverless vector + full-text search built from</text>
+<text x="544" y="387" font-size="15" fill="#334155">first principles on object storage (S3 / GCS)</text>
+<text x="544" y="408" font-size="15" fill="#334155">with NVMe caching — mostly-cold, multi-tenant</text>
+<text x="544" y="429" font-size="15" fill="#334155">workloads cost ~10x less than RAM-replica</text>
+<text x="544" y="450" font-size="15" fill="#334155">designs, warm queries stay sub-10ms p50. Runs</text>
+<text x="544" y="471" font-size="15" fill="#334155">4T+ documents in production; ~$100M annualized</text>
+<text x="544" y="492" font-size="15" fill="#334155">revenue by early 2026 — the breakout growth</text>
+<text x="544" y="513" font-size="15" fill="#334155">story of the category.</text>
+<text x="544" y="544" font-size="15" fill="#334155"><tspan font-weight="700" fill="#C2410C">Best for:</tspan> Millions of per-user namespaces —</text>
+<text x="544" y="565" font-size="15" fill="#334155">code, workspace and agent-memory search — at</text>
+<text x="544" y="586" font-size="15" fill="#334155">cold-storage cost.</text>
+<line x1="544" y1="605" x2="956" y2="605" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="544" y="629" font-size="13.5" fill="#475569"><tspan font-weight="700" fill="#0F172A">In production:</tspan> <tspan font-weight="600">Cursor · Notion · Linear · Anthropic</tspan></text>
+<text x="544" y="648" font-size="13.5" font-weight="600" fill="#475569">· Ramp</text>
+</g>
+<g>
+<rect x="1002" y="236" width="456" height="432" rx="14" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
+<rect x="1002" y="236" width="456" height="7" rx="3.5" fill="#43E2C5"/>
+<text x="1436" y="288" text-anchor="end" font-size="30" font-weight="800" fill="#43E2C5" fill-opacity="0.28">03</text>
+<rect x="1024" y="260" width="64" height="64" rx="12" fill="#F8FAFC" stroke="#EEF2F7"/>
+<svg x="1027.0" y="263.0" width="58" height="58" viewBox="0 0 55 34" preserveAspectRatio="xMidYMid meet" fill="none">
+<g clip-path="url(#weaviateclip0_5456_5055)">
+<path d="M39.8222 25.0944L39.8283 29.7493C39.8283 31.1814 38.6508 32.1705 37.3949 32.1705C36.903 32.1705 36.3509 32.0004 35.9017 31.6611L30.2944 27.431C28.6494 26.1872 25.9552 26.1872 24.3103 27.431L18.6846 31.6794C18.2355 32.0196 17.7322 32.1713 17.2342 32.1713C15.9782 32.1713 14.8008 31.1823 14.8008 29.7501V25.0953L22.7996 19.9851C25.5549 18.225 29.0812 18.225 31.8303 19.9851L39.8231 25.0953L39.8222 25.0944Z" fill="url(#weaviatepaint0_linear_5456_5055)"/>
+<path d="M39.8047 16.5488L39.8231 25.0936L31.8303 19.9835C29.0812 18.2234 25.5549 18.2234 22.7996 19.9835L14.8008 25.0936V16.561L21.4826 12.6954C25.0691 10.6196 29.4937 10.6135 33.0924 12.6832L39.8047 16.5488Z" fill="url(#weaviatepaint1_linear_5456_5055)"/>
+<path d="M14.8005 29.7476C14.8005 31.1797 15.978 32.1688 17.2339 32.1688C17.732 32.1688 18.2352 32.017 18.6844 31.6768L18.3259 31.9498C16.2082 33.5459 13.3195 33.6611 11.0798 32.235L7.34766 29.8557V29.8496L14.8005 25.0918V29.7467V29.7476Z" fill="url(#weaviatepaint2_linear_5456_5055)"/>
+<path d="M14.8006 16.5605V25.0932L7.34773 29.851V29.8571L2.4748 26.7495C1.69768 26.2515 1.07319 25.5781 0.648438 24.7897L14.8006 16.5605Z" fill="url(#weaviatepaint3_linear_5456_5055)"/>
+<path d="M37.3986 32.1708C38.6545 32.1708 39.832 31.1817 39.832 29.7496L39.8259 25.0947L47.2604 29.8525L43.5283 32.2319C41.2885 33.6579 38.3998 33.5489 36.2822 31.9467L35.9062 31.6614C36.3554 32.0016 36.9075 32.1708 37.3994 32.1708H37.3986Z" fill="url(#weaviatepaint4_linear_5456_5055)"/>
+<path d="M53.9568 24.7903C53.5321 25.5674 52.9128 26.2407 52.1427 26.7387L47.2576 29.8525L39.823 25.0947L39.8047 16.5498L53.9568 24.7911V24.7903Z" fill="url(#weaviatepaint5_linear_5456_5055)"/>
+<path d="M54.6158 9.17547V22.2234C54.6158 23.1401 54.3855 24.014 53.9608 24.7903L39.8086 16.549V2.65148C39.8086 0.819011 41.7989 -0.327919 43.3889 0.593986L52.8443 6.09227C53.9424 6.72984 54.6166 7.90643 54.6166 9.17547H54.6158Z" fill="url(#weaviatepaint6_linear_5456_5055)"/>
+<path d="M14.8019 2.65001V16.5597L0.649782 24.7897C0.225025 24.0187 0 23.1447 0 22.235V9.17399C0 7.90583 0.673331 6.72837 1.77229 6.0908L11.2277 0.592513C12.8177 -0.330264 14.8019 0.816666 14.8019 2.65001Z" fill="url(#weaviatepaint7_linear_5456_5055)"/>
+</g>
+<defs>
+<linearGradient id="weaviatepaint0_linear_5456_5055" x1="27.3145" y1="18.665" x2="27.3145" y2="32.1713" gradientUnits="userSpaceOnUse">
+<stop stop-color="#1E9634"/>
+<stop offset="0.94" stop-color="#35537F"/>
+</linearGradient>
+<linearGradient id="weaviatepaint1_linear_5456_5055" x1="27.3119" y1="11.1348" x2="29.4554" y2="25.2103" gradientUnits="userSpaceOnUse">
+<stop stop-color="#57E736"/>
+<stop offset="1" stop-color="#348522"/>
+</linearGradient>
+<linearGradient id="weaviatepaint2_linear_5456_5055" x1="13.016" y1="25.0918" x2="13.016" y2="33.2307" gradientUnits="userSpaceOnUse">
+<stop stop-color="#8AB11B"/>
+<stop offset="1" stop-color="#6EAF02"/>
+</linearGradient>
+<linearGradient id="weaviatepaint3_linear_5456_5055" x1="9.4372" y1="15.3302" x2="7.75" y2="31.8763" gradientUnits="userSpaceOnUse">
+<stop stop-color="#75BE2C"/>
+<stop offset="0.86" stop-color="#9DC03B"/>
+</linearGradient>
+<linearGradient id="weaviatepaint4_linear_5456_5055" x1="41.5833" y1="25.0947" x2="41.5833" y2="33.2297" gradientUnits="userSpaceOnUse">
+<stop stop-color="#8AB11B"/>
+<stop offset="1" stop-color="#6EAF02"/>
+</linearGradient>
+<linearGradient id="weaviatepaint5_linear_5456_5055" x1="48.5934" y1="15.3189" x2="46.8796" y2="29.0807" gradientUnits="userSpaceOnUse">
+<stop stop-color="#75BE2C"/>
+<stop offset="0.86" stop-color="#9DC03B"/>
+</linearGradient>
+<linearGradient id="weaviatepaint6_linear_5456_5055" x1="47.2126" y1="0.268555" x2="47.2126" y2="24.7903" gradientUnits="userSpaceOnUse">
+<stop stop-color="#EBEE2E"/>
+<stop offset="0.565" stop-color="#CACD2D"/>
+<stop offset="1" stop-color="#97CC01"/>
+</linearGradient>
+<linearGradient id="weaviatepaint7_linear_5456_5055" x1="7.40097" y1="0.266602" x2="7.40097" y2="24.7897" gradientUnits="userSpaceOnUse">
+<stop stop-color="#EBEE2E"/>
+<stop offset="0.565" stop-color="#CACD2D"/>
+</linearGradient>
+<clipPath id="weaviateclip0_5456_5055">
+<rect width="54.6139" height="32.9644" fill="white" transform="translate(0 0.268555)"/>
+</clipPath>
+</defs>
+</svg>
+<text x="1104" y="292" font-size="25" font-weight="750" fill="#0F172A">Weaviate</text>
+<text x="1104" y="315" font-size="13.5" font-weight="600" fill="#64748B" letter-spacing="0.2">Open source · Hybrid search</text>
+<line x1="1024" y1="340" x2="1436" y2="340" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="1024" y="366" font-size="15" fill="#334155">Open-source, Go-based vector database with</text>
+<text x="1024" y="387" font-size="15" fill="#334155">built-in vectorizer modules that embed data at</text>
+<text x="1024" y="408" font-size="15" fill="#334155">ingest, native BM25 + vector hybrid search, and</text>
+<text x="1024" y="429" font-size="15" fill="#334155">standout multi-tenancy — tens of thousands of</text>
+<text x="1024" y="450" font-size="15" fill="#334155">isolated tenants per cluster — with HNSW</text>
+<text x="1024" y="471" font-size="15" fill="#334155">compression to tune cost vs. recall.</text>
+<text x="1024" y="502" font-size="15" fill="#334155"><tspan font-weight="700" fill="#0F766E">Best for:</tspan> Multi-tenant SaaS, integrated</text>
+<text x="1024" y="523" font-size="15" fill="#334155">embedding + retrieval stacks, cloud / BYOC /</text>
+<text x="1024" y="544" font-size="15" fill="#334155">on-prem flexibility.</text>
+<line x1="1024" y1="624" x2="1436" y2="624" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="1024" y="648" font-size="13.5" fill="#475569"><tspan font-weight="700" fill="#0F172A">In production:</tspan> <tspan font-weight="600">Instabase · Kapa.ai · Stack AI</tspan></text>
+</g>
+<g>
+<rect x="42" y="692" width="456" height="432" rx="14" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
+<rect x="42" y="692" width="456" height="7" rx="3.5" fill="#00A1EA"/>
+<text x="476" y="744" text-anchor="end" font-size="30" font-weight="800" fill="#00A1EA" fill-opacity="0.28">04</text>
+<rect x="64" y="716" width="64" height="64" rx="12" fill="#F8FAFC" stroke="#EEF2F7"/>
+<svg x="72.0" y="724.0" width="48" height="48" viewBox="0 0 36 24" preserveAspectRatio="xMidYMid meet" fill="none">
+<path d="M16.9129 18.03C20.1664 18.03 22.8039 15.3353 22.8039 12.0111C22.8039 8.68688 20.1664 5.99209 16.9129 5.99209C13.6594 5.99209 11.0219 8.68688 11.0219 12.0111C11.0219 15.3353 13.6594 18.03 16.9129 18.03Z" fill="#00B3FF"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M7.97503 3.51684C12.6472 -1.17228 20.2235 -1.17228 24.8956 3.51684C29.5753 8.20595 29.5753 15.8085 24.8956 20.4899C20.2235 25.1713 12.6472 25.1713 7.97503 20.4822L0.338563 12.8182C-0.112854 12.3647 -0.112854 11.6344 0.338563 11.1808L7.97503 3.51684ZM10.661 18.2376C14.0917 21.6814 19.6592 21.6814 23.09 18.2376C26.5207 14.7938 26.5207 9.21296 23.0824 5.76915C19.6517 2.32534 14.0842 2.32534 10.6534 5.76915L5.04082 11.3961C4.70978 11.7343 4.70978 12.2724 5.04082 12.603L10.661 18.2376Z" fill="#00B3FF"/>
+<path d="M31.5385 7.75236L34.9015 11.1885C35.3454 11.642 35.3454 12.3723 34.9015 12.8335L31.5385 16.2696C31.3428 16.4695 31.0043 16.285 31.0645 16.0006C31.6438 13.3793 31.6438 10.6427 31.0645 8.02141C30.9968 7.73699 31.3353 7.54481 31.5385 7.75236Z" fill="#00B3FF"/>
+</svg>
+<text x="144" y="748" font-size="25" font-weight="750" fill="#0F172A">Milvus</text>
+<text x="144" y="771" font-size="13.5" font-weight="600" fill="#64748B" letter-spacing="0.2">Open source · Distributed</text>
+<line x1="64" y1="796" x2="476" y2="796" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="64" y="822" font-size="15" fill="#334155">Open-source distributed vector database (LF AI &amp;</text>
+<text x="64" y="843" font-size="15" fill="#334155">Data) whose compute and storage scale</text>
+<text x="64" y="864" font-size="15" fill="#334155">independently as microservices. Widest index</text>
+<text x="64" y="885" font-size="15" fill="#334155">selection — HNSW, IVF, DiskANN, GPU-accelerated</text>
+<text x="64" y="906" font-size="15" fill="#334155">CAGRA — plus hybrid sparse / dense search at</text>
+<text x="64" y="927" font-size="15" fill="#334155">tens-of-billions scale.</text>
+<text x="64" y="958" font-size="15" fill="#334155"><tspan font-weight="700" fill="#00A1EA">Best for:</tspan> Massive-scale workloads: video dedup,</text>
+<text x="64" y="979" font-size="15" fill="#334155">ads and recommendations, multimodal search on</text>
+<text x="64" y="1000" font-size="15" fill="#334155">Kubernetes.</text>
+<line x1="64" y1="1080" x2="476" y2="1080" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="64" y="1104" font-size="13.5" fill="#475569"><tspan font-weight="700" fill="#0F172A">In production:</tspan> <tspan font-weight="600">Salesforce · Shopee · eBay · NVIDIA</tspan></text>
+</g>
+<g>
+<rect x="522" y="692" width="456" height="432" rx="14" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
+<rect x="522" y="692" width="456" height="7" rx="3.5" fill="#DC244C"/>
+<text x="956" y="744" text-anchor="end" font-size="30" font-weight="800" fill="#DC244C" fill-opacity="0.28">05</text>
+<rect x="544" y="716" width="64" height="64" rx="12" fill="#F8FAFC" stroke="#EEF2F7"/>
+<svg x="552.0" y="724.0" width="48" height="48" viewBox="0 0 256 296" preserveAspectRatio="xMidYMid meet">
+    <title>qdrant</title>
+    <defs>
+        <linearGradient x1="81.5619048%" y1="44.8421053%" x2="-18.0857143%" y2="44.8421053%" id="qdrantlinearGradient-1">
+            <stop stop-color="#FF3364" offset="0%"></stop>
+            <stop stop-color="#C91540" stop-opacity="0" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g>
+        <polygon fill="#24386C" points="201.31705 271.722427 195.422715 109.21267 184.747781 66.3682368 256 73.9112545 256 270.492509 212.474757 295.612626"></polygon>
+        <polygon fill="#7589BE" points="255.995151 73.8998107 212.469908 99.037384 122.649634 79.3346471 17.5160008 122.140288 1.1370484e-14 73.8998107 63.9883137 36.9499053 127.996024 0 191.986277 36.9499053"></polygon>
+        <polyline fill="#B2BFE8" points="0.00310340412 73.8998107 43.5283462 99.037384 68.7590217 174.073816 153.949405 242.236209 128.001067 295.599243 63.9933568 258.647398 0.00310340412 221.697492 0.00310340412 73.897871"></polyline>
+        <polyline fill="#24386C" points="156.856906 202.807459 128.001067 245.347371 128.001067 295.603122 168.946605 271.978458 190.043934 240.475027"></polyline>
+        <polygon fill="#7589BE" points="128.018523 195.107138 87.0555287 124.184656 95.8787005 100.678309 129.42068 84.4156955 168.946411 124.185819"></polygon>
+        <polyline fill="#B2BFE8" points="87.0555287 124.178837 128.001067 147.803501 128.001067 195.091621 90.131778 196.720927 67.2247763 167.471344 87.0555287 124.178856"></polyline>
+        <polygon fill="#24386C" points="128.001067 147.799621 168.946605 124.176897 196.813234 170.576668 163.090869 198.439418 128.001067 195.089293"></polygon>
+        <path d="M168.946605,271.974579 L212.471848,295.601182 L212.471848,99.0393237 L170.226759,74.658205 L128.001067,50.2770864 L85.7559782,74.658205 L43.5302858,99.0393237 L43.5302858,196.581255 L85.7559782,220.962373 L128.001067,245.345432 L168.946605,221.699432 L168.946605,271.974579 Z M168.946605,171.443681 L128.001067,195.087742 L87.0555287,171.443681 L87.0555287,124.174957 L128.001067,100.530897 L168.946605,124.174957 L168.946605,171.443681" fill="#DC244C"></path>
+        <polygon fill="url(#qdrantlinearGradient-1)" points="128.018523 245.362888 128.018523 195.099379 87.2863443 171.657041 87.2863443 221.837146"></polygon>
+    </g>
+</svg>
+<text x="624" y="748" font-size="25" font-weight="750" fill="#0F172A">Qdrant</text>
+<text x="624" y="771" font-size="13.5" font-weight="600" fill="#64748B" letter-spacing="0.2">Open source · Rust engine</text>
+<line x1="544" y1="796" x2="956" y2="796" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="544" y="822" font-size="15" fill="#334155">Rust-built vector search engine known for raw</text>
+<text x="544" y="843" font-size="15" fill="#334155">speed and memory efficiency. Fuses metadata</text>
+<text x="544" y="864" font-size="15" fill="#334155">filtering directly into HNSW traversal, with</text>
+<text x="544" y="885" font-size="15" fill="#334155">scalar, product, and binary quantization for up</text>
+<text x="544" y="906" font-size="15" fill="#334155">to ~40x memory savings. Still accelerating: $50M</text>
+<text x="544" y="927" font-size="15" fill="#334155">Series B raised in March 2026 (~$88M total).</text>
+<text x="544" y="958" font-size="15" fill="#334155"><tspan font-weight="700" fill="#DC244C">Best for:</tspan> Latency-sensitive, heavily filtered</text>
+<text x="544" y="979" font-size="15" fill="#334155">retrieval: recommendations, e-commerce,</text>
+<text x="544" y="1000" font-size="15" fill="#334155">enterprise RAG and agents.</text>
+<line x1="544" y1="1061" x2="956" y2="1061" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="544" y="1085" font-size="13.5" fill="#475569"><tspan font-weight="700" fill="#0F172A">In production:</tspan> <tspan font-weight="600">Deutsche Telekom · HubSpot · xAI</tspan></text>
+<text x="544" y="1104" font-size="13.5" font-weight="600" fill="#475569">(Grok)</text>
+</g>
+<g>
+<rect x="1002" y="692" width="456" height="432" rx="14" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
+<rect x="1002" y="692" width="456" height="7" rx="3.5" fill="#327EFF"/>
+<text x="1436" y="744" text-anchor="end" font-size="30" font-weight="800" fill="#327EFF" fill-opacity="0.28">06</text>
+<rect x="1024" y="716" width="64" height="64" rx="12" fill="#F8FAFC" stroke="#EEF2F7"/>
+<svg x="1032.0" y="724.0" width="48" height="48" viewBox="0 0 209 135" preserveAspectRatio="xMidYMid meet" fill="none">
+<ellipse cx="136.019" cy="67.2304" rx="66.6667" ry="64" fill="#FFDE2D"/>
+<ellipse cx="69.352" cy="67.2304" rx="66.6667" ry="64" fill="#327EFF"/>
+<path d="M2.68528 67.2304C2.68527 31.8842 32.5329 3.23047 69.3519 3.23047L69.3519 67.2304L2.68528 67.2304Z" fill="#327EFF"/>
+<path d="M136.019 67.2305C136.019 102.577 106.171 131.23 69.3519 131.23L69.3519 67.2305L136.019 67.2305Z" fill="#FF6446"/>
+<path d="M69.352 67.2304C69.352 31.8842 99.1997 3.23047 136.019 3.23047L136.019 67.2304L69.352 67.2304Z" fill="#FF6446"/>
+</svg>
+<text x="1104" y="748" font-size="25" font-weight="750" fill="#0F172A">Chroma</text>
+<text x="1104" y="771" font-size="13.5" font-weight="600" fill="#64748B" letter-spacing="0.2">Open source · Embedded</text>
+<line x1="1024" y1="796" x2="1436" y2="796" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="1024" y="822" font-size="15" fill="#334155">Open-source, AI-native embedding database famous</text>
+<text x="1024" y="843" font-size="15" fill="#334155">for its minimal API — collection to query in a</text>
+<text x="1024" y="864" font-size="15" fill="#334155">few lines of Python. Runs embedded in your app</text>
+<text x="1024" y="885" font-size="15" fill="#334155">with native embedding-function integration;</text>
+<text x="1024" y="906" font-size="15" fill="#334155">Chroma Cloud adds a Rust distributed core over</text>
+<text x="1024" y="927" font-size="15" fill="#334155">object storage. The default prototyping choice</text>
+<text x="1024" y="948" font-size="15" fill="#334155">of the LLM ecosystem (~11M+ monthly downloads).</text>
+<text x="1024" y="979" font-size="15" fill="#334155"><tspan font-weight="700" fill="#327EFF">Best for:</tspan> RAG prototypes, agent memory, and</text>
+<text x="1024" y="1000" font-size="15" fill="#334155">dev-speed-first AI apps that can grow into</text>
+<text x="1024" y="1021" font-size="15" fill="#334155">managed production.</text>
+<line x1="1024" y1="1080" x2="1436" y2="1080" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="1024" y="1104" font-size="13.5" fill="#475569"><tspan font-weight="700" fill="#0F172A">In production:</tspan> <tspan font-weight="600">Mintlify · Factory · Weights &amp; Biases</tspan></text>
+</g>
+<g>
+<rect x="42" y="1148" width="456" height="432" rx="14" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
+<rect x="42" y="1148" width="456" height="7" rx="3.5" fill="#FF734A"/>
+<text x="476" y="1200" text-anchor="end" font-size="30" font-weight="800" fill="#FF734A" fill-opacity="0.28">07</text>
+<rect x="64" y="1172" width="64" height="64" rx="12" fill="#F8FAFC" stroke="#EEF2F7"/>
+<svg x="72.0" y="1180.0" width="48" height="48" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet" fill="#FF734A">
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M149.479 67.9822C152.62 57.2876 162.508 49.4792 174.219 49.4792C188.457 49.4792 200 61.0218 200 75.2604C200 89.499 188.457 101.042 174.219 101.042C162.508 101.042 152.62 93.2332 149.479 82.5387C147.016 90.9251 140.404 97.5367 132.018 100C142.712 103.141 150.521 113.029 150.521 124.74C150.521 138.978 138.978 150.521 124.74 150.521C113.029 150.521 103.141 142.712 100 132.018C97.5367 140.404 90.9251 147.016 82.5387 149.479C93.2332 152.62 101.042 162.508 101.042 174.219C101.042 188.457 89.499 200 75.2604 200C61.0218 200 49.4792 188.457 49.4792 174.219C49.4792 162.508 57.2876 152.62 67.9822 149.479C59.5957 147.016 52.9841 140.404 50.5208 132.018C47.3796 142.712 37.4923 150.521 25.7812 150.521C11.5427 150.521 0 138.978 0 124.74C0 113.029 7.80844 103.141 18.503 100C7.80844 96.8588 0 86.9715 0 75.2604C0 63.5494 7.80844 53.662 18.503 50.5208C7.80844 47.3796 0 37.4923 0 25.7812C0 11.5427 11.5427 0 25.7812 0C37.4923 0 47.3796 7.80844 50.5208 18.503C53.662 7.80844 63.5494 0 75.2604 0C86.9715 0 96.8588 7.80844 100 18.503C103.141 7.80844 113.029 0 124.74 0C138.978 0 150.521 11.5427 150.521 25.7812C150.521 37.4923 142.712 47.3796 132.018 50.5208C140.404 52.9841 147.016 59.5957 149.479 67.9822ZM117.461 100C106.767 96.8588 98.9583 86.9715 98.9583 75.2604C98.9583 63.5494 106.767 53.662 117.461 50.5208C109.075 48.0576 102.463 41.4459 100 33.0595C96.8588 43.7541 86.9715 51.5625 75.2604 51.5625C63.5494 51.5625 53.662 43.7541 50.5208 33.0595C48.0576 41.4459 41.4459 48.0576 33.0595 50.5208C43.7541 53.662 51.5625 63.5494 51.5625 75.2604C51.5625 86.9715 43.7541 96.8588 33.0595 100C41.4459 102.463 48.0576 109.075 50.5208 117.461C53.662 106.767 63.5494 98.9583 75.2604 98.9583C86.9715 98.9583 96.8588 106.767 100 117.461C102.463 109.075 109.075 102.463 117.461 100ZM200 174.219C200 188.457 188.457 200 174.219 200C159.98 200 148.438 188.457 148.438 174.219C148.438 159.98 159.98 148.438 174.219 148.438C188.457 148.438 200 159.98 200 174.219Z"/>
+</svg>
+<text x="144" y="1204" font-size="25" font-weight="750" fill="#0F172A">LanceDB</text>
+<text x="144" y="1227" font-size="13.5" font-weight="600" fill="#64748B" letter-spacing="0.2">Embedded · Multimodal lakehouse</text>
+<line x1="64" y1="1252" x2="476" y2="1252" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="64" y="1278" font-size="15" fill="#334155">Open-source embedded vector database on the</text>
+<text x="64" y="1299" font-size="15" fill="#334155">Lance columnar format — runs in-process or over</text>
+<text x="64" y="1320" font-size="15" fill="#334155">S3 with compute-storage separation. Disk-based</text>
+<text x="64" y="1341" font-size="15" fill="#334155">indexes free you from RAM limits; multimodal</text>
+<text x="64" y="1362" font-size="15" fill="#334155">tables and zero-copy versioning serve search,</text>
+<text x="64" y="1383" font-size="15" fill="#334155">analytics, and training alike. $30M Series A in</text>
+<text x="64" y="1404" font-size="15" fill="#334155">2026 (Theory Ventures, with Databricks</text>
+<text x="64" y="1425" font-size="15" fill="#334155">Ventures).</text>
+<text x="64" y="1456" font-size="15" fill="#334155"><tspan font-weight="700" fill="#C2410C">Best for:</tspan> Local-first AI, edge deployments, and</text>
+<text x="64" y="1477" font-size="15" fill="#334155">petabyte-scale multimodal data-lake workloads.</text>
+<line x1="64" y1="1517" x2="476" y2="1517" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="64" y="1541" font-size="13.5" fill="#475569"><tspan font-weight="700" fill="#0F172A">In production:</tspan> <tspan font-weight="600">Midjourney · Runway · Netflix ·</tspan></text>
+<text x="64" y="1560" font-size="13.5" font-weight="600" fill="#475569">ByteDance</text>
+</g>
+<g>
+<rect x="522" y="1148" width="456" height="432" rx="14" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
+<rect x="522" y="1148" width="456" height="7" rx="3.5" fill="#4000FF"/>
+<text x="956" y="1200" text-anchor="end" font-size="30" font-weight="800" fill="#4000FF" fill-opacity="0.28">08</text>
+<rect x="544" y="1172" width="64" height="64" rx="12" fill="#F8FAFC" stroke="#EEF2F7"/>
+<svg x="549.0" y="1177.0" width="54" height="54" viewBox="0 0 148 210" preserveAspectRatio="xMidYMid meet" fill="none"><defs><clipPath id="zvecmaster_svg0_11_0950"><rect x="0" y="0" width="421" height="210.0003662109375" rx="0"/></clipPath><linearGradient x1="0.3919753134250641" y1="0.7325581312179565" x2="0.2799266056219182" y2="0.494627580808665" id="zvecmaster_svg1_11_1035"><stop offset="4.285714402794838%" stop-color="#B5F1FF" stop-opacity="1"/><stop offset="100%" stop-color="#E8FBFF" stop-opacity="1"/></linearGradient><linearGradient x1="0.3919753134250641" y1="0.7325581312179565" x2="0.2799266056219182" y2="0.494627580808665" id="zvecmaster_svg2_11_1171"><stop offset="8.571428805589676%" stop-color="#C9DDFF" stop-opacity="1"/><stop offset="100%" stop-color="#EFF5FF" stop-opacity="1"/></linearGradient></defs><g clip-path="url(#zvecmaster_svg0_11_0950)"><g><g><path d="M182.41207,154.87028310546873Q181,154.87028310546873,181,153.45778310546876L181,143.99458310546873Q181,143.28828310546874,181.42362,142.29958310546874L214.1836,68.42958310546875Q214.3248,68.14708310546875,214.1836,67.93518310546875Q214.0424,67.72338310546876,213.75990000000002,67.72338310546876L182.41207,67.72338310546876Q181,67.72338310546876,181,66.31088310546875L181,57.41261310546875Q181,56.00018310546875,182.41207,56.00018310546875L227.457,56.00018310546875Q228.8691,56.00018310546875,228.8691,57.41261310546875L228.8691,66.87588310546874Q228.8691,67.44088310546874,228.4454,68.57078310546875L195.5443,142.44088310546874Q195.4031,142.72338310546877,195.5443,142.93518310546875Q195.6855,143.14708310546877,195.9679,143.14708310546877L227.457,143.14708310546877Q228.8691,143.14708310546877,228.8691,144.55948310546876L228.8691,153.45778310546876Q228.8691,154.87028310546873,227.457,154.87028310546873L182.41207,154.87028310546873ZM255.5571,154.87028310546873Q254.28629999999998,154.87028310546873,254.0038,153.59908310546876L236.6354,84.53128310546875L236.4942,83.96628310546875Q236.4942,82.97758310546875,237.7651,82.97758310546875L249.76760000000002,82.97758310546875Q251.1797,82.97758310546875,251.3209,84.24878310546875L261.4878,132.69508310546877Q261.629,133.11878310546876,261.7702,133.11878310546876Q261.9114,133.11878310546876,262.0526,132.69508310546877L272.0783,84.24878310546875Q272.3607,82.97758310546875,273.6316,82.97758310546875L285.634,83.11878310546875Q286.34000000000003,83.11878310546875,286.693,83.54258310546875Q287.046,83.96628310546875,286.764,84.67248310546876L269.5366,153.59908310546876Q269.3954,154.87028310546873,267.9833,154.87028310546873L255.5571,154.87028310546873ZM341.976,123.09058310546875Q341.976,124.50298310546874,340.56399999999996,124.50298310546874L308.651,124.50298310546874Q308.086,124.50298310546874,308.086,125.06798310546876L308.086,132.69508310546877Q308.086,137.77988310546874,310.90999999999997,141.02848310546875Q313.73400000000004,144.27698310546873,318.253,144.27698310546873Q322.207,144.27698310546873,324.89,141.87588310546874Q327.573,139.47478310546876,328.279,135.66118310546875Q328.702,134.53128310546873,329.832,134.53128310546873L340.281,135.09618310546875Q340.98699999999997,135.09618310546875,341.34000000000003,135.51998310546875Q341.693,135.94368310546875,341.552,136.50868310546875Q340.56399999999996,145.68948310546875,334.562,150.84478310546876Q328.56100000000004,156.00018310546875,318.253,156.00018310546875Q307.38,156.00018310546875,300.955,149.92678310546876Q294.53,143.85328310546873,294.53,133.68378310546876L294.53,104.30528310546876Q294.53,94.27698310546876,300.955,88.06228310546875Q307.38,81.84768310546875,318.253,81.84768310546875Q329.267,81.84768310546875,335.621,88.06228310546875Q341.976,94.27698310546876,341.976,104.30528310546876L341.976,123.09058310546875ZM318.253,93.57078310546875Q313.73400000000004,93.57078310546875,310.90999999999997,96.81938310546875Q308.086,100.06798310546876,308.086,105.15268310546875L308.086,112.63858310546874Q308.086,113.20358310546875,308.651,113.20358310546875L327.996,113.20358310546875Q328.56100000000004,113.20358310546875,328.56100000000004,112.63858310546874L328.56100000000004,105.15268310546875Q328.56100000000004,100.06798310546876,325.73699999999997,96.81938310546875Q322.913,93.57078310546875,318.253,93.57078310546875ZM377.13599999999997,156.00018310546875Q366.26300000000003,156.00018310546875,359.83799999999997,149.92678310546876Q353.413,143.85328310546873,353.413,133.54258310546874L353.413,104.30528310546876Q353.413,94.27698310546876,359.83799999999997,88.06228310546875Q366.26300000000003,81.84768310546875,377.13599999999997,81.84768310546875Q384.33799999999997,81.84768310546875,389.774,84.60188310546874Q395.211,87.35608310546874,398.105,92.08778310546876Q401,96.81938310546875,401,102.75158310546874L401,104.58778310546876Q401,106.00018310546875,399.58799999999997,106.00018310546875L388.856,106.42388310546875Q387.44399999999996,106.42388310546875,387.44399999999996,105.01148310546876L387.44399999999996,103.59908310546875Q387.44399999999996,99.50298310546876,384.47900000000004,96.53688310546875Q381.51300000000003,93.57078310546875,377.13599999999997,93.57078310546875Q372.61699999999996,93.57078310546875,369.793,96.81938310546875Q366.969,100.06798310546876,366.969,105.15268310546875L366.969,132.69508310546877Q366.969,137.77988310546874,369.793,141.02848310546875Q372.61699999999996,144.27698310546873,377.13599999999997,144.27698310546873Q381.51300000000003,144.27698310546873,384.47900000000004,141.31088310546875Q387.44399999999996,138.34478310546876,387.44399999999996,134.24878310546876L387.44399999999996,132.83638310546877Q387.44399999999996,131.42388310546875,388.856,131.42388310546875L399.58799999999997,131.56518310546875Q401,131.56518310546875,401,132.97758310546874L401,135.09618310546875Q401,144.27698310546873,394.504,150.13858310546874Q388.009,156.00018310546875,377.13599999999997,156.00018310546875Z" fill="#000000" fill-opacity="1"/></g><g><path d="M20,71.00268310546875C20,78.90648310546875,24.65467,86.06888310546876,31.877200000000002,89.27898310546874L72.8772,107.50118310546875C86.103,113.37928310546874,101,103.69808310546875,101,89.22498310546875L101,82.99768310546875C101,75.09388310546875,96.3453,67.93148310546874,89.1228,64.72138310546875L48.1228,46.49918310546875C34.897,40.62108310546875,20,50.302283105468746,20,64.77538310546875L20,71.00268310546875Z" fill="url(#zvecmaster_svg1_11_1035)" fill-opacity="1"/></g><g transform="matrix(-1,0,0,-1,294,352.0003662109375)"><path d="M147,213.00268310546875C147,220.90648310546874,151.65467,228.06888310546876,158.8772,231.27898310546874L199.87720000000002,249.50118310546875C213.103,255.37928310546874,228,245.69808310546875,228,231.22498310546877L228,224.99768310546875C228,217.09388310546876,223.3453,209.93148310546874,216.12279999999998,206.72138310546876L175.1228,188.49918310546875C161.897,182.62108310546876,147,192.30228310546875,147,206.77538310546876L147,213.00268310546875Z" fill="url(#zvecmaster_svg2_11_1171)" fill-opacity="1"/></g><g><path d="M147,78.73729650796875L19.999999999999993,131.10838779296876L20,133.00018779296875C20,140.39578779296875,25.01775,146.61948779296876,31.8345,148.45258779296876L121.859,187.63348779296877C124.372,189.13448779296874,127.332,190.00048779296876,130.5,190.00048779296876C139.613,190.00048779296876,147,182.83648779296874,147,174.00018779296875L147,139.00018779296875L146.99200000000002,139.00018779296875C146.72199999999998,147.91408779296876,139.418,155.00018779296875,130.5,155.00018779296875C127.893,155.00018779296875,125.322,154.38228779296875,123,153.19708779296874L123,153.26478779296875L84.7111,136.62638779296876C84.5033,136.55838779296874,84.3024,136.47098779296874,84.1109,136.36548779296874L84,136.31738779296876L84,136.30178779296875C82.9453,135.66938779296873,82.2998,134.52978779296876,82.2998,133.29998779296875C82.2998,132.07018779296874,82.9453,130.93058779296877,84,130.29818779296875L84,130.27628779296876L84.1483,130.21418779296874C84.3424,130.11028779296873,84.5459,130.02488779296874,84.7561,129.95918779296875L138.043,107.61098779296876C143.197,106.26388779296875,147,101.57618779296875,147,96.00018779296875L147,78.73729650796875Z" fill-rule="evenodd" fill="#4000FF" fill-opacity="1"/></g><g transform="matrix(-1,0,0,-1,294,262.5257568359375)"><path d="M274,131.26268713296875L147,183.63377841796876L147,185.52557841796875C147,192.92117841796875,152.01775,199.14487841796876,158.8345,200.97797841796876L248.85899999999998,240.15887841796877C251.372,241.65987841796874,254.332,242.52587841796876,257.5,242.52587841796876C266.613,242.52587841796876,274,235.36187841796874,274,226.52557841796875L274,191.52557841796875L273.992,191.52557841796875C273.722,200.43947841796876,266.418,207.52557841796875,257.5,207.52557841796875C254.893,207.52557841796875,252.322,206.90767841796875,250,205.72247841796874L250,205.79017841796875L211.7111,189.15177841796876C211.5033,189.08377841796874,211.3024,188.99637841796874,211.11090000000002,188.89087841796874L211,188.84277841796876L211,188.82717841796875C209.9453,188.19477841796873,209.2998,187.05517841796876,209.2998,185.82537841796875C209.2998,184.59557841796874,209.9453,183.45597841796877,211,182.82357841796875L211,182.80167841796876L211.1483,182.73957841796874C211.3424,182.63567841796873,211.54590000000002,182.55027841796874,211.7561,182.48457841796875L265.043,160.13637841796876C270.197,158.78927841796875,274,154.10157841796874,274,148.52557841796875L274,131.26268713296875Z" fill-rule="evenodd" fill="#149BFB" fill-opacity="1"/></g></g></g></svg>
+<text x="624" y="1204" font-size="25" font-weight="750" fill="#0F172A">Zvec</text>
+<text x="624" y="1227" font-size="13.5" font-weight="600" fill="#64748B" letter-spacing="0.2">Open source · Embedded (Alibaba)</text>
+<line x1="544" y1="1252" x2="956" y2="1252" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="544" y="1278" font-size="15" fill="#334155">“The SQLite of vector databases” — an</text>
+<text x="544" y="1299" font-size="15" fill="#334155">in-process, open-source vector DB from Alibaba's</text>
+<text x="544" y="1320" font-size="15" fill="#334155">Tongyi Lab (launched Feb 2026), wrapping</text>
+<text x="544" y="1341" font-size="15" fill="#334155">Proxima, the engine behind Taobao search and</text>
+<text x="544" y="1362" font-size="15" fill="#334155">Alipay face payment. Hybrid vector + full-text +</text>
+<text x="544" y="1383" font-size="15" fill="#334155">filtered search, dense / sparse / multi-vector,</text>
+<text x="544" y="1404" font-size="15" fill="#334155">WAL durability — and it runs on mobile. 12K+</text>
+<text x="544" y="1425" font-size="15" fill="#334155">GitHub stars within months.</text>
+<text x="544" y="1456" font-size="15" fill="#334155"><tspan font-weight="700" fill="#4000FF">Best for:</tspan> Local / edge RAG, on-device semantic</text>
+<text x="544" y="1477" font-size="15" fill="#334155">search, desktop AI apps. Young: no third-party</text>
+<text x="544" y="1498" font-size="15" fill="#334155">production case studies yet.</text>
+<line x1="544" y1="1517" x2="956" y2="1517" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="544" y="1541" font-size="13.5" fill="#475569"><tspan font-weight="700" fill="#0F172A">In production:</tspan> <tspan font-weight="600">Alibaba internal via Proxima (Taobao</tspan></text>
+<text x="544" y="1560" font-size="13.5" font-weight="600" fill="#475569">· Alipay · Youku)</text>
+</g>
+<g>
+<rect x="1002" y="1148" width="456" height="432" rx="14" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
+<rect x="1002" y="1148" width="456" height="7" rx="3.5" fill="#336791"/>
+<text x="1436" y="1200" text-anchor="end" font-size="30" font-weight="800" fill="#336791" fill-opacity="0.28">09</text>
+<rect x="1024" y="1172" width="64" height="64" rx="12" fill="#F8FAFC" stroke="#EEF2F7"/>
+<svg x="1032.0" y="1180.0" width="48" height="48" viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" fill="#336791"><title>PostgreSQL</title><path d="M23.5594 14.7228a.5269.5269 0 0 0-.0563-.1191c-.139-.2632-.4768-.3418-1.0074-.2321-1.6533.3411-2.2935.1312-2.5256-.0191 1.342-2.0482 2.445-4.522 3.0411-6.8297.2714-1.0507.7982-3.5237.1222-4.7316a1.5641 1.5641 0 0 0-.1509-.235C21.6931.9086 19.8007.0248 17.5099.0005c-1.4947-.0158-2.7705.3461-3.1161.4794a9.449 9.449 0 0 0-.5159-.0816 8.044 8.044 0 0 0-1.3114-.1278c-1.1822-.0184-2.2038.2642-3.0498.8406-.8573-.3211-4.7888-1.645-7.2219.0788C.9359 2.1526.3086 3.8733.4302 6.3043c.0409.818.5069 3.334 1.2423 5.7436.4598 1.5065.9387 2.7019 1.4334 3.582.553.9942 1.1259 1.5933 1.7143 1.7895.4474.1491 1.1327.1441 1.8581-.7279.8012-.9635 1.5903-1.8258 1.9446-2.2069.4351.2355.9064.3625 1.39.3772a.0569.0569 0 0 0 .0004.0041 11.0312 11.0312 0 0 0-.2472.3054c-.3389.4302-.4094.5197-1.5002.7443-.3102.064-1.1344.2339-1.1464.8115-.0025.1224.0329.2309.0919.3268.2269.4231.9216.6097 1.015.6331 1.3345.3335 2.5044.092 3.3714-.6787-.017 2.231.0775 4.4174.3454 5.0874.2212.5529.7618 1.9045 2.4692 1.9043.2505 0 .5263-.0291.8296-.0941 1.7819-.3821 2.5557-1.1696 2.855-2.9059.1503-.8707.4016-2.8753.5388-4.1012.0169-.0703.0357-.1207.057-.1362.0007-.0005.0697-.0471.4272.0307a.3673.3673 0 0 0 .0443.0068l.2539.0223.0149.001c.8468.0384 1.9114-.1426 2.5312-.4308.6438-.2988 1.8057-1.0323 1.5951-1.6698zM2.371 11.8765c-.7435-2.4358-1.1779-4.8851-1.2123-5.5719-.1086-2.1714.4171-3.6829 1.5623-4.4927 1.8367-1.2986 4.8398-.5408 6.108-.13-.0032.0032-.0066.0061-.0098.0094-2.0238 2.044-1.9758 5.536-1.9708 5.7495-.0002.0823.0066.1989.0162.3593.0348.5873.0996 1.6804-.0735 2.9184-.1609 1.1504.1937 2.2764.9728 3.0892.0806.0841.1648.1631.2518.2374-.3468.3714-1.1004 1.1926-1.9025 2.1576-.5677.6825-.9597.5517-1.0886.5087-.3919-.1307-.813-.5871-1.2381-1.3223-.4796-.839-.9635-2.0317-1.4155-3.5126zm6.0072 5.0871c-.1711-.0428-.3271-.1132-.4322-.1772.0889-.0394.2374-.0902.4833-.1409 1.2833-.2641 1.4815-.4506 1.9143-1.0002.0992-.126.2116-.2687.3673-.4426a.3549.3549 0 0 0 .0737-.1298c.1708-.1513.2724-.1099.4369-.0417.156.0646.3078.26.3695.4752.0291.1016.0619.2945-.0452.4444-.9043 1.2658-2.2216 1.2494-3.1676 1.0128zm2.094-3.988-.0525.141c-.133.3566-.2567.6881-.3334 1.003-.6674-.0021-1.3168-.2872-1.8105-.8024-.6279-.6551-.9131-1.5664-.7825-2.5004.1828-1.3079.1153-2.4468.079-3.0586-.005-.0857-.0095-.1607-.0122-.2199.2957-.2621 1.6659-.9962 2.6429-.7724.4459.1022.7176.4057.8305.928.5846 2.7038.0774 3.8307-.3302 4.7363-.084.1866-.1633.3629-.2311.5454zm7.3637 4.5725c-.0169.1768-.0358.376-.0618.5959l-.146.4383a.3547.3547 0 0 0-.0182.1077c-.0059.4747-.054.6489-.115.8693-.0634.2292-.1353.4891-.1794 1.0575-.11 1.4143-.8782 2.2267-2.4172 2.5565-1.5155.3251-1.7843-.4968-2.0212-1.2217a6.5824 6.5824 0 0 0-.0769-.2266c-.2154-.5858-.1911-1.4119-.1574-2.5551.0165-.5612-.0249-1.9013-.3302-2.6462.0044-.2932.0106-.5909.019-.8918a.3529.3529 0 0 0-.0153-.1126 1.4927 1.4927 0 0 0-.0439-.208c-.1226-.4283-.4213-.7866-.7797-.9351-.1424-.059-.4038-.1672-.7178-.0869.067-.276.1831-.5875.309-.9249l.0529-.142c.0595-.16.134-.3257.213-.5012.4265-.9476 1.0106-2.2453.3766-5.1772-.2374-1.0981-1.0304-1.6343-2.2324-1.5098-.7207.0746-1.3799.3654-1.7088.5321a5.6716 5.6716 0 0 0-.1958.1041c.0918-1.1064.4386-3.1741 1.7357-4.4823a4.0306 4.0306 0 0 1 .3033-.276.3532.3532 0 0 0 .1447-.0644c.7524-.5706 1.6945-.8506 2.802-.8325.4091.0067.8017.0339 1.1742.081 1.939.3544 3.2439 1.4468 4.0359 2.3827.8143.9623 1.2552 1.9315 1.4312 2.4543-1.3232-.1346-2.2234.1268-2.6797.779-.9926 1.4189.543 4.1729 1.2811 5.4964.1353.2426.2522.4522.2889.5413.2403.5825.5515.9713.7787 1.2552.0696.087.1372.1714.1885.245-.4008.1155-1.1208.3825-1.0552 1.717-.0123.1563-.0423.4469-.0834.8148-.0461.2077-.0702.4603-.0994.7662zm.8905-1.6211c-.0405-.8316.2691-.9185.5967-1.0105a2.8566 2.8566 0 0 0 .135-.0406 1.202 1.202 0 0 0 .1342.103c.5703.3765 1.5823.4213 3.0068.1344-.2016.1769-.5189.3994-.9533.6011-.4098.1903-1.0957.333-1.7473.3636-.7197.0336-1.0859-.0807-1.1721-.151zm.5695-9.2712c-.0059.3508-.0542.6692-.1054 1.0017-.055.3576-.112.7274-.1264 1.1762-.0142.4368.0404.8909.0932 1.3301.1066.887.216 1.8003-.2075 2.7014a3.5272 3.5272 0 0 1-.1876-.3856c-.0527-.1276-.1669-.3326-.3251-.6162-.6156-1.1041-2.0574-3.6896-1.3193-4.7446.3795-.5427 1.3408-.5661 2.1781-.463zm.2284 7.0137a12.3762 12.3762 0 0 0-.0853-.1074l-.0355-.0444c.7262-1.1995.5842-2.3862.4578-3.4385-.0519-.4318-.1009-.8396-.0885-1.2226.0129-.4061.0666-.7543.1185-1.0911.0639-.415.1288-.8443.1109-1.3505.0134-.0531.0188-.1158.0118-.1902-.0457-.4855-.5999-1.938-1.7294-3.253-.6076-.7073-1.4896-1.4972-2.6889-2.0395.5251-.1066 1.2328-.2035 2.0244-.1859 2.0515.0456 3.6746.8135 4.8242 2.2824a.908.908 0 0 1 .0667.1002c.7231 1.3556-.2762 6.2751-2.9867 10.5405zm-8.8166-6.1162c-.025.1794-.3089.4225-.6211.4225a.5821.5821 0 0 1-.0809-.0056c-.1873-.026-.3765-.144-.5059-.3156-.0458-.0605-.1203-.178-.1055-.2844.0055-.0401.0261-.0985.0925-.1488.1182-.0894.3518-.1226.6096-.0867.3163.0441.6426.1938.6113.4186zm7.9305-.4114c.0111.0792-.049.201-.1531.3102-.0683.0717-.212.1961-.4079.2232a.5456.5456 0 0 1-.075.0052c-.2935 0-.5414-.2344-.5607-.3717-.024-.1765.2641-.3106.5611-.352.297-.0414.6111.0088.6356.1851z"/></svg>
+<text x="1104" y="1204" font-size="25" font-weight="750" fill="#0F172A">Pgvector</text>
+<text x="1104" y="1227" font-size="13.5" font-weight="600" fill="#64748B" letter-spacing="0.2">PostgreSQL extension</text>
+<line x1="1024" y1="1252" x2="1436" y2="1252" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="1024" y="1278" font-size="15" fill="#334155">Open-source Postgres extension adding a vector</text>
+<text x="1024" y="1299" font-size="15" fill="#334155">type with exact and ANN search (HNSW, IVFFlat).</text>
+<text x="1024" y="1320" font-size="15" fill="#334155">Embeddings live next to relational data — you</text>
+<text x="1024" y="1341" font-size="15" fill="#334155">keep joins, transactions, ACID, and SQL</text>
+<text x="1024" y="1362" font-size="15" fill="#334155">filtering — supported by every major managed</text>
+<text x="1024" y="1383" font-size="15" fill="#334155">Postgres. Timescale's pgvectorscale extension</text>
+<text x="1024" y="1404" font-size="15" fill="#334155">adds DiskANN-style indexing on top, fueling a</text>
+<text x="1024" y="1425" font-size="15" fill="#334155">2026 “consolidate onto Postgres” trend.</text>
+<text x="1024" y="1456" font-size="15" fill="#334155"><tspan font-weight="700" fill="#336791">Best for:</tspan> Teams already on PostgreSQL adding</text>
+<text x="1024" y="1477" font-size="15" fill="#334155">semantic search or RAG up to tens of millions of</text>
+<text x="1024" y="1498" font-size="15" fill="#334155">vectors.</text>
+<line x1="1024" y1="1517" x2="1436" y2="1517" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="1024" y="1541" font-size="13.5" fill="#475569"><tspan font-weight="700" fill="#0F172A">In production:</tspan> <tspan font-weight="600">Discourse · GitLab · Supabase · AWS</tspan></text>
+<text x="1024" y="1560" font-size="13.5" font-weight="600" fill="#475569">Aurora</text>
+</g>
+<g>
+<rect x="42" y="1604" width="456" height="432" rx="14" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
+<rect x="42" y="1604" width="456" height="7" rx="3.5" fill="#005571"/>
+<text x="476" y="1656" text-anchor="end" font-size="30" font-weight="800" fill="#005571" fill-opacity="0.28">10</text>
+<rect x="64" y="1628" width="64" height="64" rx="12" fill="#F8FAFC" stroke="#EEF2F7"/>
+<svg x="72.0" y="1636.0" width="48" height="48" viewBox="0 0 256 288" preserveAspectRatio="xMidYMid meet">
+    <title>Elasticsearch</title>
+    <g>
+        <path d="M0,143.820336 C0,156.260873 1.74383247,168.260957 4.71014544,179.775644 L179.776543,179.775644 C199.632863,179.775644 215.731852,163.676655 215.731852,143.820336 C215.731852,123.955028 199.632863,107.865027 179.776543,107.865027 L4.71014544,107.865027 C1.74383247,119.370726 0,131.379799 0,143.820336" fill="#343741"></path>
+        <path d="M242.013385,68.8634049 C247.038139,64.2341589 251.712329,59.2633375 256,53.932963 C229.63577,21.0787997 189.213014,-7.10522777e-15 143.819437,-7.10522777e-15 C87.0010604,-7.10522777e-15 38.1018406,33.0519175 14.7758341,80.8994445 L211.334518,80.8994445 C222.714373,80.8994445 233.653776,76.5758187 242.013385,68.8634049" fill="#FEC514"></path>
+        <path d="M211.333619,206.742126 L14.7749352,206.742126 C38.1099305,254.580664 87.0001615,287.641571 143.818538,287.641571 C189.212115,287.641571 229.634871,266.553782 255.999101,233.708608 C251.711431,228.369244 247.03724,223.398423 242.012486,218.769177 C233.652877,211.047774 222.713474,206.742126 211.333619,206.742126" fill="#00BFB3"></path>
+    </g>
+</svg>
+<text x="144" y="1660" font-size="25" font-weight="750" fill="#0F172A">Elasticsearch</text>
+<text x="144" y="1683" font-size="13.5" font-weight="600" fill="#64748B" letter-spacing="0.2">Lucene · Hybrid search</text>
+<line x1="64" y1="1708" x2="476" y2="1708" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="64" y="1734" font-size="15" fill="#334155">The most widely deployed search engine, now a</text>
+<text x="64" y="1755" font-size="15" fill="#334155">full vector database: Lucene dense_vector fields</text>
+<text x="64" y="1776" font-size="15" fill="#334155">with HNSW kNN combine BM25, vectors, and the</text>
+<text x="64" y="1797" font-size="15" fill="#334155">ELSER sparse model in one query. BBQ / int8</text>
+<text x="64" y="1818" font-size="15" fill="#334155">quantization keeps billion-vector workloads</text>
+<text x="64" y="1839" font-size="15" fill="#334155">affordable, with mature distributed ops.</text>
+<text x="64" y="1870" font-size="15" fill="#334155"><tspan font-weight="700" fill="#005571">Best for:</tspan> Enterprise hybrid lexical + semantic</text>
+<text x="64" y="1891" font-size="15" fill="#334155">search over large corpora, and existing Elastic</text>
+<text x="64" y="1912" font-size="15" fill="#334155">deployments.</text>
+<line x1="64" y1="1992" x2="476" y2="1992" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="64" y="2016" font-size="13.5" fill="#475569"><tspan font-weight="700" fill="#0F172A">In production:</tspan> <tspan font-weight="600">Stack Overflow · Cisco · Go1</tspan></text>
+</g>
+<g>
+<rect x="522" y="1604" width="456" height="432" rx="14" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
+<rect x="522" y="1604" width="456" height="7" rx="3.5" fill="#005EB8"/>
+<text x="956" y="1656" text-anchor="end" font-size="30" font-weight="800" fill="#005EB8" fill-opacity="0.28">11</text>
+<rect x="544" y="1628" width="64" height="64" rx="12" fill="#F8FAFC" stroke="#EEF2F7"/>
+<svg x="552.0" y="1636.0" width="48" height="48" viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" fill="#005EB8"><title>OpenSearch</title><path d="M23.1515 8.8125a.8484.8484 0 0 0-.8484.8485c0 6.982-5.6601 12.6421-12.6421 12.6421a.8485.8485 0 0 0 0 1.6969C17.5802 24 24 17.5802 24 9.661a.8485.8485 0 0 0-.8485-.8485Zm-5.121 5.4375c.816-1.3311 1.6051-3.1058 1.4498-5.5905-.3216-5.1468-4.9832-9.0512-9.3851-8.6281C8.372.1971 6.6025 1.6017 6.7598 4.1177c.0683 1.0934.6034 1.7386 1.473 2.2348.8279.4722 1.8914.7713 3.097 1.1104 1.4563.4096 3.1455.8697 4.4438 1.8265 1.5561 1.1467 2.6198 2.4759 2.2569 4.9606Zm-16.561-9C.6535 6.581-.1355 8.3558.0197 10.8405c.3216 5.1468 4.9832 9.0512 9.385 8.6281 1.7233-.1657 3.4927-1.5703 3.3355-4.0863-.0683-1.0934-.6034-1.7386-1.4731-2.2348-.8278-.4722-1.8913-.7713-3.0969-1.1104-1.4563-.4096-3.1455-.8697-4.4438-1.8265-1.5561-1.1467-2.6198-2.476-2.257-4.9606Z"/></svg>
+<text x="624" y="1660" font-size="25" font-weight="750" fill="#0F172A">OpenSearch</text>
+<text x="624" y="1683" font-size="13.5" font-weight="600" fill="#64748B" letter-spacing="0.2">Open source · Linux Foundation</text>
+<line x1="544" y1="1708" x2="956" y2="1708" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="544" y="1734" font-size="15" fill="#334155">Apache-2.0 search and analytics suite</text>
+<text x="544" y="1755" font-size="15" fill="#334155">(Elasticsearch fork) whose k-NN engine — HNSW /</text>
+<text x="544" y="1776" font-size="15" fill="#334155">IVF via Faiss and Lucene, disk-based binary</text>
+<text x="544" y="1797" font-size="15" fill="#334155">quantization, GPU-accelerated index builds — has</text>
+<text x="544" y="1818" font-size="15" fill="#334155">become one of the most widely deployed vector</text>
+<text x="544" y="1839" font-size="15" fill="#334155">platforms, especially through Amazon OpenSearch</text>
+<text x="544" y="1860" font-size="15" fill="#334155">Service.</text>
+<text x="544" y="1891" font-size="15" fill="#334155"><tspan font-weight="700" fill="#005EB8">Best for:</tspan> Enterprises on OpenSearch / ELK adding</text>
+<text x="544" y="1912" font-size="15" fill="#334155">hybrid search; billion-vector workloads with</text>
+<text x="544" y="1933" font-size="15" fill="#334155">mature security and ops tooling.</text>
+<line x1="544" y1="1992" x2="956" y2="1992" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="544" y="2016" font-size="13.5" fill="#475569"><tspan font-weight="700" fill="#0F172A">In production:</tspan> <tspan font-weight="600">Uber (1.5B+ vectors) · AWS customers</tspan></text>
+</g>
+<g>
+<rect x="1002" y="1604" width="456" height="432" rx="14" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
+<rect x="1002" y="1604" width="456" height="7" rx="3.5" fill="#00ED64"/>
+<text x="1436" y="1656" text-anchor="end" font-size="30" font-weight="800" fill="#00ED64" fill-opacity="0.28">12</text>
+<rect x="1024" y="1628" width="64" height="64" rx="12" fill="#F8FAFC" stroke="#EEF2F7"/>
+<svg x="1032.0" y="1636.0" width="48" height="48" viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" fill="#00ED64"><title>MongoDB</title><path d="M17.193 9.555c-1.264-5.58-4.252-7.414-4.573-8.115-.28-.394-.53-.954-.735-1.44-.036.495-.055.685-.523 1.184-.723.566-4.438 3.682-4.74 10.02-.282 5.912 4.27 9.435 4.888 9.884l.07.05A73.49 73.49 0 0111.91 24h.481c.114-1.032.284-2.056.51-3.07.417-.296.604-.463.85-.693a11.342 11.342 0 003.639-8.464c.01-.814-.103-1.662-.197-2.218zm-5.336 8.195s0-8.291.275-8.29c.213 0 .49 10.695.49 10.695-.381-.045-.765-1.76-.765-2.405z"/></svg>
+<text x="1104" y="1660" font-size="25" font-weight="750" fill="#0F172A">MongoDB Atlas</text>
+<text x="1104" y="1683" font-size="13.5" font-weight="600" fill="#64748B" letter-spacing="0.2">Document DB + vector search</text>
+<line x1="1024" y1="1708" x2="1436" y2="1708" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="1024" y="1734" font-size="15" fill="#334155">Fully managed vector search inside the Atlas</text>
+<text x="1024" y="1755" font-size="15" fill="#334155">document database — embeddings stored beside</text>
+<text x="1024" y="1776" font-size="15" fill="#334155">operational JSON with no separate store to sync.</text>
+<text x="1024" y="1797" font-size="15" fill="#334155">HNSW ANN with metadata pre-filtering, hybrid</text>
+<text x="1024" y="1818" font-size="15" fill="#334155">search via $rankFusion, and dedicated Search</text>
+<text x="1024" y="1839" font-size="15" fill="#334155">Nodes for isolation.</text>
+<text x="1024" y="1870" font-size="15" fill="#334155"><tspan font-weight="700" fill="#00684A">Best for:</tspan> MongoDB shops adding RAG, semantic</text>
+<text x="1024" y="1891" font-size="15" fill="#334155">search, or recommendations tightly coupled to</text>
+<text x="1024" y="1912" font-size="15" fill="#334155">live documents.</text>
+<line x1="1024" y1="1992" x2="1436" y2="1992" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="1024" y="2016" font-size="13.5" fill="#475569"><tspan font-weight="700" fill="#0F172A">In production:</tspan> <tspan font-weight="600">Delivery Hero · Novo Nordisk · Okta</tspan></text>
+</g>
+<g>
+<rect x="42" y="2060" width="456" height="432" rx="14" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
+<rect x="42" y="2060" width="456" height="7" rx="3.5" fill="#FF4438"/>
+<text x="476" y="2112" text-anchor="end" font-size="30" font-weight="800" fill="#FF4438" fill-opacity="0.28">13</text>
+<rect x="64" y="2084" width="64" height="64" rx="12" fill="#F8FAFC" stroke="#EEF2F7"/>
+<svg x="72.0" y="2092.0" width="48" height="48" viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" fill="#FF4438"><title>Redis</title><path d="M22.71 13.145c-1.66 2.092-3.452 4.483-7.038 4.483-3.203 0-4.397-2.825-4.48-5.12.701 1.484 2.073 2.685 4.214 2.63 4.117-.133 6.94-3.852 6.94-7.239 0-4.05-3.022-6.972-8.268-6.972-3.752 0-8.4 1.428-11.455 3.685C2.59 6.937 3.885 9.958 4.35 9.626c2.648-1.904 4.748-3.13 6.784-3.744C8.12 9.244.886 17.05 0 18.425c.1 1.261 1.66 4.648 2.424 4.648.232 0 .431-.133.664-.365a100.49 100.49 0 0 0 5.54-6.765c.222 3.104 1.748 6.898 6.014 6.898 3.819 0 7.604-2.756 9.33-8.965.2-.764-.73-1.361-1.261-.73zm-4.349-5.013c0 1.959-1.926 2.922-3.685 2.922-.941 0-1.664-.247-2.235-.568 1.051-1.592 2.092-3.225 3.21-4.973 1.972.334 2.71 1.43 2.71 2.619z"/></svg>
+<text x="144" y="2116" font-size="25" font-weight="750" fill="#0F172A">Redis Vector Search</text>
+<text x="144" y="2139" font-size="13.5" font-weight="600" fill="#64748B" letter-spacing="0.2">In-memory · Real-time · Redis Search</text>
+<line x1="64" y1="2164" x2="476" y2="2164" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="64" y="2190" font-size="15" fill="#334155">In-memory vector search through the Redis Query</text>
+<text x="64" y="2211" font-size="15" fill="#334155">Engine: HNSW and FLAT indexes over HASH or JSON</text>
+<text x="64" y="2232" font-size="15" fill="#334155">structures, delivering sub-millisecond to</text>
+<text x="64" y="2253" font-size="15" fill="#334155">single-digit-ms queries with hybrid text /</text>
+<text x="64" y="2274" font-size="15" fill="#334155">numeric / tag / geo filtering. Doubles as a</text>
+<text x="64" y="2295" font-size="15" fill="#334155">semantic cache and agent memory layer.</text>
+<text x="64" y="2326" font-size="15" fill="#334155"><tspan font-weight="700" fill="#FF4438">Best for:</tspan> Real-time AI — chatbots, agents, fraud</text>
+<text x="64" y="2347" font-size="15" fill="#334155">checks, live recommendations — where latency is</text>
+<text x="64" y="2368" font-size="15" fill="#334155">the bottleneck.</text>
+<line x1="64" y1="2448" x2="476" y2="2448" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="64" y="2472" font-size="13.5" fill="#475569"><tspan font-weight="700" fill="#0F172A">In production:</tspan> <tspan font-weight="600">Relevance AI · Docugami</tspan></text>
+</g>
+<g>
+<rect x="522" y="2060" width="456" height="432" rx="14" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
+<rect x="522" y="2060" width="456" height="7" rx="3.5" fill="#61D790"/>
+<text x="956" y="2112" text-anchor="end" font-size="30" font-weight="800" fill="#61D790" fill-opacity="0.28">14</text>
+<rect x="544" y="2084" width="64" height="64" rx="12" fill="#F8FAFC" stroke="#EEF2F7"/>
+<svg x="552.0" y="2092.0" width="48" height="48" viewBox="0 0 70 46" preserveAspectRatio="xMidYMid meet" fill="none">
+<path d="M13.5876 32.2135H56.2925L42.7049 45.2039H0V26.6467L13.5876 13.6562V32.2135Z" fill="black"/>
+<path d="M69.8804 0.666016V19.2233L56.2928 32.213V13.6558H13.5879L27.1762 0.666016H69.8804Z" fill="black"/>
+</svg>
+<text x="624" y="2116" font-size="25" font-weight="750" fill="#0F172A">Vespa</text>
+<text x="624" y="2139" font-size="13.5" font-weight="600" fill="#64748B" letter-spacing="0.2">AI search &amp; serving platform</text>
+<line x1="544" y1="2164" x2="956" y2="2164" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="544" y="2190" font-size="15" fill="#334155">Open-source AI search and serving platform (born</text>
+<text x="544" y="2211" font-size="15" fill="#334155">at Yahoo) that runs vector, lexical BM25, and</text>
+<text x="544" y="2232" font-size="15" fill="#334155">structured search plus ML-model ranking with</text>
+<text x="544" y="2253" font-size="15" fill="#334155">ONNX inference in a single engine per query —</text>
+<text x="544" y="2274" font-size="15" fill="#334155">real-time mutable indexes at billions of</text>
+<text x="544" y="2295" font-size="15" fill="#334155">documents and huge QPS.</text>
+<text x="544" y="2326" font-size="15" fill="#334155"><tspan font-weight="700" fill="#1F9D5B">Best for:</tspan> Web-scale RAG, e-commerce search, and</text>
+<text x="544" y="2347" font-size="15" fill="#334155">personalization feeds needing multi-phase</text>
+<text x="544" y="2368" font-size="15" fill="#334155">ranking.</text>
+<line x1="544" y1="2448" x2="956" y2="2448" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="544" y="2472" font-size="13.5" fill="#475569"><tspan font-weight="700" fill="#0F172A">In production:</tspan> <tspan font-weight="600">Perplexity · Spotify · Yahoo · Vinted</tspan></text>
+</g>
+<g>
+<rect x="1002" y="2060" width="456" height="432" rx="14" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
+<rect x="1002" y="2060" width="456" height="7" rx="3.5" fill="#FF00A0"/>
+<text x="1436" y="2112" text-anchor="end" font-size="30" font-weight="800" fill="#FF00A0" fill-opacity="0.28">15</text>
+<rect x="1024" y="2084" width="64" height="64" rx="12" fill="#F8FAFC" stroke="#EEF2F7"/>
+<svg x="1032.0" y="2092.0" width="48" height="48" viewBox="0 0 256 299" preserveAspectRatio="xMidYMid meet">
+    <title>SurrealDB</title>
+    <defs>
+        <linearGradient x1="31.0469515%" y1="11.7049903%" x2="68.9568365%" y2="88.3026737%" id="surrealdbsurrealDBLinearGradient-1">
+            <stop stop-color="#FF00A0" offset="0%"></stop>
+            <stop stop-color="#9600FF" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g>
+        <path d="M128,78.567619 L199.100952,117.942857 L199.100952,102.15619 L128,62.872381 C117.424762,68.7238095 66.3161905,96.9752381 56.8990476,102.15619 C65.6457143,107.001905 157.500952,157.744762 213.333333,188.586667 L213.333333,204.312381 C205.744762,208.518095 128,251.459048 128,251.459048 C106.727619,239.725714 63.9085714,216.07619 42.6666667,204.312381 L42.6666667,157.165714 L128,204.312381 L142.232381,196.449524 L28.4342857,133.607619 L28.4342857,212.205714 L128,267.184762 C137.813333,261.76 220.281905,216.198095 227.535238,212.175238 L227.535238,180.754286 L85.3333333,102.15619 L128,78.567619 Z M28.4342857,86.4304762 L28.4342857,117.881905 L170.63619,196.48 L127.969524,220.068571 L56.8685714,180.693333 L56.8685714,196.48 L127.969524,235.76381 C138.544762,229.912381 189.653333,201.660952 199.070476,196.48 C190.32381,191.634286 98.4990476,140.891429 42.6666667,110.019048 L42.6666667,94.2933333 C50.2552381,90.087619 128,47.1466667 128,47.1466667 C149.241905,58.9104762 192.060952,82.56 213.333333,94.2933333 L213.333333,141.44 L128,94.2933333 L113.767619,102.15619 L227.535238,165.028571 L227.535238,86.4304762 L128,31.4209524 C118.15619,36.8761905 35.7180952,82.4380952 28.4342857,86.4304762 Z M128,0 L0,70.7352381 L0,227.900952 L128,298.63619 L256,227.931429 L256,70.7352381 L128,0 Z M241.737143,220.038095 L128,282.910476 L14.232381,220.038095 L14.232381,78.5980952 L128,15.7257143 L241.767619,78.5980952 L241.737143,220.038095 Z" fill="url(#surrealdbsurrealDBLinearGradient-1)"></path>
+    </g>
+</svg>
+<text x="1104" y="2116" font-size="25" font-weight="750" fill="#0F172A">SurrealDB</text>
+<text x="1104" y="2139" font-size="13.5" font-weight="600" fill="#64748B" letter-spacing="0.2">Multi-model · Rust · AI-native</text>
+<line x1="1024" y1="2164" x2="1436" y2="2164" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="1024" y="2190" font-size="15" fill="#334155">Multi-model Rust database — document, graph,</text>
+<text x="1024" y="2211" font-size="15" fill="#334155">relational, time-series, and vector search in</text>
+<text x="1024" y="2232" font-size="15" fill="#334155">one engine — repositioned in 2025–26 as an</text>
+<text x="1024" y="2253" font-size="15" fill="#334155">“AI-native” memory layer for agents. SurrealDB</text>
+<text x="1024" y="2274" font-size="15" fill="#334155">3.0 (Feb 2026) shipped improved HNSW vector</text>
+<text x="1024" y="2295" font-size="15" fill="#334155">indexing for agentic workloads; $23M Series A</text>
+<text x="1024" y="2316" font-size="15" fill="#334155">extension in Feb 2026 (~$44M total), ~31K GitHub</text>
+<text x="1024" y="2337" font-size="15" fill="#334155">stars. Vector search is a secondary capability.</text>
+<text x="1024" y="2368" font-size="15" fill="#334155"><tspan font-weight="700" fill="#FF00A0">Best for:</tspan> Agent memory and apps wanting graph +</text>
+<text x="1024" y="2389" font-size="15" fill="#334155">document + vector in one database instead of</text>
+<text x="1024" y="2410" font-size="15" fill="#334155">stitching systems.</text>
+<line x1="1024" y1="2429" x2="1436" y2="2429" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="1024" y="2453" font-size="13.5" fill="#475569"><tspan font-weight="700" fill="#0F172A">In production:</tspan> <tspan font-weight="600">No public vector-search case studies</tspan></text>
+<text x="1024" y="2472" font-size="13.5" font-weight="600" fill="#475569">yet</text>
+</g>
+<text x="750.0" y="2532" text-anchor="middle" font-size="14" fill="#64748B">ANN libraries (FAISS, Turbovec, hnswlib, ScaNN, DiskANN…) are covered in the companion infographic. Also notable: pgvectorscale &amp; ParadeDB (Postgres add-ons) · ClickHouse &amp; Couchbase (vector as a feature).</text>
+<text x="750.0" y="2556" text-anchor="middle" font-size="12.5" fill="#94A3B8">The right choice depends on your use case — in production it's common to combine more than one. Logos are official marks of their respective owners (pgvector shown with the PostgreSQL mark — the project has no logo of its own).</text>
+<text x="750.0" y="2576" text-anchor="middle" font-size="12.5" fill="#94A3B8">Production-usage and momentum claims verified against vendor case studies, engineering blogs &amp; funding announcements, July 2026.</text>
+</svg>

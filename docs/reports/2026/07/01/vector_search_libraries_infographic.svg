@@ -1,0 +1,260 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1500" height="1710" viewBox="0 0 1500 1710" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">
+<rect width="1500" height="1710" fill="#F3F5F9"/>
+<text x="750.0" y="92" text-anchor="middle" font-size="46" font-weight="800" fill="#0F172A">9 Vector Search Libraries Worth Knowing</text>
+<text x="750.0" y="132" text-anchor="middle" font-size="19" fill="#475569">ANN engines you embed, not databases you run — the components inside most vector databases</text>
+<text x="750.0" y="162" text-anchor="middle" font-size="14.5" fill="#64748B">Companion to “15 Vector Databases That Matter in Mid-2026” — adoption and traction verified as of July 2026</text>
+<rect x="690.0" y="182" width="120" height="5" rx="2.5" fill="#6366F1"/>
+<g>
+<rect x="42" y="236" width="456" height="432" rx="14" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
+<rect x="42" y="236" width="456" height="7" rx="3.5" fill="#0467DF"/>
+<text x="476" y="288" text-anchor="end" font-size="30" font-weight="800" fill="#0467DF" fill-opacity="0.28">01</text>
+<rect x="64" y="260" width="64" height="64" rx="12" fill="#F8FAFC" stroke="#EEF2F7"/>
+<svg x="72.0" y="268.0" width="48" height="48" viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" fill="#0467DF"><title>Meta</title><path d="M6.915 4.03c-1.968 0-3.683 1.28-4.871 3.113C.704 9.208 0 11.883 0 14.449c0 .706.07 1.369.21 1.973a6.624 6.624 0 0 0 .265.86 5.297 5.297 0 0 0 .371.761c.696 1.159 1.818 1.927 3.593 1.927 1.497 0 2.633-.671 3.965-2.444.76-1.012 1.144-1.626 2.663-4.32l.756-1.339.186-.325c.061.1.121.196.183.3l2.152 3.595c.724 1.21 1.665 2.556 2.47 3.314 1.046.987 1.992 1.22 3.06 1.22 1.075 0 1.876-.355 2.455-.843a3.743 3.743 0 0 0 .81-.973c.542-.939.861-2.127.861-3.745 0-2.72-.681-5.357-2.084-7.45-1.282-1.912-2.957-2.93-4.716-2.93-1.047 0-2.088.467-3.053 1.308-.652.57-1.257 1.29-1.82 2.05-.69-.875-1.335-1.547-1.958-2.056-1.182-.966-2.315-1.303-3.454-1.303zm10.16 2.053c1.147 0 2.188.758 2.992 1.999 1.132 1.748 1.647 4.195 1.647 6.4 0 1.548-.368 2.9-1.839 2.9-.58 0-1.027-.23-1.664-1.004-.496-.601-1.343-1.878-2.832-4.358l-.617-1.028a44.908 44.908 0 0 0-1.255-1.98c.07-.109.141-.224.211-.327 1.12-1.667 2.118-2.602 3.358-2.602zm-10.201.553c1.265 0 2.058.791 2.675 1.446.307.327.737.871 1.234 1.579l-1.02 1.566c-.757 1.163-1.882 3.017-2.837 4.338-1.191 1.649-1.81 1.817-2.486 1.817-.524 0-1.038-.237-1.383-.794-.263-.426-.464-1.13-.464-2.046 0-2.221.63-4.535 1.66-6.088.454-.687.964-1.226 1.533-1.533a2.264 2.264 0 0 1 1.088-.285z"/></svg>
+<text x="144" y="292" font-size="25" font-weight="750" fill="#0F172A">FAISS</text>
+<text x="144" y="315" font-size="13.5" font-weight="600" fill="#64748B" letter-spacing="0.2">C++ / Python · Meta AI · ~41K★</text>
+<line x1="64" y1="340" x2="476" y2="340" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="64" y="366" font-size="15" fill="#334155">The de facto standard library for dense-vector</text>
+<text x="64" y="387" font-size="15" fill="#334155">similarity search and clustering (Meta AI,</text>
+<text x="64" y="408" font-size="15" fill="#334155">2017). A composable toolbox of index types —</text>
+<text x="64" y="429" font-size="15" fill="#334155">flat brute-force, IVF, product quantization,</text>
+<text x="64" y="450" font-size="15" fill="#334155">HNSW, and GPU variants — for billion-scale</text>
+<text x="64" y="471" font-size="15" fill="#334155">search on a single machine, and the reference</text>
+<text x="64" y="492" font-size="15" fill="#334155">implementation researchers benchmark against. No</text>
+<text x="64" y="513" font-size="15" fill="#334155">persistence or serving layer: you build that</text>
+<text x="64" y="534" font-size="15" fill="#334155">around it.</text>
+<text x="64" y="565" font-size="15" fill="#334155"><tspan font-weight="700" fill="#0467DF">Best for:</tspan> Large-scale offline / batch retrieval,</text>
+<text x="64" y="586" font-size="15" fill="#334155">RAG backends, and embedding inside larger</text>
+<text x="64" y="607" font-size="15" fill="#334155">systems.</text>
+<line x1="64" y1="624" x2="476" y2="624" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="64" y="648" font-size="13.5" fill="#475569"><tspan font-weight="700" fill="#0F172A">Used by / inside:</tspan> <tspan font-weight="600">Meta · Milvus · OpenSearch</tspan></text>
+</g>
+<g>
+<rect x="522" y="236" width="456" height="432" rx="14" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
+<rect x="522" y="236" width="456" height="7" rx="3.5" fill="#0EA5E9"/>
+<text x="956" y="288" text-anchor="end" font-size="30" font-weight="800" fill="#0EA5E9" fill-opacity="0.28">02</text>
+<rect x="544" y="260" width="64" height="64" rx="12" fill="#F8FAFC" stroke="#EEF2F7"/>
+<svg x="552.0" y="268.0" width="48" height="48" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+<!-- Simplified recreation: hnswlib has no official logo. Layered small-world graph motif. -->
+<g stroke="#94A3B8" stroke-width="2.5" fill="none">
+<line x1="20" y1="20" x2="80" y2="20"/><line x1="20" y1="20" x2="50" y2="50"/><line x1="80" y1="20" x2="50" y2="50"/>
+<line x1="15" y1="50" x2="50" y2="50"/><line x1="50" y1="50" x2="85" y2="50"/><line x1="15" y1="50" x2="30" y2="82"/>
+<line x1="50" y1="50" x2="30" y2="82"/><line x1="50" y1="50" x2="70" y2="82"/><line x1="85" y1="50" x2="70" y2="82"/><line x1="30" y1="82" x2="70" y2="82"/>
+</g>
+<g fill="#334155">
+<circle cx="20" cy="20" r="8"/><circle cx="80" cy="20" r="8"/>
+<circle cx="15" cy="50" r="7"/><circle cx="50" cy="50" r="10" fill="#0EA5E9"/><circle cx="85" cy="50" r="7"/>
+<circle cx="30" cy="82" r="6"/><circle cx="70" cy="82" r="6"/>
+</g>
+</svg>
+<text x="624" y="292" font-size="25" font-weight="750" fill="#0F172A">hnswlib</text>
+<text x="624" y="315" font-size="13.5" font-weight="600" fill="#64748B" letter-spacing="0.2">C++ header-only · ~5.3K★</text>
+<line x1="544" y1="340" x2="956" y2="340" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="544" y="366" font-size="15" fill="#334155">Reference implementation of HNSW (Malkov &amp;</text>
+<text x="544" y="387" font-size="15" fill="#334155">Yashunin, 2016) — the layered</text>
+<text x="544" y="408" font-size="15" fill="#334155">navigable-small-world graph algorithm that</text>
+<text x="544" y="429" font-size="15" fill="#334155">became the default index in nearly every modern</text>
+<text x="544" y="450" font-size="15" fill="#334155">vector DB (Weaviate, Qdrant, Milvus, pgvector,</text>
+<text x="544" y="471" font-size="15" fill="#334155">OpenSearch), prized for absorbing inserts</text>
+<text x="544" y="492" font-size="15" fill="#334155">without rebuilds. The library is tiny,</text>
+<text x="544" y="513" font-size="15" fill="#334155">dependency-free, and near the top of</text>
+<text x="544" y="534" font-size="15" fill="#334155">ann-benchmarks. Memory-hungry and single-node.</text>
+<text x="544" y="565" font-size="15" fill="#334155"><tspan font-weight="700" fill="#0EA5E9">Best for:</tspan> Fast in-memory ANN up to ~100M vectors</text>
+<text x="544" y="586" font-size="15" fill="#334155">— the embeddable default.</text>
+<line x1="544" y1="605" x2="956" y2="605" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="544" y="629" font-size="13.5" fill="#475569"><tspan font-weight="700" fill="#0F172A">Used by / inside:</tspan> <tspan font-weight="600">Chroma (default index) · Spotify</tspan></text>
+<text x="544" y="648" font-size="13.5" font-weight="600" fill="#475569">Voyager</text>
+</g>
+<g>
+<rect x="1002" y="236" width="456" height="432" rx="14" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
+<rect x="1002" y="236" width="456" height="7" rx="3.5" fill="#CE422B"/>
+<text x="1436" y="288" text-anchor="end" font-size="30" font-weight="800" fill="#CE422B" fill-opacity="0.28">03</text>
+<rect x="1024" y="260" width="64" height="64" rx="12" fill="#F8FAFC" stroke="#EEF2F7"/>
+<svg x="1032.0" y="268.0" width="48" height="48" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+<!-- Simplified recreation: Turbovec has no official logo. Quantization grid + speed bolt, Rust orange. -->
+<g fill="#E2E8F0">
+<rect x="8" y="8" width="16" height="16" rx="3"/><rect x="30" y="8" width="16" height="16" rx="3"/><rect x="52" y="8" width="16" height="16" rx="3"/><rect x="74" y="8" width="16" height="16" rx="3"/>
+<rect x="8" y="30" width="16" height="16" rx="3"/><rect x="74" y="30" width="16" height="16" rx="3"/>
+<rect x="8" y="52" width="16" height="16" rx="3"/><rect x="74" y="52" width="16" height="16" rx="3"/>
+<rect x="8" y="74" width="16" height="16" rx="3"/><rect x="30" y="74" width="16" height="16" rx="3"/><rect x="52" y="74" width="16" height="16" rx="3"/><rect x="74" y="74" width="16" height="16" rx="3"/>
+</g>
+<path d="M58 22 L34 54 L47 54 L41 78 L66 44 L52 44 Z" fill="#CE422B"/>
+</svg>
+<text x="1104" y="292" font-size="25" font-weight="750" fill="#0F172A">Turbovec</text>
+<text x="1104" y="315" font-size="13.5" font-weight="600" fill="#64748B" letter-spacing="0.2">Rust + Python · ~12.6K★ · New in 2026</text>
+<line x1="1024" y1="340" x2="1436" y2="340" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="1024" y="366" font-size="15" fill="#334155">Young Rust vector index built on Google</text>
+<text x="1024" y="387" font-size="15" fill="#334155">Research's TurboQuant quantization (ICLR 2026) —</text>
+<text x="1024" y="408" font-size="15" fill="#334155">a training-free quantizer with near-optimal</text>
+<text x="1024" y="429" font-size="15" fill="#334155">distortion. Vectors are searchable the moment</text>
+<text x="1024" y="450" font-size="15" fill="#334155">they are ingested: no train step, no tuning, no</text>
+<text x="1024" y="471" font-size="15" fill="#334155">rebuilds, with SIMD kernels beating FAISS</text>
+<text x="1024" y="492" font-size="15" fill="#334155">FastScan by 10–19% at ~8x memory compression.</text>
+<text x="1024" y="513" font-size="15" fill="#334155">Very new: single maintainer, no named enterprise</text>
+<text x="1024" y="534" font-size="15" fill="#334155">users yet.</text>
+<text x="1024" y="565" font-size="15" fill="#334155"><tspan font-weight="700" fill="#CE422B">Best for:</tspan> Memory-constrained local / edge RAG,</text>
+<text x="1024" y="586" font-size="15" fill="#334155">air-gapped stacks, and streaming corpora.</text>
+<line x1="1024" y1="605" x2="1436" y2="605" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="1024" y="629" font-size="13.5" fill="#475569"><tspan font-weight="700" fill="#0F172A">Used by / inside:</tspan> <tspan font-weight="600">LangChain &amp; Agno integrations ·</tspan></text>
+<text x="1024" y="648" font-size="13.5" font-weight="600" fill="#475569">community pg_turbovec</text>
+</g>
+<g>
+<rect x="42" y="692" width="456" height="432" rx="14" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
+<rect x="42" y="692" width="456" height="7" rx="3.5" fill="#4285F4"/>
+<text x="476" y="744" text-anchor="end" font-size="30" font-weight="800" fill="#4285F4" fill-opacity="0.28">04</text>
+<rect x="64" y="716" width="64" height="64" rx="12" fill="#F8FAFC" stroke="#EEF2F7"/>
+<svg x="72.0" y="724.0" width="48" height="48" viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" fill="#4285F4"><title>Google</title><path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"/></svg>
+<text x="144" y="748" font-size="25" font-weight="750" fill="#0F172A">ScaNN</text>
+<text x="144" y="771" font-size="13.5" font-weight="600" fill="#64748B" letter-spacing="0.2">C++ / Python · Google Research</text>
+<line x1="64" y1="796" x2="476" y2="796" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="64" y="822" font-size="15" fill="#334155">Google's Scalable Nearest Neighbors library,</text>
+<text x="64" y="843" font-size="15" fill="#334155">built on anisotropic vector quantization (and</text>
+<text x="64" y="864" font-size="15" fill="#334155">SOAR), optimized for maximum-inner-product</text>
+<text x="64" y="885" font-size="15" fill="#334155">search. A long-time top performer on</text>
+<text x="64" y="906" font-size="15" fill="#334155">ann-benchmarks for CPU recall/QPS — the same</text>
+<text x="64" y="927" font-size="15" fill="#334155">technology behind retrieval in Google Search and</text>
+<text x="64" y="948" font-size="15" fill="#334155">YouTube; its AlloyDB index scales past 1B</text>
+<text x="64" y="969" font-size="15" fill="#334155">vectors. Lives in the google-research monorepo;</text>
+<text x="64" y="990" font-size="15" fill="#334155">x86-centric.</text>
+<text x="64" y="1021" font-size="15" fill="#334155"><tspan font-weight="700" fill="#4285F4">Best for:</tspan> High-QPS CPU serving of embeddings;</text>
+<text x="64" y="1042" font-size="15" fill="#334155">recommendation / inner-product workloads.</text>
+<line x1="64" y1="1061" x2="476" y2="1061" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="64" y="1085" font-size="13.5" fill="#475569"><tspan font-weight="700" fill="#0F172A">Used by / inside:</tspan> <tspan font-weight="600">Google Search · YouTube · Vertex</tspan></text>
+<text x="64" y="1104" font-size="13.5" font-weight="600" fill="#475569">AI · AlloyDB</text>
+</g>
+<g>
+<rect x="522" y="692" width="456" height="432" rx="14" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
+<rect x="522" y="692" width="456" height="7" rx="3.5" fill="#00A4EF"/>
+<text x="956" y="744" text-anchor="end" font-size="30" font-weight="800" fill="#00A4EF" fill-opacity="0.28">05</text>
+<rect x="544" y="716" width="64" height="64" rx="12" fill="#F8FAFC" stroke="#EEF2F7"/>
+<svg x="552.0" y="724.0" width="48" height="48" viewBox="0 0 256 256" preserveAspectRatio="xMidYMid meet">
+    <title>Microsoft</title>
+    <g>
+        <polygon fill="#F1511B" points="121.666095 121.666095 0 121.666095 0 0 121.666095 0"></polygon>
+        <polygon fill="#80CC28" points="256 121.666095 134.335356 121.666095 134.335356 0 256 0"></polygon>
+        <polygon fill="#00ADEF" points="121.663194 256.002188 0 256.002188 0 134.336095 121.663194 134.336095"></polygon>
+        <polygon fill="#FBBC09" points="256 256.002188 134.335356 256.002188 134.335356 134.336095 256 134.336095"></polygon>
+    </g>
+</svg>
+<text x="624" y="748" font-size="25" font-weight="750" fill="#0F172A">DiskANN</text>
+<text x="624" y="771" font-size="13.5" font-weight="600" fill="#64748B" letter-spacing="0.2">C++ · Microsoft Research · ~1.9K★</text>
+<line x1="544" y1="796" x2="956" y2="796" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="544" y="822" font-size="15" fill="#334155">SSD-first ANN built on the Vamana graph (NeurIPS</text>
+<text x="544" y="843" font-size="15" fill="#334155">2019): the graph and full vectors live on NVMe</text>
+<text x="544" y="864" font-size="15" fill="#334155">while compressed PQ vectors sit in RAM —</text>
+<text x="544" y="885" font-size="15" fill="#334155">billion-point search on one commodity node at</text>
+<text x="544" y="906" font-size="15" fill="#334155">high recall. FreshDiskANN added streaming</text>
+<text x="544" y="927" font-size="15" fill="#334155">updates; arguably the most widely deployed</text>
+<text x="544" y="948" font-size="15" fill="#334155">billion-scale ANN stack via Microsoft's own</text>
+<text x="544" y="969" font-size="15" fill="#334155">services. Latency is SSD-bound and it's trickier</text>
+<text x="544" y="990" font-size="15" fill="#334155">to operate than in-memory libraries.</text>
+<text x="544" y="1021" font-size="15" fill="#334155"><tspan font-weight="700" fill="#00A4EF">Best for:</tspan> Datasets far larger than RAM;</text>
+<text x="544" y="1042" font-size="15" fill="#334155">cost-sensitive billion-scale search.</text>
+<line x1="544" y1="1061" x2="956" y2="1061" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="544" y="1085" font-size="13.5" fill="#475569"><tspan font-weight="700" fill="#0F172A">Used by / inside:</tspan> <tspan font-weight="600">Bing · Microsoft 365 · Azure</tspan></text>
+<text x="544" y="1104" font-size="13.5" font-weight="600" fill="#475569">Cosmos DB · pgvectorscale</text>
+</g>
+<g>
+<rect x="1002" y="692" width="456" height="432" rx="14" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
+<rect x="1002" y="692" width="456" height="7" rx="3.5" fill="#1DB954"/>
+<text x="1436" y="744" text-anchor="end" font-size="30" font-weight="800" fill="#1DB954" fill-opacity="0.28">06</text>
+<rect x="1024" y="716" width="64" height="64" rx="12" fill="#F8FAFC" stroke="#EEF2F7"/>
+<svg x="1032.0" y="724.0" width="48" height="48" viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" fill="#1DB954"><title>Spotify</title><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+<text x="1104" y="748" font-size="25" font-weight="750" fill="#0F172A">Annoy</text>
+<text x="1104" y="771" font-size="13.5" font-weight="600" fill="#64748B" letter-spacing="0.2">C++ / Python · Spotify · ~14.3K★</text>
+<line x1="1024" y1="796" x2="1436" y2="796" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="1024" y="822" font-size="15" fill="#334155">“Approximate Nearest Neighbors Oh Yeah” (Erik</text>
+<text x="1024" y="843" font-size="15" fill="#334155">Bernhardsson at Spotify, 2013) — forests of</text>
+<text x="1024" y="864" font-size="15" fill="#334155">random-projection trees with memory-mapped,</text>
+<text x="1024" y="885" font-size="15" fill="#334155">immutable index files that many processes share.</text>
+<text x="1024" y="906" font-size="15" fill="#334155">It powered Spotify's music recommendations for</text>
+<text x="1024" y="927" font-size="15" fill="#334155">years and was the gateway ANN library for a</text>
+<text x="1024" y="948" font-size="15" fill="#334155">generation of ML engineers. Static indexes; now</text>
+<text x="1024" y="969" font-size="15" fill="#334155">outpaced by HNSW-family methods and in</text>
+<text x="1024" y="990" font-size="15" fill="#334155">maintenance mode.</text>
+<text x="1024" y="1021" font-size="15" fill="#334155"><tspan font-weight="700" fill="#1DB954">Best for:</tspan> Simple, read-heavy, memory-mapped</text>
+<text x="1024" y="1042" font-size="15" fill="#334155">workloads — a historically important classic.</text>
+<line x1="1024" y1="1061" x2="1436" y2="1061" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="1024" y="1085" font-size="13.5" fill="#475569"><tspan font-weight="700" fill="#0F172A">Used by / inside:</tspan> <tspan font-weight="600">Spotify (historically; succeeded</tspan></text>
+<text x="1024" y="1104" font-size="13.5" font-weight="600" fill="#475569">by its Voyager)</text>
+</g>
+<g>
+<rect x="42" y="1148" width="456" height="432" rx="14" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
+<rect x="42" y="1148" width="456" height="7" rx="3.5" fill="#191414"/>
+<text x="476" y="1200" text-anchor="end" font-size="30" font-weight="800" fill="#191414" fill-opacity="0.28">07</text>
+<rect x="64" y="1172" width="64" height="64" rx="12" fill="#F8FAFC" stroke="#EEF2F7"/>
+<svg x="72.0" y="1180.0" width="48" height="48" viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" fill="#1DB954"><title>Spotify</title><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+<text x="144" y="1204" font-size="25" font-weight="750" fill="#0F172A">Voyager</text>
+<text x="144" y="1227" font-size="13.5" font-weight="600" fill="#64748B" letter-spacing="0.2">C++ · Python / Java · Spotify · ~1.5K★</text>
+<line x1="64" y1="1252" x2="476" y2="1252" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="64" y="1278" font-size="15" fill="#334155">Spotify's modern successor to Annoy (2023) — an</text>
+<text x="64" y="1299" font-size="15" fill="#334155">HNSW library built on a hardened fork of hnswlib</text>
+<text x="64" y="1320" font-size="15" fill="#334155">and tuned for production ergonomics: thread-safe</text>
+<text x="64" y="1341" font-size="15" fill="#334155">queries, E4M3 8-bit quantized storage, and</text>
+<text x="64" y="1362" font-size="15" fill="#334155">first-class Python and Java bindings that read</text>
+<text x="64" y="1383" font-size="15" fill="#334155">the same index files. Spotify reports ~10x</text>
+<text x="64" y="1404" font-size="15" fill="#334155">speedups over Annoy at equivalent recall and</text>
+<text x="64" y="1425" font-size="15" fill="#334155">runs it across its ML systems. Like FAISS, a</text>
+<text x="64" y="1446" font-size="15" fill="#334155">library only — no server or persistence layer.</text>
+<text x="64" y="1477" font-size="15" fill="#334155"><tspan font-weight="700" fill="#1DB954">Best for:</tspan> Teams outgrowing Annoy; mixed JVM +</text>
+<text x="64" y="1498" font-size="15" fill="#334155">Python shops sharing one index format.</text>
+<line x1="64" y1="1517" x2="476" y2="1517" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="64" y="1541" font-size="13.5" fill="#475569"><tspan font-weight="700" fill="#0F172A">Used by / inside:</tspan> <tspan font-weight="600">Spotify (recommendations · ML</tspan></text>
+<text x="64" y="1560" font-size="13.5" font-weight="600" fill="#475569">platform)</text>
+</g>
+<g>
+<rect x="522" y="1148" width="456" height="432" rx="14" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
+<rect x="522" y="1148" width="456" height="7" rx="3.5" fill="#5B5BD6"/>
+<text x="956" y="1200" text-anchor="end" font-size="30" font-weight="800" fill="#5B5BD6" fill-opacity="0.28">08</text>
+<rect x="544" y="1172" width="64" height="64" rx="12" fill="#F8FAFC" stroke="#EEF2F7"/>
+<svg x="552.0" y="1180.0" width="48" height="48" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+<!-- Simplified recreation: Unum/usearch has no public vector logo. Magnifier + U motif. -->
+<circle cx="44" cy="44" r="30" fill="none" stroke="#5B5BD6" stroke-width="9"/>
+<line x1="66" y1="66" x2="88" y2="88" stroke="#5B5BD6" stroke-width="11" stroke-linecap="round"/>
+<path d="M33 32 v14 a11 11 0 0 0 22 0 v-14" fill="none" stroke="#5B5BD6" stroke-width="7" stroke-linecap="round"/>
+</svg>
+<text x="624" y="1204" font-size="25" font-weight="750" fill="#0F172A">usearch</text>
+<text x="624" y="1227" font-size="13.5" font-weight="600" fill="#64748B" letter-spacing="0.2">C++11 single-header · Unum · ~4.2K★</text>
+<line x1="544" y1="1252" x2="956" y2="1252" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="544" y="1278" font-size="15" fill="#334155">Single-header HNSW engine from Unum Cloud with</text>
+<text x="544" y="1299" font-size="15" fill="#334155">bindings for 10+ languages (Python, JS, Rust,</text>
+<text x="544" y="1320" font-size="15" fill="#334155">Java, Swift, Go, C#...). Differentiates on</text>
+<text x="544" y="1341" font-size="15" fill="#334155">compactness, user-defined metrics, and half /</text>
+<text x="544" y="1362" font-size="15" fill="#334155">int8 / binary quantization with zero heavy</text>
+<text x="544" y="1383" font-size="15" fill="#334155">dependencies — the same HNSW algorithm,</text>
+<text x="544" y="1404" font-size="15" fill="#334155">drastically easier to embed, which is why</text>
+<text x="544" y="1425" font-size="15" fill="#334155">database vendors keep picking it. HNSW-only,</text>
+<text x="544" y="1446" font-size="15" fill="#334155">single-node.</text>
+<text x="544" y="1477" font-size="15" fill="#334155"><tspan font-weight="700" fill="#5B5BD6">Best for:</tspan> Embedding vector search inside another</text>
+<text x="544" y="1498" font-size="15" fill="#334155">product or database engine.</text>
+<line x1="544" y1="1517" x2="956" y2="1517" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="544" y="1541" font-size="13.5" fill="#475569"><tspan font-weight="700" fill="#0F172A">Used by / inside:</tspan> <tspan font-weight="600">ClickHouse · DuckDB VSS · ScyllaDB</tspan></text>
+<text x="544" y="1560" font-size="13.5" font-weight="600" fill="#475569">· TiDB</text>
+</g>
+<g>
+<rect x="1002" y="1148" width="456" height="432" rx="14" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
+<rect x="1002" y="1148" width="456" height="7" rx="3.5" fill="#76B900"/>
+<text x="1436" y="1200" text-anchor="end" font-size="30" font-weight="800" fill="#76B900" fill-opacity="0.28">09</text>
+<rect x="1024" y="1172" width="64" height="64" rx="12" fill="#F8FAFC" stroke="#EEF2F7"/>
+<svg x="1032.0" y="1180.0" width="48" height="48" viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" fill="#76B900"><title>NVIDIA</title><path d="M8.948 8.798v-1.43a6.7 6.7 0 0 1 .424-.018c3.922-.124 6.493 3.374 6.493 3.374s-2.774 3.851-5.75 3.851c-.398 0-.787-.062-1.158-.185v-4.346c1.528.185 1.837.857 2.747 2.385l2.04-1.714s-1.492-1.952-4-1.952a6.016 6.016 0 0 0-.796.035m0-4.735v2.138l.424-.027c5.45-.185 9.01 4.47 9.01 4.47s-4.08 4.964-8.33 4.964c-.37 0-.733-.035-1.095-.097v1.325c.3.035.61.062.91.062 3.957 0 6.82-2.023 9.593-4.408.459.371 2.34 1.263 2.73 1.652-2.633 2.208-8.772 3.984-12.253 3.984-.335 0-.653-.018-.971-.053v1.864H24V4.063zm0 10.326v1.131c-3.657-.654-4.673-4.46-4.673-4.46s1.758-1.944 4.673-2.262v1.237H8.94c-1.528-.186-2.73 1.245-2.73 1.245s.68 2.412 2.739 3.11M2.456 10.9s2.164-3.197 6.5-3.533V6.201C4.153 6.59 0 10.653 0 10.653s2.35 6.802 8.948 7.42v-1.237c-4.84-.6-6.492-5.936-6.492-5.936z"/></svg>
+<text x="1104" y="1204" font-size="25" font-weight="750" fill="#0F172A">NVIDIA cuVS</text>
+<text x="1104" y="1227" font-size="13.5" font-weight="600" fill="#64748B" letter-spacing="0.2">CUDA · NVIDIA · GPU-native</text>
+<line x1="1024" y1="1252" x2="1436" y2="1252" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="1024" y="1278" font-size="15" fill="#334155">NVIDIA's CUDA vector search library (spun out of</text>
+<text x="1024" y="1299" font-size="15" fill="#334155">RAPIDS RAFT), home of CAGRA — a graph index</text>
+<text x="1024" y="1320" font-size="15" fill="#334155">designed from scratch for GPUs — plus GPU</text>
+<text x="1024" y="1341" font-size="15" fill="#334155">IVF-Flat / IVF-PQ. Index builds run up to ~12x</text>
+<text x="1024" y="1362" font-size="15" fill="#334155">faster than CPU HNSW, and GPU-built graphs</text>
+<text x="1024" y="1383" font-size="15" fill="#334155">convert to CPU-servable HNSW: build on GPU,</text>
+<text x="1024" y="1404" font-size="15" fill="#334155">serve on CPU. The emerging standard GPU layer</text>
+<text x="1024" y="1425" font-size="15" fill="#334155">other engines plug into; needs NVIDIA GPUs.</text>
+<text x="1024" y="1456" font-size="15" fill="#334155"><tspan font-weight="700" fill="#76B900">Best for:</tspan> Massive index builds and GPU serving;</text>
+<text x="1024" y="1477" font-size="15" fill="#334155">accelerating FAISS / Milvus / OpenSearch</text>
+<text x="1024" y="1498" font-size="15" fill="#334155">deployments.</text>
+<line x1="1024" y1="1517" x2="1436" y2="1517" stroke="#EDF1F6" stroke-width="1.5"/>
+<text x="1024" y="1541" font-size="13.5" fill="#475569"><tspan font-weight="700" fill="#0F172A">Used by / inside:</tspan> <tspan font-weight="600">FAISS (v1.10+) · Milvus ·</tspan></text>
+<text x="1024" y="1560" font-size="13.5" font-weight="600" fill="#475569">OpenSearch</text>
+</g>
+<text x="750.0" y="1620" text-anchor="middle" font-size="14" fill="#64748B">Also notable: NGT (Yahoo Japan) · NMSLIB (hnswlib's ancestor) · Vamana / ParlayANN (research-grade).</text>
+<text x="750.0" y="1644" text-anchor="middle" font-size="12.5" fill="#94A3B8">Logos: official marks of maintainer orgs (Meta, Google, Spotify — Annoy &amp; Voyager, Microsoft, NVIDIA). hnswlib, Turbovec, and usearch publish no official logo — simplified recreations are shown for these three.</text>
+<text x="750.0" y="1664" text-anchor="middle" font-size="12.5" fill="#94A3B8">Adoption claims verified against engineering blogs, official docs &amp; repos, July 2026.</text>
+</svg>

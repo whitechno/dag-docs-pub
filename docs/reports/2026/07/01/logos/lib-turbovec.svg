@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+<!-- Simplified recreation: Turbovec has no official logo. Quantization grid + speed bolt, Rust orange. -->
+<g fill="#E2E8F0">
+<rect x="8" y="8" width="16" height="16" rx="3"/><rect x="30" y="8" width="16" height="16" rx="3"/><rect x="52" y="8" width="16" height="16" rx="3"/><rect x="74" y="8" width="16" height="16" rx="3"/>
+<rect x="8" y="30" width="16" height="16" rx="3"/><rect x="74" y="30" width="16" height="16" rx="3"/>
+<rect x="8" y="52" width="16" height="16" rx="3"/><rect x="74" y="52" width="16" height="16" rx="3"/>
+<rect x="8" y="74" width="16" height="16" rx="3"/><rect x="30" y="74" width="16" height="16" rx="3"/><rect x="52" y="74" width="16" height="16" rx="3"/><rect x="74" y="74" width="16" height="16" rx="3"/>
+</g>
+<path d="M58 22 L34 54 L47 54 L41 78 L66 44 L52 44 Z" fill="#CE422B"/>
+</svg>
