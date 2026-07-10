@@ -1,8 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1500" height="1710" viewBox="0 0 1500 1710" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1500" height="1710" viewBox="0 0 1500 1710" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" role="img" aria-labelledby="document-title document-description">
+<title id="document-title">9 Vector Search Libraries Worth Knowing</title>
+<desc id="document-description">A curated comparison of nine approximate-nearest-neighbor libraries, their strengths, best uses, and integrations, checked through July 10, 2026.</desc>
 <rect width="1500" height="1710" fill="#F3F5F9"/>
 <text x="750.0" y="92" text-anchor="middle" font-size="46" font-weight="800" fill="#0F172A">9 Vector Search Libraries Worth Knowing</text>
 <text x="750.0" y="132" text-anchor="middle" font-size="19" fill="#475569">ANN engines you embed, not databases you run — the components inside most vector databases</text>
-<text x="750.0" y="162" text-anchor="middle" font-size="14.5" fill="#64748B">Companion to “15 Vector Databases That Matter in Mid-2026” — adoption and traction verified as of July 2026</text>
+<text x="750.0" y="162" text-anchor="middle" font-size="14.5" fill="#64748B">Companion to “15 Vector Databases That Matter in Mid-2026” — adoption and traction checked through July 10, 2026</text>
 <rect x="690.0" y="182" width="120" height="5" rx="2.5" fill="#6366F1"/>
 <g>
 <rect x="42" y="236" width="456" height="432" rx="14" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
@@ -15,13 +17,13 @@
 <line x1="64" y1="340" x2="476" y2="340" stroke="#EDF1F6" stroke-width="1.5"/>
 <text x="64" y="366" font-size="15" fill="#334155">The de facto standard library for dense-vector</text>
 <text x="64" y="387" font-size="15" fill="#334155">similarity search and clustering (Meta AI,</text>
-<text x="64" y="408" font-size="15" fill="#334155">2017). A composable toolbox of index types —</text>
-<text x="64" y="429" font-size="15" fill="#334155">flat brute-force, IVF, product quantization,</text>
-<text x="64" y="450" font-size="15" fill="#334155">HNSW, and GPU variants — for billion-scale</text>
-<text x="64" y="471" font-size="15" fill="#334155">search on a single machine, and the reference</text>
-<text x="64" y="492" font-size="15" fill="#334155">implementation researchers benchmark against. No</text>
-<text x="64" y="513" font-size="15" fill="#334155">persistence or serving layer: you build that</text>
-<text x="64" y="534" font-size="15" fill="#334155">around it.</text>
+<text x="64" y="408" font-size="15" fill="#334155">2017). A composable toolbox of flat, IVF, PQ,</text>
+<text x="64" y="429" font-size="15" fill="#334155">HNSW, Intel SVS / Vamana, and GPU indexes for</text>
+<text x="64" y="450" font-size="15" fill="#334155">billion-scale search — and the reference</text>
+<text x="64" y="471" font-size="15" fill="#334155">implementation researchers benchmark against.</text>
+<text x="64" y="492" font-size="15" fill="#334155">It serializes indexes and can memory-map IVF</text>
+<text x="64" y="513" font-size="15" fill="#334155">data, but has no transactional database or</text>
+<text x="64" y="534" font-size="15" fill="#334155">production serving layer.</text>
 <text x="64" y="565" font-size="15" fill="#334155"><tspan font-weight="700" fill="#0467DF">Best for:</tspan> Large-scale offline / batch retrieval,</text>
 <text x="64" y="586" font-size="15" fill="#334155">RAG backends, and embedding inside larger</text>
 <text x="64" y="607" font-size="15" fill="#334155">systems.</text>
@@ -94,8 +96,8 @@
 <text x="1024" y="565" font-size="15" fill="#334155"><tspan font-weight="700" fill="#CE422B">Best for:</tspan> Memory-constrained local / edge RAG,</text>
 <text x="1024" y="586" font-size="15" fill="#334155">air-gapped stacks, and streaming corpora.</text>
 <line x1="1024" y1="605" x2="1436" y2="605" stroke="#EDF1F6" stroke-width="1.5"/>
-<text x="1024" y="629" font-size="13.5" fill="#475569"><tspan font-weight="700" fill="#0F172A">Used by / inside:</tspan> <tspan font-weight="600">LangChain &amp; Agno integrations ·</tspan></text>
-<text x="1024" y="648" font-size="13.5" font-weight="600" fill="#475569">community pg_turbovec</text>
+<text x="1024" y="629" font-size="13.5" fill="#475569"><tspan font-weight="700" fill="#0F172A">Integrations:</tspan> <tspan font-weight="600">LangChain · LlamaIndex · Haystack ·</tspan></text>
+<text x="1024" y="648" font-size="13.5" font-weight="600" fill="#475569">Agno · community pg_turbovec</text>
 </g>
 <g>
 <rect x="42" y="692" width="456" height="432" rx="14" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
@@ -135,23 +137,23 @@
         <polygon fill="#FBBC09" points="256 256.002188 134.335356 256.002188 134.335356 134.336095 256 134.336095"></polygon>
     </g>
 </svg>
-<text x="624" y="748" font-size="25" font-weight="750" fill="#0F172A">DiskANN</text>
-<text x="624" y="771" font-size="13.5" font-weight="600" fill="#64748B" letter-spacing="0.2">C++ · Microsoft Research · ~1.9K★</text>
+<text x="624" y="748" font-size="25" font-weight="750" fill="#0F172A">DiskANN3</text>
+<text x="624" y="771" font-size="13.5" font-weight="600" fill="#64748B" letter-spacing="0.2">Rust · Microsoft Research · ~1.9K★</text>
 <line x1="544" y1="796" x2="956" y2="796" stroke="#EDF1F6" stroke-width="1.5"/>
-<text x="544" y="822" font-size="15" fill="#334155">SSD-first ANN built on the Vamana graph (NeurIPS</text>
-<text x="544" y="843" font-size="15" fill="#334155">2019): the graph and full vectors live on NVMe</text>
-<text x="544" y="864" font-size="15" fill="#334155">while compressed PQ vectors sit in RAM —</text>
-<text x="544" y="885" font-size="15" fill="#334155">billion-point search on one commodity node at</text>
-<text x="544" y="906" font-size="15" fill="#334155">high recall. FreshDiskANN added streaming</text>
-<text x="544" y="927" font-size="15" fill="#334155">updates; arguably the most widely deployed</text>
-<text x="544" y="948" font-size="15" fill="#334155">billion-scale ANN stack via Microsoft's own</text>
-<text x="544" y="969" font-size="15" fill="#334155">services. Latency is SSD-bound and it's trickier</text>
-<text x="544" y="990" font-size="15" fill="#334155">to operate than in-memory libraries.</text>
+<text x="544" y="822" font-size="15" fill="#334155">Microsoft's SSD-first Vamana lineage (NeurIPS</text>
+<text x="544" y="843" font-size="15" fill="#334155">2019), now rewritten as DiskANN3 in Rust. Its</text>
+<text x="544" y="864" font-size="15" fill="#334155">pluggable providers target memory, disk, Garnet,</text>
+<text x="544" y="885" font-size="15" fill="#334155">and B-trees; Fresh / IP-DiskANN ideas support</text>
+<text x="544" y="906" font-size="15" fill="#334155">real-time updates. Multiple quantizers, filters,</text>
+<text x="544" y="927" font-size="15" fill="#334155">pagination, and diversity-aware search. The old</text>
+<text x="544" y="948" font-size="15" fill="#334155">C++ implementation is on cpp_main and no longer</text>
+<text x="544" y="969" font-size="15" fill="#334155">actively maintained; the design lineage remains</text>
+<text x="544" y="990" font-size="15" fill="#334155">widely deployed in Microsoft services.</text>
 <text x="544" y="1021" font-size="15" fill="#334155"><tspan font-weight="700" fill="#00A4EF">Best for:</tspan> Datasets far larger than RAM;</text>
 <text x="544" y="1042" font-size="15" fill="#334155">cost-sensitive billion-scale search.</text>
 <line x1="544" y1="1061" x2="956" y2="1061" stroke="#EDF1F6" stroke-width="1.5"/>
-<text x="544" y="1085" font-size="13.5" fill="#475569"><tspan font-weight="700" fill="#0F172A">Used by / inside:</tspan> <tspan font-weight="600">Bing · Microsoft 365 · Azure</tspan></text>
-<text x="544" y="1104" font-size="13.5" font-weight="600" fill="#475569">Cosmos DB · pgvectorscale</text>
+<text x="544" y="1085" font-size="13.5" fill="#475569"><tspan font-weight="700" fill="#0F172A">Lineage used by:</tspan> <tspan font-weight="600">Bing · Microsoft 365 · Azure</tspan></text>
+<text x="544" y="1104" font-size="13.5" font-weight="600" fill="#475569">Cosmos DB · pgvectorscale · Milvus</text>
 </g>
 <g>
 <rect x="1002" y="692" width="456" height="432" rx="14" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
@@ -193,8 +195,8 @@
 <text x="64" y="1362" font-size="15" fill="#334155">first-class Python and Java bindings that read</text>
 <text x="64" y="1383" font-size="15" fill="#334155">the same index files. Spotify reports ~10x</text>
 <text x="64" y="1404" font-size="15" fill="#334155">speedups over Annoy at equivalent recall and</text>
-<text x="64" y="1425" font-size="15" fill="#334155">runs it across its ML systems. Like FAISS, a</text>
-<text x="64" y="1446" font-size="15" fill="#334155">library only — no server or persistence layer.</text>
+<text x="64" y="1425" font-size="15" fill="#334155">runs it across its ML systems. It saves and loads</text>
+<text x="64" y="1446" font-size="15" fill="#334155">indexes, but has no transactional serving layer.</text>
 <text x="64" y="1477" font-size="15" fill="#334155"><tspan font-weight="700" fill="#1DB954">Best for:</tspan> Teams outgrowing Annoy; mixed JVM +</text>
 <text x="64" y="1498" font-size="15" fill="#334155">Python shops sharing one index format.</text>
 <line x1="64" y1="1517" x2="476" y2="1517" stroke="#EDF1F6" stroke-width="1.5"/>
@@ -221,8 +223,8 @@
 <text x="544" y="1341" font-size="15" fill="#334155">compactness, user-defined metrics, and half /</text>
 <text x="544" y="1362" font-size="15" fill="#334155">int8 / binary quantization with zero heavy</text>
 <text x="544" y="1383" font-size="15" fill="#334155">dependencies — the same HNSW algorithm,</text>
-<text x="544" y="1404" font-size="15" fill="#334155">drastically easier to embed, which is why</text>
-<text x="544" y="1425" font-size="15" fill="#334155">database vendors keep picking it. HNSW-only,</text>
+<text x="544" y="1404" font-size="15" fill="#334155">easy to embed. It saves, loads, and memory-maps</text>
+<text x="544" y="1425" font-size="15" fill="#334155">indexes across bindings. HNSW-only and</text>
 <text x="544" y="1446" font-size="15" fill="#334155">single-node.</text>
 <text x="544" y="1477" font-size="15" fill="#334155"><tspan font-weight="700" fill="#5B5BD6">Best for:</tspan> Embedding vector search inside another</text>
 <text x="544" y="1498" font-size="15" fill="#334155">product or database engine.</text>
@@ -241,12 +243,12 @@
 <line x1="1024" y1="1252" x2="1436" y2="1252" stroke="#EDF1F6" stroke-width="1.5"/>
 <text x="1024" y="1278" font-size="15" fill="#334155">NVIDIA's CUDA vector search library (spun out of</text>
 <text x="1024" y="1299" font-size="15" fill="#334155">RAPIDS RAFT), home of CAGRA — a graph index</text>
-<text x="1024" y="1320" font-size="15" fill="#334155">designed from scratch for GPUs — plus GPU</text>
-<text x="1024" y="1341" font-size="15" fill="#334155">IVF-Flat / IVF-PQ. Index builds run up to ~12x</text>
-<text x="1024" y="1362" font-size="15" fill="#334155">faster than CPU HNSW, and GPU-built graphs</text>
-<text x="1024" y="1383" font-size="15" fill="#334155">convert to CPU-servable HNSW: build on GPU,</text>
-<text x="1024" y="1404" font-size="15" fill="#334155">serve on CPU. The emerging standard GPU layer</text>
-<text x="1024" y="1425" font-size="15" fill="#334155">other engines plug into; needs NVIDIA GPUs.</text>
+<text x="1024" y="1320" font-size="15" fill="#334155">designed for GPUs — plus IVF-Flat / IVF-PQ,</text>
+<text x="1024" y="1341" font-size="15" fill="#334155">ScaNN, Vamana, and tiered-index building blocks.</text>
+<text x="1024" y="1362" font-size="15" fill="#334155">NVIDIA reports up to ~12x faster FAISS index</text>
+<text x="1024" y="1383" font-size="15" fill="#334155">builds than CPU HNSW at 95% recall. GPU-built</text>
+<text x="1024" y="1404" font-size="15" fill="#334155">graphs convert to CPU-servable HNSW: build on</text>
+<text x="1024" y="1425" font-size="15" fill="#334155">GPU, serve on CPU. Requires NVIDIA GPUs.</text>
 <text x="1024" y="1456" font-size="15" fill="#334155"><tspan font-weight="700" fill="#76B900">Best for:</tspan> Massive index builds and GPU serving;</text>
 <text x="1024" y="1477" font-size="15" fill="#334155">accelerating FAISS / Milvus / OpenSearch</text>
 <text x="1024" y="1498" font-size="15" fill="#334155">deployments.</text>
@@ -254,7 +256,7 @@
 <text x="1024" y="1541" font-size="13.5" fill="#475569"><tspan font-weight="700" fill="#0F172A">Used by / inside:</tspan> <tspan font-weight="600">FAISS (v1.10+) · Milvus ·</tspan></text>
 <text x="1024" y="1560" font-size="13.5" font-weight="600" fill="#475569">OpenSearch</text>
 </g>
-<text x="750.0" y="1620" text-anchor="middle" font-size="14" fill="#64748B">Also notable: NGT (Yahoo Japan) · NMSLIB (hnswlib's ancestor) · Vamana / ParlayANN (research-grade).</text>
+<text x="750.0" y="1620" text-anchor="middle" font-size="14" fill="#64748B">Also notable: Intel SVS · KIOXIA AiSAQ · NGT (Yahoo Japan) · NMSLIB (hnswlib's ancestor) · Vamana / ParlayANN.</text>
 <text x="750.0" y="1644" text-anchor="middle" font-size="12.5" fill="#94A3B8">Logos: official marks of maintainer orgs (Meta, Google, Spotify — Annoy &amp; Voyager, Microsoft, NVIDIA). hnswlib, Turbovec, and usearch publish no official logo — simplified recreations are shown for these three.</text>
-<text x="750.0" y="1664" text-anchor="middle" font-size="12.5" fill="#94A3B8">Adoption claims verified against engineering blogs, official docs &amp; repos, July 2026.</text>
+<text x="750.0" y="1664" text-anchor="middle" font-size="12.5" fill="#94A3B8">Adoption claims checked against engineering blogs, official docs &amp; repositories through July 10, 2026.</text>
 </svg>

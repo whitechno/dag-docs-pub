@@ -1,4 +1,6 @@
-# 15 Vector Databases That Matter in Mid-2026 — A Curated Guide
+15 Vector Databases That Matter in Mid-2026 — A Curated Guide
+=============================================================
+June 30, 2026 (Updated July 10, 2026)
 
 See the corresponding
 [_Vector Databases Infographic_](vector_databases_infographic.svg).

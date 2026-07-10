@@ -1,28 +1,36 @@
-# 9 Vector Search Libraries Worth Knowing — Mid-2026
+9 Vector Search Libraries Worth Knowing — Mid-2026
+==================================================
+July 1, 2026 (Updated July 10, 2026)
 
 See the corresponding [_Vector Search Libraries Infographic_](
 vector_search_libraries_infographic.svg) and companion
 [*Vector Databases Summary*](../../06/30/vector_databases_summary.md).
 
 These are ANN (Approximate Nearest Neighbor) **libraries** — engines you embed
-in your own process, not databases you run: no server, no persistence
-guarantees, no CRUD/replication layer. They matter because they are the
-components *inside* most vector databases, and because embedding one directly is
-often the right call for offline pipelines, edge deployment, or maximum
-performance. Adoption and traction claims verified against engineering blogs,
-official docs, and repositories (July 2026).
+in your own process, not databases you run. Many can serialize or memory-map
+index files, but they do not provide database-level transactional durability,
+WAL-backed recovery, CRUD APIs, replication, or a production serving layer. They
+matter because they are the components *inside* most vector databases, and
+because embedding one directly is often the right call for offline pipelines,
+edge deployment, or maximum performance. Adoption and traction claims were
+checked against engineering blogs, official documentation, and repositories
+through July 10, 2026.
 
 ---
 
-## 1. <img src="logos/lib-faiss.svg" height="22"> FAISS — C++ / Python · Meta AI · ~41K★
+## 1. <img src="logos/lib-faiss.svg" height="22" alt=""> FAISS — C++ / Python · Meta AI · ~41K★
+
+[github.com/facebookresearch/faiss](https://github.com/facebookresearch/faiss)
 
 FAISS (Facebook AI Similarity Search, 2017) is the de facto standard library for
 dense-vector similarity search and clustering, and the reference implementation
 researchers benchmark against. It is a composable toolbox of index types — flat
-brute-force, IVF partitioning, product quantization, HNSW, and GPU variants —
-that can be combined and tuned for billion-scale search on a single machine.
-Since v1.10 its GPU indexes are co-developed with NVIDIA via cuVS. It provides
-no persistence, filtering, or serving layer: you build those around it.
+brute-force, IVF partitioning, product quantization, HNSW, Intel SVS/Vamana, and
+GPU variants — that can be combined and tuned for billion-scale search. Since
+v1.10 its GPU indexes have been co-developed with NVIDIA via cuVS; current
+builds can also use Intel SVS graph implementations. FAISS can serialize indexes
+and memory-map on-disk IVF data, but provides no transactional database or
+production serving layer.
 
 **Best fit:** large-scale offline/batch retrieval, RAG backends, and embedding
 inside larger systems.
@@ -35,9 +43,12 @@ search).
 [Meta engineering](https://engineering.fb.com/2017/03/29/data-infrastructure/faiss-a-library-for-efficient-similarity-search/)
 · [github.com/facebookresearch/faiss](https://github.com/facebookresearch/faiss)
 · [cuVS in FAISS](https://engineering.fb.com/2025/05/08/data-infrastructure/accelerating-gpu-indexes-in-faiss-with-nvidia-cuvs/)
+· [SVS in FAISS](https://github.com/facebookresearch/faiss/blob/main/INSTALL.md)
 · [AWS OpenSearch k-NN](https://aws.amazon.com/blogs/big-data/choose-the-k-nn-algorithm-for-your-billion-scale-use-case-with-opensearch/)
 
-## 2. <img src="logos/lib-hnswlib.svg" height="22"> hnswlib — C++ header-only · ~5.3K★
+## 2. <img src="logos/lib-hnswlib.svg" height="22" alt=""> hnswlib — C++ header-only · ~5.3K★
+
+[github.com/nmslib/hnswlib](https://github.com/nmslib/hnswlib)
 
 hnswlib is the reference implementation of HNSW (Hierarchical Navigable Small
 World graphs; Malkov & Yashunin, 2016) — the algorithm that became the default
@@ -61,7 +72,9 @@ implementations.
 · [HNSW paper (arXiv:1603.09320)](https://arxiv.org/abs/1603.09320)
 · [Spotify on hnswlib](https://engineering.atspotify.com/2023/10/introducing-voyager-spotifys-new-nearest-neighbor-search-library)
 
-## 3. <img src="logos/lib-turbovec.svg" height="22"> Turbovec — Rust + Python · ~12.6K★ · New in 2026
+## 3. <img src="logos/lib-turbovec.svg" height="22" alt=""> Turbovec — Rust + Python · ~12.6K★ · New in 2026
+
+[github.com/RyanCodrai/turbovec](https://github.com/RyanCodrai/turbovec)
 
 Turbovec (Ryan Codrai, June 2026) is a young Rust vector index with Python
 bindings built on Google Research's TurboQuant quantization algorithm (ICLR
@@ -80,15 +93,18 @@ projects.
 **Best fit:** memory-constrained local/edge RAG, air-gapped stacks, and
 streaming corpora.
 
-**Used by / inside:** LangChain and Agno integrations; a community `pg_turbovec`
-Postgres extension; Qdrant community discussion of adopting TurboQuant.
+**Integrations / ecosystem:** first-party adapters for LangChain, LlamaIndex,
+Haystack, and Agno; a community `pg_turbovec` Postgres extension. Qdrant 1.18
+independently implements the underlying TurboQuant algorithm, not this library.
 
 **Sources:**
 [github.com/RyanCodrai/turbovec](https://github.com/RyanCodrai/turbovec)
 · [trendshift](https://trendshift.io/repositories/26144)
-· [overview article](https://medium.com/data-science-in-your-pocket/turbovec-googles-turboquant-makes-vector-search-smaller-faster-and-simpler-fdea72674aad)
+· [Qdrant 1.18](https://qdrant.tech/blog/qdrant-1.18.x/)
 
-## 4. <img src="logos/lib-scann.svg" height="22"> ScaNN — C++ / Python · Google Research
+## 4. <img src="logos/lib-scann.svg" height="22" alt=""> ScaNN — C++ / Python · Google Research
+
+[github.com/google-research/google-research/tree/master/scann](https://github.com/google-research/google-research/tree/master/scann)
 
 ScaNN (Scalable Nearest Neighbors) is Google's ANN library, built on anisotropic
 vector quantization (ICML 2020) and SOAR (NeurIPS 2023), optimized specifically
@@ -112,25 +128,26 @@ inner-product/recommendation workloads.
 · [ScaNN for AlloyDB GA](https://cloud.google.com/blog/products/databases/scann-for-alloydb-index-is-ga)
 · [github.com/google-research/google-research/tree/master/scann](https://github.com/google-research/google-research/tree/master/scann)
 
-## 5. <img src="logos/lib-diskann.svg" height="22"> DiskANN — C++ · Microsoft Research · ~1.9K★
+## 5. <img src="logos/lib-diskann.svg" height="22" alt=""> DiskANN3 — Rust · Microsoft Research · ~1.9K★
 
-DiskANN is Microsoft Research's SSD-first ANN stack built on the Vamana graph
-(NeurIPS 2019): the graph and full-precision vectors live on NVMe while
-compressed PQ vectors sit in RAM, enabling billion-point search on a single
-commodity node at high recall — at a fraction of the memory cost of HNSW.
-FreshDiskANN added streaming inserts/deletes, and the design is arguably the
-most widely deployed billion-scale ANN technology thanks to Microsoft's own
-services. The trade-offs are SSD-bound latency and more operational complexity
-than in-memory libraries. Its ideas now propagate outward: Timescale's
-pgvectorscale implements a DiskANN-inspired index for Postgres, and Milvus
-offers DiskANN as an index type.
+[github.com/microsoft/DiskANN](https://github.com/microsoft/DiskANN)
+
+DiskANN began as Microsoft Research's SSD-first Vamana graph stack (NeurIPS
+2019), which enabled high-recall billion-point search with compressed vectors in
+RAM and graph data on NVMe. The active project is now DiskANN3, a Rust rewrite
+organized around pluggable `DataProvider` backends for memory, disk, Garnet, and
+B-tree storage. It incorporates Fresh-DiskANN/IP-DiskANN ideas for real-time
+updates, multiple quantizers, filtering hooks, pagination, and diversity-aware
+search. The older C++ implementation has moved to `cpp_main` and is explicitly
+not actively maintained. DiskANN's design lineage remains widely deployed in
+Microsoft services and has influenced pgvectorscale and Milvus.
 
 **Best fit:** datasets far larger than RAM and cost-sensitive billion-scale
 search.
 
-**Used by / inside:** Bing, Microsoft 365, Azure Cosmos DB (integrated via
-whitepaper-documented DiskANN engine), pgvectorscale, Milvus (DiskANN index
-option).
+**Used by / inside:** DiskANN lineage in Bing, Microsoft 365, and Azure Cosmos
+DB; DiskANN-inspired indexes in pgvectorscale and Milvus. The proprietary Cosmos
+DB provider is not included in the open-source DiskANN3 repository.
 
 **Sources:**
 [DiskANN overview (Harsha Simhadri)](https://harsha-simhadri.org/diskann-overview.html)
@@ -138,7 +155,9 @@ option).
 · [github.com/microsoft/DiskANN](https://github.com/microsoft/DiskANN)
 · [pgvectorscale](https://github.com/timescale/pgvectorscale)
 
-## 6. <img src="logos/lib-annoy.svg" height="22"> Annoy — C++ / Python · Spotify · ~14.3K★
+## 6. <img src="logos/lib-annoy.svg" height="22" alt=""> Annoy — C++ / Python · Spotify · ~14.3K★
+
+[github.com/spotify/annoy](https://github.com/spotify/annoy)
 
 Annoy
 ("Approximate Nearest Neighbors Oh Yeah", Erik Bernhardsson at Spotify, 2013)
@@ -161,7 +180,9 @@ pipelines of the 2015–2022 era.
 [github.com/spotify/annoy](https://github.com/spotify/annoy)
 · [Spotify: introducing Voyager](https://engineering.atspotify.com/2023/10/introducing-voyager-spotifys-new-nearest-neighbor-search-library)
 
-## 7. <img src="logos/lib-voyager.svg" height="22"> Voyager — C++ · Python / Java · Spotify · ~1.5K★
+## 7. <img src="logos/lib-voyager.svg" height="22" alt=""> Voyager — C++ · Python / Java · Spotify · ~1.5K★
+
+[github.com/spotify/voyager](https://github.com/spotify/voyager)
 
 Voyager (October 2023) is Spotify's modern successor to Annoy — an HNSW-based
 nearest-neighbor library built on a hardened fork of hnswlib and tuned for
@@ -170,7 +191,8 @@ queries, E4M3 8-bit quantized storage to cut memory, and first-class Python
 *and* Java bindings that read the same index files — a rarity that matters in
 mixed JVM/Python organizations. Spotify reports roughly 10x speedups over Annoy
 at equivalent recall and uses it broadly across its ML systems. Like the rest of
-this list, it is a library only: no server, no persistence layer.
+this list, it is a library only: it can save and load indexes, but supplies no
+transactional storage or serving layer.
 
 **Best fit:** teams outgrowing Annoy, and JVM + Python shops that want one index
 format across both stacks.
@@ -182,15 +204,18 @@ Annoy).
 [Spotify engineering: introducing Voyager](https://engineering.atspotify.com/2023/10/introducing-voyager-spotifys-new-nearest-neighbor-search-library)
 · [github.com/spotify/voyager](https://github.com/spotify/voyager)
 
-## 8. <img src="logos/lib-usearch.svg" height="22"> usearch — C++11 single-header · Unum · ~4.2K★
+## 8. <img src="logos/lib-usearch.svg" height="22" alt=""> usearch — C++11 single-header · Unum · ~4.2K★
+
+[github.com/unum-cloud/usearch](https://github.com/unum-cloud/usearch)
 
 usearch, from Unum Cloud, is a single-header HNSW engine with bindings for 10+
 languages (Python, JavaScript, Rust, Java, Swift, Go, C#, Objective-C,
 Wolfram...). It differentiates not on algorithm — it's the same HNSW as
 everywhere — but on compactness, user-defined distance metrics, half/int8/binary
 quantization, and zero heavy dependencies, which makes it drastically easier to
-embed than FAISS. That is exactly why database vendors keep picking it: it is
-the vector engine inside ClickHouse's vector indexes, DuckDB's VSS extension,
+embed than FAISS. It can save, load, or memory-map index files across its
+language bindings. That portability is why database vendors keep picking it: it
+is the vector engine inside ClickHouse's vector indexes, DuckDB's VSS extension,
 and others, and ships an SQLite extension too. HNSW-only and single-node by
 design.
 
@@ -203,17 +228,18 @@ design.
 · [ClickHouse vector search](https://clickhouse.com/blog/vector-search-clickhouse-p1)
 · [DuckDB VSS](https://duckdb.org/2024/05/03/vector-similarity-search-vss.html)
 
-## 9. <img src="logos/lib-cuvs.svg" height="22"> NVIDIA cuVS — CUDA · NVIDIA · GPU-native
+## 9. <img src="logos/lib-cuvs.svg" height="22" alt=""> NVIDIA cuVS — CUDA · NVIDIA · GPU-native
+
+[github.com/rapidsai/cuvs](https://github.com/rapidsai/cuvs)
 
 cuVS is NVIDIA's CUDA vector search library, spun out of RAPIDS RAFT, and the
 home of CAGRA — a graph index designed from scratch for GPU parallelism —
-alongside GPU IVF-Flat, IVF-PQ, and brute-force kernels. Index builds run up
-to ~12x faster than CPU HNSW, and its signature trick is interoperability: a
-CAGRA graph built on GPU converts to a CPU-servable HNSW index, so you build on
-GPU and serve on CPU. It is becoming the standard GPU acceleration layer that
-other engines plug into rather than a user-facing tool: FAISS integrated it in
-v1.10, Milvus uses it for GPU indexes, and Amazon OpenSearch Service uses it for
-GPU-accelerated index builds. Requires NVIDIA GPUs.
+alongside GPU IVF-Flat, IVF-PQ, brute-force, ScaNN, Vamana, and tiered-index
+building blocks. In NVIDIA's benchmark, cuVS-enabled FAISS built an index up to
+~12x faster than CPU HNSW at 95% recall. Its signature trick is
+interoperability: a CAGRA graph built on GPU converts to a CPU-servable HNSW
+index, so you build on GPU and serve on CPU. FAISS, Milvus, and Amazon
+OpenSearch Service integrate it. Requires NVIDIA GPUs.
 
 **Best fit:** massive index-build pipelines and GPU serving.
 
@@ -236,6 +262,19 @@ engine inside the Vald distributed system; solid but stagnant mindshare.
 
 **Vamana / ParlayANN** — research-grade implementations of DiskANN-family
 algorithms.
+
+**SVS**
+[Intel Scalable Vector Search](https://github.com/intel/ScalableVectorSearch)
+— C++/Python Vamana implementation for static and streaming workloads,
+integrated into FAISS and Redis. Its open-source core is Apache-2.0, but Intel's
+LVQ and LeanVec compression implementations are proprietary and
+Intel-hardware-specific.
+
+**AiSAQ**
+[KIOXIA AiSAQ](https://www.kioxia.com/en-jp/business/news/2026/20260317-2.html)
+— open-source SSD-oriented graph search with very low DRAM use; notable in 2026
+for a vendor demonstration of 4.8B 1,024-dimensional vectors on one server, with
+cuVS accelerating index construction.
 
 ## Logo notes
 
