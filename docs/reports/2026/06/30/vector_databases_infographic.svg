@@ -1,8 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1500" height="2622" viewBox="0 0 1500 2622" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1500" height="2622" viewBox="0 0 1500 2622" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" role="img" aria-labelledby="document-title document-description">
+<title id="document-title">15 Vector Databases That Matter in Mid-2026</title>
+<desc id="document-description">A curated comparison of 15 vector databases, their strengths, best uses, and documented production adopters, checked through July 10, 2026.</desc>
 <rect width="1500" height="2622" fill="#F3F5F9"/>
 <text x="750.0" y="92" text-anchor="middle" font-size="46" font-weight="800" fill="#0F172A">15 Vector Databases That Matter in Mid-2026</text>
 <text x="750.0" y="132" text-anchor="middle" font-size="19" fill="#475569">A curated guide — what they are, where they shine, and who runs them in production</text>
-<text x="750.0" y="162" text-anchor="middle" font-size="14.5" fill="#64748B">Curation criteria: verified production adoption · momentum (GitHub traction, funding, revenue) · developer mindshare — as of July 2026</text>
+<text x="750.0" y="162" text-anchor="middle" font-size="14.5" fill="#64748B">Curation criteria: documented production adoption · momentum (GitHub traction, funding, revenue) · developer mindshare — checked July 10, 2026</text>
 <rect x="690.0" y="182" width="120" height="5" rx="2.5" fill="#6366F1"/>
 <g>
 <rect x="42" y="236" width="456" height="432" rx="14" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
@@ -18,13 +20,13 @@
 <text x="144" y="292" font-size="25" font-weight="750" fill="#0F172A">Pinecone</text>
 <text x="144" y="315" font-size="13.5" font-weight="600" fill="#64748B" letter-spacing="0.2">Managed · Serverless SaaS</text>
 <line x1="64" y1="340" x2="476" y2="340" stroke="#EDF1F6" stroke-width="1.5"/>
-<text x="64" y="366" font-size="15" fill="#334155">Fully managed, serverless vector database that</text>
-<text x="64" y="387" font-size="15" fill="#334155">separates storage from compute — no</text>
-<text x="64" y="408" font-size="15" fill="#334155">infrastructure to run. Delivers low-latency</text>
-<text x="64" y="429" font-size="15" fill="#334155">queries at billion-vector scale with live index</text>
-<text x="64" y="450" font-size="15" fill="#334155">freshness, metadata filtering, and hybrid dense</text>
-<text x="64" y="471" font-size="15" fill="#334155">+ sparse retrieval. The category pioneer and</text>
-<text x="64" y="492" font-size="15" fill="#334155">still the default managed choice.</text>
+<text x="64" y="366" font-size="15" fill="#334155">Fully managed vector database with on-demand or</text>
+<text x="64" y="387" font-size="15" fill="#334155">dedicated read capacity and storage-compute</text>
+<text x="64" y="408" font-size="15" fill="#334155">separation. Low-latency billion-scale queries,</text>
+<text x="64" y="429" font-size="15" fill="#334155">live freshness, metadata filtering, and hybrid</text>
+<text x="64" y="450" font-size="15" fill="#334155">dense + sparse retrieval. Native BM25 full-text</text>
+<text x="64" y="471" font-size="15" fill="#334155">search and BYOC are in public preview. A leading</text>
+<text x="64" y="492" font-size="15" fill="#334155">managed choice.</text>
 <text x="64" y="523" font-size="15" fill="#334155"><tspan font-weight="700" fill="#1C17FF">Best for:</tspan> Production RAG and semantic search</text>
 <text x="64" y="544" font-size="15" fill="#334155">with zero ops overhead, scaling from prototype</text>
 <text x="64" y="565" font-size="15" fill="#334155">to enterprise.</text>
@@ -85,11 +87,11 @@
 <text x="544" y="366" font-size="15" fill="#334155">Serverless vector + full-text search built from</text>
 <text x="544" y="387" font-size="15" fill="#334155">first principles on object storage (S3 / GCS)</text>
 <text x="544" y="408" font-size="15" fill="#334155">with NVMe caching — mostly-cold, multi-tenant</text>
-<text x="544" y="429" font-size="15" fill="#334155">workloads cost ~10x less than RAM-replica</text>
+<text x="544" y="429" font-size="15" fill="#334155">workloads cost ~90% less than RAM-replica</text>
 <text x="544" y="450" font-size="15" fill="#334155">designs, warm queries stay sub-10ms p50. Runs</text>
-<text x="544" y="471" font-size="15" fill="#334155">4T+ documents in production; ~$100M annualized</text>
-<text x="544" y="492" font-size="15" fill="#334155">revenue by early 2026 — the breakout growth</text>
-<text x="544" y="513" font-size="15" fill="#334155">story of the category.</text>
+<text x="544" y="471" font-size="15" fill="#334155">4T+ documents in production; Sacra estimates</text>
+<text x="544" y="492" font-size="15" fill="#334155">~$100M annualized revenue by March 2026 — a</text>
+<text x="544" y="513" font-size="15" fill="#334155">breakout growth story of the category.</text>
 <text x="544" y="544" font-size="15" fill="#334155"><tspan font-weight="700" fill="#C2410C">Best for:</tspan> Millions of per-user namespaces —</text>
 <text x="544" y="565" font-size="15" fill="#334155">code, workspace and agent-memory search — at</text>
 <text x="544" y="586" font-size="15" fill="#334155">cold-storage cost.</text>
@@ -157,10 +159,10 @@
 <line x1="1024" y1="340" x2="1436" y2="340" stroke="#EDF1F6" stroke-width="1.5"/>
 <text x="1024" y="366" font-size="15" fill="#334155">Open-source, Go-based vector database with</text>
 <text x="1024" y="387" font-size="15" fill="#334155">built-in vectorizer modules that embed data at</text>
-<text x="1024" y="408" font-size="15" fill="#334155">ingest, native BM25 + vector hybrid search, and</text>
-<text x="1024" y="429" font-size="15" fill="#334155">standout multi-tenancy — tens of thousands of</text>
-<text x="1024" y="450" font-size="15" fill="#334155">isolated tenants per cluster — with HNSW</text>
-<text x="1024" y="471" font-size="15" fill="#334155">compression to tune cost vs. recall.</text>
+<text x="1024" y="408" font-size="15" fill="#334155">ingest, BM25 + vector hybrid search, and standout</text>
+<text x="1024" y="429" font-size="15" fill="#334155">multi-tenancy — tens of thousands of isolated</text>
+<text x="1024" y="450" font-size="15" fill="#334155">tenants per cluster. HNSW supports compression;</text>
+<text x="1024" y="471" font-size="15" fill="#334155">disk-based HFresh became GA in June 2026.</text>
 <text x="1024" y="502" font-size="15" fill="#334155"><tspan font-weight="700" fill="#0F766E">Best for:</tspan> Multi-tenant SaaS, integrated</text>
 <text x="1024" y="523" font-size="15" fill="#334155">embedding + retrieval stacks, cloud / BYOC /</text>
 <text x="1024" y="544" font-size="15" fill="#334155">on-prem flexibility.</text>
@@ -185,7 +187,7 @@
 <text x="64" y="864" font-size="15" fill="#334155">independently as microservices. Widest index</text>
 <text x="64" y="885" font-size="15" fill="#334155">selection — HNSW, IVF, DiskANN, GPU-accelerated</text>
 <text x="64" y="906" font-size="15" fill="#334155">CAGRA — plus hybrid sparse / dense search at</text>
-<text x="64" y="927" font-size="15" fill="#334155">tens-of-billions scale.</text>
+<text x="64" y="927" font-size="15" fill="#334155">huge scale. 3.0 beta adds zero-copy lake queries.</text>
 <text x="64" y="958" font-size="15" fill="#334155"><tspan font-weight="700" fill="#00A1EA">Best for:</tspan> Massive-scale workloads: video dedup,</text>
 <text x="64" y="979" font-size="15" fill="#334155">ads and recommendations, multimodal search on</text>
 <text x="64" y="1000" font-size="15" fill="#334155">Kubernetes.</text>
@@ -224,8 +226,8 @@
 <text x="544" y="843" font-size="15" fill="#334155">speed and memory efficiency. Fuses metadata</text>
 <text x="544" y="864" font-size="15" fill="#334155">filtering directly into HNSW traversal, with</text>
 <text x="544" y="885" font-size="15" fill="#334155">scalar, product, and binary quantization for up</text>
-<text x="544" y="906" font-size="15" fill="#334155">to ~40x memory savings. Still accelerating: $50M</text>
-<text x="544" y="927" font-size="15" fill="#334155">Series B raised in March 2026 (~$88M total).</text>
+<text x="544" y="906" font-size="15" fill="#334155">to ~40x memory savings. Version 1.18 added</text>
+<text x="544" y="927" font-size="15" fill="#334155">TurboQuant; $50M Series B in March 2026.</text>
 <text x="544" y="958" font-size="15" fill="#334155"><tspan font-weight="700" fill="#DC244C">Best for:</tspan> Latency-sensitive, heavily filtered</text>
 <text x="544" y="979" font-size="15" fill="#334155">retrieval: recommendations, e-commerce,</text>
 <text x="544" y="1000" font-size="15" fill="#334155">enterprise RAG and agents.</text>
@@ -253,8 +255,8 @@
 <text x="1024" y="864" font-size="15" fill="#334155">few lines of Python. Runs embedded in your app</text>
 <text x="1024" y="885" font-size="15" fill="#334155">with native embedding-function integration;</text>
 <text x="1024" y="906" font-size="15" fill="#334155">Chroma Cloud adds a Rust distributed core over</text>
-<text x="1024" y="927" font-size="15" fill="#334155">object storage. The default prototyping choice</text>
-<text x="1024" y="948" font-size="15" fill="#334155">of the LLM ecosystem (~11M+ monthly downloads).</text>
+<text x="1024" y="927" font-size="15" fill="#334155">object storage. A popular prototyping choice in</text>
+<text x="1024" y="948" font-size="15" fill="#334155">the LLM ecosystem (15M+ monthly downloads).</text>
 <text x="1024" y="979" font-size="15" fill="#334155"><tspan font-weight="700" fill="#327EFF">Best for:</tspan> RAG prototypes, agent memory, and</text>
 <text x="1024" y="1000" font-size="15" fill="#334155">dev-speed-first AI apps that can grow into</text>
 <text x="1024" y="1021" font-size="15" fill="#334155">managed production.</text>
@@ -278,8 +280,8 @@
 <text x="64" y="1341" font-size="15" fill="#334155">indexes free you from RAM limits; multimodal</text>
 <text x="64" y="1362" font-size="15" fill="#334155">tables and zero-copy versioning serve search,</text>
 <text x="64" y="1383" font-size="15" fill="#334155">analytics, and training alike. $30M Series A in</text>
-<text x="64" y="1404" font-size="15" fill="#334155">2026 (Theory Ventures, with Databricks</text>
-<text x="64" y="1425" font-size="15" fill="#334155">Ventures).</text>
+<text x="64" y="1404" font-size="15" fill="#334155">June 2025; distributed search reached 10B-vector</text>
+<text x="64" y="1425" font-size="15" fill="#334155">scale in 2026 vendor benchmarks.</text>
 <text x="64" y="1456" font-size="15" fill="#334155"><tspan font-weight="700" fill="#C2410C">Best for:</tspan> Local-first AI, edge deployments, and</text>
 <text x="64" y="1477" font-size="15" fill="#334155">petabyte-scale multimodal data-lake workloads.</text>
 <line x1="64" y1="1517" x2="476" y2="1517" stroke="#EDF1F6" stroke-width="1.5"/>
@@ -301,8 +303,8 @@
 <text x="544" y="1341" font-size="15" fill="#334155">Proxima, the engine behind Taobao search and</text>
 <text x="544" y="1362" font-size="15" fill="#334155">Alipay face payment. Hybrid vector + full-text +</text>
 <text x="544" y="1383" font-size="15" fill="#334155">filtered search, dense / sparse / multi-vector,</text>
-<text x="544" y="1404" font-size="15" fill="#334155">WAL durability — and it runs on mobile. 12K+</text>
-<text x="544" y="1425" font-size="15" fill="#334155">GitHub stars within months.</text>
+<text x="544" y="1404" font-size="15" fill="#334155">WAL durability and mobile support. Version 0.5</text>
+<text x="544" y="1425" font-size="15" fill="#334155">added DiskANN; 12K+ GitHub stars within months.</text>
 <text x="544" y="1456" font-size="15" fill="#334155"><tspan font-weight="700" fill="#4000FF">Best for:</tspan> Local / edge RAG, on-device semantic</text>
 <text x="544" y="1477" font-size="15" fill="#334155">search, desktop AI apps. Young: no third-party</text>
 <text x="544" y="1498" font-size="15" fill="#334155">production case studies yet.</text>
@@ -316,7 +318,7 @@
 <text x="1436" y="1200" text-anchor="end" font-size="30" font-weight="800" fill="#336791" fill-opacity="0.28">09</text>
 <rect x="1024" y="1172" width="64" height="64" rx="12" fill="#F8FAFC" stroke="#EEF2F7"/>
 <svg x="1032.0" y="1180.0" width="48" height="48" viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" fill="#336791"><title>PostgreSQL</title><path d="M23.5594 14.7228a.5269.5269 0 0 0-.0563-.1191c-.139-.2632-.4768-.3418-1.0074-.2321-1.6533.3411-2.2935.1312-2.5256-.0191 1.342-2.0482 2.445-4.522 3.0411-6.8297.2714-1.0507.7982-3.5237.1222-4.7316a1.5641 1.5641 0 0 0-.1509-.235C21.6931.9086 19.8007.0248 17.5099.0005c-1.4947-.0158-2.7705.3461-3.1161.4794a9.449 9.449 0 0 0-.5159-.0816 8.044 8.044 0 0 0-1.3114-.1278c-1.1822-.0184-2.2038.2642-3.0498.8406-.8573-.3211-4.7888-1.645-7.2219.0788C.9359 2.1526.3086 3.8733.4302 6.3043c.0409.818.5069 3.334 1.2423 5.7436.4598 1.5065.9387 2.7019 1.4334 3.582.553.9942 1.1259 1.5933 1.7143 1.7895.4474.1491 1.1327.1441 1.8581-.7279.8012-.9635 1.5903-1.8258 1.9446-2.2069.4351.2355.9064.3625 1.39.3772a.0569.0569 0 0 0 .0004.0041 11.0312 11.0312 0 0 0-.2472.3054c-.3389.4302-.4094.5197-1.5002.7443-.3102.064-1.1344.2339-1.1464.8115-.0025.1224.0329.2309.0919.3268.2269.4231.9216.6097 1.015.6331 1.3345.3335 2.5044.092 3.3714-.6787-.017 2.231.0775 4.4174.3454 5.0874.2212.5529.7618 1.9045 2.4692 1.9043.2505 0 .5263-.0291.8296-.0941 1.7819-.3821 2.5557-1.1696 2.855-2.9059.1503-.8707.4016-2.8753.5388-4.1012.0169-.0703.0357-.1207.057-.1362.0007-.0005.0697-.0471.4272.0307a.3673.3673 0 0 0 .0443.0068l.2539.0223.0149.001c.8468.0384 1.9114-.1426 2.5312-.4308.6438-.2988 1.8057-1.0323 1.5951-1.6698zM2.371 11.8765c-.7435-2.4358-1.1779-4.8851-1.2123-5.5719-.1086-2.1714.4171-3.6829 1.5623-4.4927 1.8367-1.2986 4.8398-.5408 6.108-.13-.0032.0032-.0066.0061-.0098.0094-2.0238 2.044-1.9758 5.536-1.9708 5.7495-.0002.0823.0066.1989.0162.3593.0348.5873.0996 1.6804-.0735 2.9184-.1609 1.1504.1937 2.2764.9728 3.0892.0806.0841.1648.1631.2518.2374-.3468.3714-1.1004 1.1926-1.9025 2.1576-.5677.6825-.9597.5517-1.0886.5087-.3919-.1307-.813-.5871-1.2381-1.3223-.4796-.839-.9635-2.0317-1.4155-3.5126zm6.0072 5.0871c-.1711-.0428-.3271-.1132-.4322-.1772.0889-.0394.2374-.0902.4833-.1409 1.2833-.2641 1.4815-.4506 1.9143-1.0002.0992-.126.2116-.2687.3673-.4426a.3549.3549 0 0 0 .0737-.1298c.1708-.1513.2724-.1099.4369-.0417.156.0646.3078.26.3695.4752.0291.1016.0619.2945-.0452.4444-.9043 1.2658-2.2216 1.2494-3.1676 1.0128zm2.094-3.988-.0525.141c-.133.3566-.2567.6881-.3334 1.003-.6674-.0021-1.3168-.2872-1.8105-.8024-.6279-.6551-.9131-1.5664-.7825-2.5004.1828-1.3079.1153-2.4468.079-3.0586-.005-.0857-.0095-.1607-.0122-.2199.2957-.2621 1.6659-.9962 2.6429-.7724.4459.1022.7176.4057.8305.928.5846 2.7038.0774 3.8307-.3302 4.7363-.084.1866-.1633.3629-.2311.5454zm7.3637 4.5725c-.0169.1768-.0358.376-.0618.5959l-.146.4383a.3547.3547 0 0 0-.0182.1077c-.0059.4747-.054.6489-.115.8693-.0634.2292-.1353.4891-.1794 1.0575-.11 1.4143-.8782 2.2267-2.4172 2.5565-1.5155.3251-1.7843-.4968-2.0212-1.2217a6.5824 6.5824 0 0 0-.0769-.2266c-.2154-.5858-.1911-1.4119-.1574-2.5551.0165-.5612-.0249-1.9013-.3302-2.6462.0044-.2932.0106-.5909.019-.8918a.3529.3529 0 0 0-.0153-.1126 1.4927 1.4927 0 0 0-.0439-.208c-.1226-.4283-.4213-.7866-.7797-.9351-.1424-.059-.4038-.1672-.7178-.0869.067-.276.1831-.5875.309-.9249l.0529-.142c.0595-.16.134-.3257.213-.5012.4265-.9476 1.0106-2.2453.3766-5.1772-.2374-1.0981-1.0304-1.6343-2.2324-1.5098-.7207.0746-1.3799.3654-1.7088.5321a5.6716 5.6716 0 0 0-.1958.1041c.0918-1.1064.4386-3.1741 1.7357-4.4823a4.0306 4.0306 0 0 1 .3033-.276.3532.3532 0 0 0 .1447-.0644c.7524-.5706 1.6945-.8506 2.802-.8325.4091.0067.8017.0339 1.1742.081 1.939.3544 3.2439 1.4468 4.0359 2.3827.8143.9623 1.2552 1.9315 1.4312 2.4543-1.3232-.1346-2.2234.1268-2.6797.779-.9926 1.4189.543 4.1729 1.2811 5.4964.1353.2426.2522.4522.2889.5413.2403.5825.5515.9713.7787 1.2552.0696.087.1372.1714.1885.245-.4008.1155-1.1208.3825-1.0552 1.717-.0123.1563-.0423.4469-.0834.8148-.0461.2077-.0702.4603-.0994.7662zm.8905-1.6211c-.0405-.8316.2691-.9185.5967-1.0105a2.8566 2.8566 0 0 0 .135-.0406 1.202 1.202 0 0 0 .1342.103c.5703.3765 1.5823.4213 3.0068.1344-.2016.1769-.5189.3994-.9533.6011-.4098.1903-1.0957.333-1.7473.3636-.7197.0336-1.0859-.0807-1.1721-.151zm.5695-9.2712c-.0059.3508-.0542.6692-.1054 1.0017-.055.3576-.112.7274-.1264 1.1762-.0142.4368.0404.8909.0932 1.3301.1066.887.216 1.8003-.2075 2.7014a3.5272 3.5272 0 0 1-.1876-.3856c-.0527-.1276-.1669-.3326-.3251-.6162-.6156-1.1041-2.0574-3.6896-1.3193-4.7446.3795-.5427 1.3408-.5661 2.1781-.463zm.2284 7.0137a12.3762 12.3762 0 0 0-.0853-.1074l-.0355-.0444c.7262-1.1995.5842-2.3862.4578-3.4385-.0519-.4318-.1009-.8396-.0885-1.2226.0129-.4061.0666-.7543.1185-1.0911.0639-.415.1288-.8443.1109-1.3505.0134-.0531.0188-.1158.0118-.1902-.0457-.4855-.5999-1.938-1.7294-3.253-.6076-.7073-1.4896-1.4972-2.6889-2.0395.5251-.1066 1.2328-.2035 2.0244-.1859 2.0515.0456 3.6746.8135 4.8242 2.2824a.908.908 0 0 1 .0667.1002c.7231 1.3556-.2762 6.2751-2.9867 10.5405zm-8.8166-6.1162c-.025.1794-.3089.4225-.6211.4225a.5821.5821 0 0 1-.0809-.0056c-.1873-.026-.3765-.144-.5059-.3156-.0458-.0605-.1203-.178-.1055-.2844.0055-.0401.0261-.0985.0925-.1488.1182-.0894.3518-.1226.6096-.0867.3163.0441.6426.1938.6113.4186zm7.9305-.4114c.0111.0792-.049.201-.1531.3102-.0683.0717-.212.1961-.4079.2232a.5456.5456 0 0 1-.075.0052c-.2935 0-.5414-.2344-.5607-.3717-.024-.1765.2641-.3106.5611-.352.297-.0414.6111.0088.6356.1851z"/></svg>
-<text x="1104" y="1204" font-size="25" font-weight="750" fill="#0F172A">Pgvector</text>
+<text x="1104" y="1204" font-size="25" font-weight="750" fill="#0F172A">pgvector</text>
 <text x="1104" y="1227" font-size="13.5" font-weight="600" fill="#64748B" letter-spacing="0.2">PostgreSQL extension</text>
 <line x1="1024" y1="1252" x2="1436" y2="1252" stroke="#EDF1F6" stroke-width="1.5"/>
 <text x="1024" y="1278" font-size="15" fill="#334155">Open-source Postgres extension adding a vector</text>
@@ -353,9 +355,9 @@
 <text x="64" y="1734" font-size="15" fill="#334155">The most widely deployed search engine, now a</text>
 <text x="64" y="1755" font-size="15" fill="#334155">full vector database: Lucene dense_vector fields</text>
 <text x="64" y="1776" font-size="15" fill="#334155">with HNSW kNN combine BM25, vectors, and the</text>
-<text x="64" y="1797" font-size="15" fill="#334155">ELSER sparse model in one query. BBQ / int8</text>
-<text x="64" y="1818" font-size="15" fill="#334155">quantization keeps billion-vector workloads</text>
-<text x="64" y="1839" font-size="15" fill="#334155">affordable, with mature distributed ops.</text>
+<text x="64" y="1797" font-size="15" fill="#334155">ELSER sparse model in one query. Quantization</text>
+<text x="64" y="1818" font-size="15" fill="#334155">and disk-oriented DiskBBQ keep billion-vector</text>
+<text x="64" y="1839" font-size="15" fill="#334155">workloads affordable, with mature ops.</text>
 <text x="64" y="1870" font-size="15" fill="#334155"><tspan font-weight="700" fill="#005571">Best for:</tspan> Enterprise hybrid lexical + semantic</text>
 <text x="64" y="1891" font-size="15" fill="#334155">search over large corpora, and existing Elastic</text>
 <text x="64" y="1912" font-size="15" fill="#334155">deployments.</text>
@@ -373,7 +375,7 @@
 <line x1="544" y1="1708" x2="956" y2="1708" stroke="#EDF1F6" stroke-width="1.5"/>
 <text x="544" y="1734" font-size="15" fill="#334155">Apache-2.0 search and analytics suite</text>
 <text x="544" y="1755" font-size="15" fill="#334155">(Elasticsearch fork) whose k-NN engine — HNSW /</text>
-<text x="544" y="1776" font-size="15" fill="#334155">IVF via Faiss and Lucene, disk-based binary</text>
+<text x="544" y="1776" font-size="15" fill="#334155">IVF via Faiss and Lucene, disk-based and 1-bit</text>
 <text x="544" y="1797" font-size="15" fill="#334155">quantization, GPU-accelerated index builds — has</text>
 <text x="544" y="1818" font-size="15" fill="#334155">become one of the most widely deployed vector</text>
 <text x="544" y="1839" font-size="15" fill="#334155">platforms, especially through Amazon OpenSearch</text>
@@ -390,15 +392,15 @@
 <text x="1436" y="1656" text-anchor="end" font-size="30" font-weight="800" fill="#00ED64" fill-opacity="0.28">12</text>
 <rect x="1024" y="1628" width="64" height="64" rx="12" fill="#F8FAFC" stroke="#EEF2F7"/>
 <svg x="1032.0" y="1636.0" width="48" height="48" viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" fill="#00ED64"><title>MongoDB</title><path d="M17.193 9.555c-1.264-5.58-4.252-7.414-4.573-8.115-.28-.394-.53-.954-.735-1.44-.036.495-.055.685-.523 1.184-.723.566-4.438 3.682-4.74 10.02-.282 5.912 4.27 9.435 4.888 9.884l.07.05A73.49 73.49 0 0111.91 24h.481c.114-1.032.284-2.056.51-3.07.417-.296.604-.463.85-.693a11.342 11.342 0 003.639-8.464c.01-.814-.103-1.662-.197-2.218zm-5.336 8.195s0-8.291.275-8.29c.213 0 .49 10.695.49 10.695-.381-.045-.765-1.76-.765-2.405z"/></svg>
-<text x="1104" y="1660" font-size="25" font-weight="750" fill="#0F172A">MongoDB Atlas</text>
+<text x="1104" y="1660" font-size="25" font-weight="750" fill="#0F172A">MongoDB Search</text>
 <text x="1104" y="1683" font-size="13.5" font-weight="600" fill="#64748B" letter-spacing="0.2">Document DB + vector search</text>
 <line x1="1024" y1="1708" x2="1436" y2="1708" stroke="#EDF1F6" stroke-width="1.5"/>
-<text x="1024" y="1734" font-size="15" fill="#334155">Fully managed vector search inside the Atlas</text>
-<text x="1024" y="1755" font-size="15" fill="#334155">document database — embeddings stored beside</text>
-<text x="1024" y="1776" font-size="15" fill="#334155">operational JSON with no separate store to sync.</text>
-<text x="1024" y="1797" font-size="15" fill="#334155">HNSW ANN with metadata pre-filtering, hybrid</text>
-<text x="1024" y="1818" font-size="15" fill="#334155">search via $rankFusion, and dedicated Search</text>
-<text x="1024" y="1839" font-size="15" fill="#334155">Nodes for isolation.</text>
+<text x="1024" y="1734" font-size="15" fill="#334155">Vector search beside operational JSON with no</text>
+<text x="1024" y="1755" font-size="15" fill="#334155">separate store to sync. HNSW ANN, metadata</text>
+<text x="1024" y="1776" font-size="15" fill="#334155">pre-filtering, hybrid search via $rankFusion,</text>
+<text x="1024" y="1797" font-size="15" fill="#334155">and dedicated Atlas Search Nodes. Since June</text>
+<text x="1024" y="1818" font-size="15" fill="#334155">2026, Search and Vector Search also support</text>
+<text x="1024" y="1839" font-size="15" fill="#334155">self-managed Community and Enterprise editions.</text>
 <text x="1024" y="1870" font-size="15" fill="#334155"><tspan font-weight="700" fill="#00684A">Best for:</tspan> MongoDB shops adding RAG, semantic</text>
 <text x="1024" y="1891" font-size="15" fill="#334155">search, or recommendations tightly coupled to</text>
 <text x="1024" y="1912" font-size="15" fill="#334155">live documents.</text>
@@ -412,14 +414,14 @@
 <rect x="64" y="2084" width="64" height="64" rx="12" fill="#F8FAFC" stroke="#EEF2F7"/>
 <svg x="72.0" y="2092.0" width="48" height="48" viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" fill="#FF4438"><title>Redis</title><path d="M22.71 13.145c-1.66 2.092-3.452 4.483-7.038 4.483-3.203 0-4.397-2.825-4.48-5.12.701 1.484 2.073 2.685 4.214 2.63 4.117-.133 6.94-3.852 6.94-7.239 0-4.05-3.022-6.972-8.268-6.972-3.752 0-8.4 1.428-11.455 3.685C2.59 6.937 3.885 9.958 4.35 9.626c2.648-1.904 4.748-3.13 6.784-3.744C8.12 9.244.886 17.05 0 18.425c.1 1.261 1.66 4.648 2.424 4.648.232 0 .431-.133.664-.365a100.49 100.49 0 0 0 5.54-6.765c.222 3.104 1.748 6.898 6.014 6.898 3.819 0 7.604-2.756 9.33-8.965.2-.764-.73-1.361-1.261-.73zm-4.349-5.013c0 1.959-1.926 2.922-3.685 2.922-.941 0-1.664-.247-2.235-.568 1.051-1.592 2.092-3.225 3.21-4.973 1.972.334 2.71 1.43 2.71 2.619z"/></svg>
 <text x="144" y="2116" font-size="25" font-weight="750" fill="#0F172A">Redis Vector Search</text>
-<text x="144" y="2139" font-size="13.5" font-weight="600" fill="#64748B" letter-spacing="0.2">In-memory · Real-time · Redis Search</text>
+<text x="144" y="2139" font-size="13.5" font-weight="600" fill="#64748B" letter-spacing="0.2">Memory-first · Real-time · Redis Search</text>
 <line x1="64" y1="2164" x2="476" y2="2164" stroke="#EDF1F6" stroke-width="1.5"/>
-<text x="64" y="2190" font-size="15" fill="#334155">In-memory vector search through the Redis Query</text>
-<text x="64" y="2211" font-size="15" fill="#334155">Engine: HNSW and FLAT indexes over HASH or JSON</text>
-<text x="64" y="2232" font-size="15" fill="#334155">structures, delivering sub-millisecond to</text>
-<text x="64" y="2253" font-size="15" fill="#334155">single-digit-ms queries with hybrid text /</text>
-<text x="64" y="2274" font-size="15" fill="#334155">numeric / tag / geo filtering. Doubles as a</text>
-<text x="64" y="2295" font-size="15" fill="#334155">semantic cache and agent memory layer.</text>
+<text x="64" y="2190" font-size="15" fill="#334155">Memory-first vector search through Redis Search:</text>
+<text x="64" y="2211" font-size="15" fill="#334155">FLAT, HNSW, and SVS-VAMANA over HASH or JSON,</text>
+<text x="64" y="2232" font-size="15" fill="#334155">plus native Vector Sets. FT.HYBRID fuses vector</text>
+<text x="64" y="2253" font-size="15" fill="#334155">and full-text results; numeric, tag, and geo</text>
+<text x="64" y="2274" font-size="15" fill="#334155">filters stay co-located. Doubles as a semantic</text>
+<text x="64" y="2295" font-size="15" fill="#334155">cache and agent-memory layer.</text>
 <text x="64" y="2326" font-size="15" fill="#334155"><tspan font-weight="700" fill="#FF4438">Best for:</tspan> Real-time AI — chatbots, agents, fraud</text>
 <text x="64" y="2347" font-size="15" fill="#334155">checks, live recommendations — where latency is</text>
 <text x="64" y="2368" font-size="15" fill="#334155">the bottleneck.</text>
@@ -474,10 +476,10 @@
 <text x="1024" y="2211" font-size="15" fill="#334155">relational, time-series, and vector search in</text>
 <text x="1024" y="2232" font-size="15" fill="#334155">one engine — repositioned in 2025–26 as an</text>
 <text x="1024" y="2253" font-size="15" fill="#334155">“AI-native” memory layer for agents. SurrealDB</text>
-<text x="1024" y="2274" font-size="15" fill="#334155">3.0 (Feb 2026) shipped improved HNSW vector</text>
-<text x="1024" y="2295" font-size="15" fill="#334155">indexing for agentic workloads; $23M Series A</text>
-<text x="1024" y="2316" font-size="15" fill="#334155">extension in Feb 2026 (~$44M total), ~31K GitHub</text>
-<text x="1024" y="2337" font-size="15" fill="#334155">stars. Vector search is a secondary capability.</text>
+<text x="1024" y="2274" font-size="15" fill="#334155">3.0 added concurrent HNSW-index writes; 3.2 is</text>
+<text x="1024" y="2295" font-size="15" fill="#334155">the latest stable line. $23M Series A extension</text>
+<text x="1024" y="2316" font-size="15" fill="#334155">in Feb 2026 (~$44M total), ~31K GitHub stars.</text>
+<text x="1024" y="2337" font-size="15" fill="#334155">Vector search remains a secondary capability.</text>
 <text x="1024" y="2368" font-size="15" fill="#334155"><tspan font-weight="700" fill="#FF00A0">Best for:</tspan> Agent memory and apps wanting graph +</text>
 <text x="1024" y="2389" font-size="15" fill="#334155">document + vector in one database instead of</text>
 <text x="1024" y="2410" font-size="15" fill="#334155">stitching systems.</text>
@@ -487,5 +489,5 @@
 </g>
 <text x="750.0" y="2532" text-anchor="middle" font-size="14" fill="#64748B">ANN libraries (FAISS, Turbovec, hnswlib, ScaNN, DiskANN…) are covered in the companion infographic. Also notable: pgvectorscale &amp; ParadeDB (Postgres add-ons) · ClickHouse &amp; Couchbase (vector as a feature).</text>
 <text x="750.0" y="2556" text-anchor="middle" font-size="12.5" fill="#94A3B8">The right choice depends on your use case — in production it's common to combine more than one. Logos are official marks of their respective owners (pgvector shown with the PostgreSQL mark — the project has no logo of its own).</text>
-<text x="750.0" y="2576" text-anchor="middle" font-size="12.5" fill="#94A3B8">Production-usage and momentum claims verified against vendor case studies, engineering blogs &amp; funding announcements, July 2026.</text>
+<text x="750.0" y="2576" text-anchor="middle" font-size="12.5" fill="#94A3B8">Claims checked against case studies, engineering blogs, release notes &amp; funding announcements through July 10, 2026; estimates are labeled.</text>
 </svg>
