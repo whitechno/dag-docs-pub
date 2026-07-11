@@ -446,19 +446,24 @@ cuVS).
 
 ## Evaluated but excluded
 
-**pgvectorscale / ParadeDB** — credible Postgres add-ons (DiskANN-style
-indexing; BM25 hybrid) riding the Postgres-consolidation trend; covered within
-the pgvector entry rather than as standalone
-entries. [pgvectorscale](https://github.com/timescale/pgvectorscale)
+**[pgvectorscale](https://github.com/timescale/pgvectorscale) / ParadeDB** —
+credible Postgres add-ons (DiskANN-style indexing; BM25 hybrid) riding the
+Postgres-consolidation trend; covered within the pgvector entry rather than as
+standalone entries.
 
-**Marqo, Vald** — no meaningful 2026 growth signals. **ClickHouse, Couchbase,
-[HCL Informix VectorBlade](https://www.actian.com/blog/product-launches/introducing-native-vector-search-with-hcl-informix-vectorblade/)
-** — vector search is a feature of a broader database rather than a headline
-capability. **Azure AI Search, Vertex AI Vector Search** — steady
-cloud-incumbent adoption but no distinct growth story.
+**Marqo, Vald** — no meaningful 2026 growth signals.
+
+**ClickHouse, Couchbase, [HCL Informix VectorBlade](
+https://www.actian.com/blog/product-launches/introducing-native-vector-search-with-hcl-informix-vectorblade/
+)** — vector search is a feature of a broader database rather than a headline
+capability.
+
+**Azure AI Search, Vertex AI Vector Search** — steady cloud-incumbent adoption
+but no distinct growth story.
 
 **Actian VectorAI DB** — a notable
-[April 2026 launch](https://www.actian.com/company/press-releases/actian-launches-vectorai-db-with-22x-faster-vector-search-for-production-ai-anywhere-including-the-edge/)
+[April 2026 launch](
+https://www.actian.com/company/press-releases/actian-launches-vectorai-db-with-22x-faster-vector-search-for-production-ai-anywhere-including-the-edge/)
 aimed at regulated, disconnected, and edge deployments, but too new to meet the
 list's documented production-adoption criterion.
 
