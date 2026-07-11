@@ -13,14 +13,14 @@ checked against engineering blogs, official documentation, and repositories
 through July 10, 2026.
 
 See the companion [*Vector Search Libraries Infographic*](
-vector_search_libraries_infographic.svg):
+vector-search-libraries-infographic.svg):
 
-<img src="vector_search_libraries_infographic.svg" width="650" alt="">
+<img src="vector-search-libraries-infographic.svg" width="650" alt="">
 
 Full-service vector databases are covered separately: see
-[*Vector Databases Summary*](../../06/30/vector_databases_summary.md)
-and 
-[*Vector Databases Infographic*](../../06/30/vector_databases_infographic.svg).
+[*Vector Databases Summary*](../../06/30/vector-databases-summary.md)
+and
+[*Vector Databases Infographic*](../../06/30/vector-databases-infographic.svg).
 
 ---
 

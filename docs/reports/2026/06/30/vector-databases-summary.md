@@ -8,15 +8,15 @@ and funding announcements through July 10, 2026. Vendor-reported metrics and
 third-party estimates are labeled as such. Source links follow each entry.
 
 See the companion
-[_Vector Databases Infographic_](vector_databases_infographic.svg):
+[_Vector Databases Infographic_](vector-databases-infographic.svg):
 
-<img src="vector_databases_infographic.svg" width="550" alt="">
+<img src="vector-databases-infographic.svg" width="550" alt="">
 
 ANN *libraries* — engines you embed, not databases you run — are covered
 separately: see [_Vector Search Libraries Summary_](
-../../07/01/vector_search_libraries_summary.md)
+../../07/01/vector-search-libraries-summary.md)
 and [_Vector Search Libraries Infographic_](
-../../07/01/vector_search_libraries_infographic.svg)
+../../07/01/vector-search-libraries-infographic.svg)
 (FAISS, hnswlib, Turbovec, ScaNN, DiskANN, Annoy, Voyager, usearch, NVIDIA
 cuVS).
 
