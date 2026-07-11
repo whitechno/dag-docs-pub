@@ -2,28 +2,23 @@
 =============================================================
 June 30, 2026 (Updated July 10, 2026)
 
-See the corresponding
-[_Vector Databases Infographic_](vector_databases_infographic.svg).
-
 A critically curated list — production-usage and momentum claims were checked
 against official case studies, customer pages, engineering blogs, release notes,
 and funding announcements through July 10, 2026. Vendor-reported metrics and
 third-party estimates are labeled as such. Source links follow each entry.
 
-## Curation criteria
+See the companion
+[_Vector Databases Infographic_](vector_databases_infographic.svg):
 
-A database made the list if it met all three:
-- (1) **verified production adoption** — named companies running it, documented
-  in case studies or engineering blogs, not marketing lists alone (relaxed for
-  Zvec and SurrealDB, included on momentum with their gaps explicitly flagged);
-- (2) **momentum** — GitHub traction, funding, or revenue growth through
-  mid-2026;
-- (3) **developer mindshare** — presence in the tooling ecosystem
-  (LangChain/LlamaIndex integrations, HN/community discussion).
+<img src="vector_databases_infographic.svg" width="550" alt="">
 
-It also had to actually be a *database* (or a database's first-class vector
-capability) — pure ANN index libraries get their own companion infographic
-instead.
+ANN *libraries* — engines you embed, not databases you run — are covered
+separately: see [_Vector Search Libraries Summary_](
+../../07/01/vector_search_libraries_summary.md)
+and [_Vector Search Libraries Infographic_](
+../../07/01/vector_search_libraries_infographic.svg)
+(FAISS, hnswlib, Turbovec, ScaNN, DiskANN, Annoy, Voyager, usearch, NVIDIA
+cuVS).
 
 ---
 
@@ -430,20 +425,6 @@ reference enterprise momentum.
 
 ---
 
-## Companion document
-
-ANN *libraries* — engines you embed, not databases you run — are covered
-separately for scope consistency: see
-[_Vector Search Libraries
-Summary_](../../07/01/vector_search_libraries_summary.md)
-and
-[_Vector Search Libraries
-Infographic_](../../07/01/vector_search_libraries_infographic.svg)
-(FAISS, hnswlib, Turbovec, ScaNN, DiskANN, Annoy, Voyager, usearch, NVIDIA
-cuVS).
-
----
-
 ## Evaluated but excluded
 
 **[pgvectorscale](https://github.com/timescale/pgvectorscale) / ParadeDB** —
@@ -461,11 +442,27 @@ capability.
 **Azure AI Search, Vertex AI Vector Search** — steady cloud-incumbent adoption
 but no distinct growth story.
 
-**Actian VectorAI DB** — a notable
-[April 2026 launch](
-https://www.actian.com/company/press-releases/actian-launches-vectorai-db-with-22x-faster-vector-search-for-production-ai-anywhere-including-the-edge/)
-aimed at regulated, disconnected, and edge deployments, but too new to meet the
-list's documented production-adoption criterion.
+**Actian VectorAI DB** — a notable [April 2026 launch](
+https://www.actian.com/company/press-releases/actian-launches-vectorai-db-with-22x-faster-vector-search-for-production-ai-anywhere-including-the-edge/
+) aimed at regulated, disconnected, and edge deployments, but too new to meet
+the list's documented production-adoption criterion.
+
+---
+
+## Curation criteria
+
+A database made the list if it met all three:
+- (1) **verified production adoption** — named companies running it, documented
+  in case studies or engineering blogs, not marketing lists alone (relaxed for
+  Zvec and SurrealDB, included on momentum with their gaps explicitly flagged);
+- (2) **momentum** — GitHub traction, funding, or revenue growth through
+  mid-2026;
+- (3) **developer mindshare** — presence in the tooling ecosystem
+  (LangChain/LlamaIndex integrations, HN/community discussion).
+
+It also had to actually be a *database* (or a database's first-class vector
+capability) — pure ANN index libraries get their own companion infographic
+instead.
 
 ---
 

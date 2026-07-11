@@ -2,10 +2,6 @@
 ==================================================
 July 1, 2026 (Updated July 10, 2026)
 
-See the corresponding [_Vector Search Libraries Infographic_](
-vector_search_libraries_infographic.svg) and companion
-[*Vector Databases Summary*](../../06/30/vector_databases_summary.md).
-
 These are ANN (Approximate Nearest Neighbor) **libraries** — engines you embed
 in your own process, not databases you run. Many can serialize or memory-map
 index files, but they do not provide database-level transactional durability,
@@ -15,6 +11,16 @@ because embedding one directly is often the right call for offline pipelines,
 edge deployment, or maximum performance. Adoption and traction claims were
 checked against engineering blogs, official documentation, and repositories
 through July 10, 2026.
+
+See the companion [*Vector Search Libraries Infographic*](
+vector_search_libraries_infographic.svg):
+
+<img src="vector_search_libraries_infographic.svg" width="650" alt="">
+
+Full-service vector databases are covered separately: see
+[*Vector Databases Summary*](../../06/30/vector_databases_summary.md)
+and 
+[*Vector Databases Infographic*](../../06/30/vector_databases_infographic.svg).
 
 ---
 
