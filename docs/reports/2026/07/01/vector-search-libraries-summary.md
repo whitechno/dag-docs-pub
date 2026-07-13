@@ -24,7 +24,7 @@ and
 
 ---
 
-## 1. <img src="logos/lib-faiss.svg" height="22" alt=""> FAISS — C++ / Python · Meta AI · ~41K★
+## 1. <img src="images/lib-faiss.svg" height="22" alt=""> FAISS — C++ / Python · Meta AI · ~41K★
 
 [github.com/facebookresearch/faiss](https://github.com/facebookresearch/faiss)
 
@@ -52,7 +52,7 @@ search).
 · [SVS in FAISS](https://github.com/facebookresearch/faiss/blob/main/INSTALL.md)
 · [AWS OpenSearch k-NN](https://aws.amazon.com/blogs/big-data/choose-the-k-nn-algorithm-for-your-billion-scale-use-case-with-opensearch/)
 
-## 2. <img src="logos/lib-hnswlib.svg" height="22" alt=""> hnswlib — C++ header-only · ~5.3K★
+## 2. <img src="images/lib-hnswlib.svg" height="22" alt=""> hnswlib — C++ header-only · ~5.3K★
 
 [github.com/nmslib/hnswlib](https://github.com/nmslib/hnswlib)
 
@@ -78,7 +78,7 @@ implementations.
 · [HNSW paper (arXiv:1603.09320)](https://arxiv.org/abs/1603.09320)
 · [Spotify on hnswlib](https://engineering.atspotify.com/2023/10/introducing-voyager-spotifys-new-nearest-neighbor-search-library)
 
-## 3. <img src="logos/lib-turbovec.svg" height="22" alt=""> Turbovec — Rust + Python · ~12.6K★ · New in 2026
+## 3. <img src="images/lib-turbovec.svg" height="22" alt=""> Turbovec — Rust + Python · ~12.6K★ · New in 2026
 
 [github.com/RyanCodrai/turbovec](https://github.com/RyanCodrai/turbovec)
 
@@ -108,7 +108,7 @@ independently implements the underlying TurboQuant algorithm, not this library.
 · [trendshift](https://trendshift.io/repositories/26144)
 · [Qdrant 1.18](https://qdrant.tech/blog/qdrant-1.18.x/)
 
-## 4. <img src="logos/lib-scann.svg" height="22" alt=""> ScaNN — C++ / Python · Google Research
+## 4. <img src="images/lib-scann.svg" height="22" alt=""> ScaNN — C++ / Python · Google Research
 
 [github.com/google-research/google-research/tree/master/scann](https://github.com/google-research/google-research/tree/master/scann)
 
@@ -134,7 +134,7 @@ inner-product/recommendation workloads.
 · [ScaNN for AlloyDB GA](https://cloud.google.com/blog/products/databases/scann-for-alloydb-index-is-ga)
 · [github.com/google-research/google-research/tree/master/scann](https://github.com/google-research/google-research/tree/master/scann)
 
-## 5. <img src="logos/lib-diskann.svg" height="22" alt=""> DiskANN3 — Rust · Microsoft Research · ~1.9K★
+## 5. <img src="images/lib-diskann.svg" height="22" alt=""> DiskANN3 — Rust · Microsoft Research · ~1.9K★
 
 [github.com/microsoft/DiskANN](https://github.com/microsoft/DiskANN)
 
@@ -161,7 +161,7 @@ DB provider is not included in the open-source DiskANN3 repository.
 · [github.com/microsoft/DiskANN](https://github.com/microsoft/DiskANN)
 · [pgvectorscale](https://github.com/timescale/pgvectorscale)
 
-## 6. <img src="logos/lib-annoy.svg" height="22" alt=""> Annoy — C++ / Python · Spotify · ~14.3K★
+## 6. <img src="images/lib-annoy.svg" height="22" alt=""> Annoy — C++ / Python · Spotify · ~14.3K★
 
 [github.com/spotify/annoy](https://github.com/spotify/annoy)
 
@@ -186,7 +186,7 @@ pipelines of the 2015–2022 era.
 [github.com/spotify/annoy](https://github.com/spotify/annoy)
 · [Spotify: introducing Voyager](https://engineering.atspotify.com/2023/10/introducing-voyager-spotifys-new-nearest-neighbor-search-library)
 
-## 7. <img src="logos/lib-voyager.svg" height="22" alt=""> Voyager — C++ · Python / Java · Spotify · ~1.5K★
+## 7. <img src="images/lib-voyager.svg" height="22" alt=""> Voyager — C++ · Python / Java · Spotify · ~1.5K★
 
 [github.com/spotify/voyager](https://github.com/spotify/voyager)
 
@@ -210,7 +210,7 @@ Annoy).
 [Spotify engineering: introducing Voyager](https://engineering.atspotify.com/2023/10/introducing-voyager-spotifys-new-nearest-neighbor-search-library)
 · [github.com/spotify/voyager](https://github.com/spotify/voyager)
 
-## 8. <img src="logos/lib-usearch.svg" height="22" alt=""> usearch — C++11 single-header · Unum · ~4.2K★
+## 8. <img src="images/lib-usearch.svg" height="22" alt=""> usearch — C++11 single-header · Unum · ~4.2K★
 
 [github.com/unum-cloud/usearch](https://github.com/unum-cloud/usearch)
 
@@ -234,7 +234,7 @@ design.
 · [ClickHouse vector search](https://clickhouse.com/blog/vector-search-clickhouse-p1)
 · [DuckDB VSS](https://duckdb.org/2024/05/03/vector-similarity-search-vss.html)
 
-## 9. <img src="logos/lib-cuvs.svg" height="22" alt=""> NVIDIA cuVS — CUDA · NVIDIA · GPU-native
+## 9. <img src="images/lib-cuvs.svg" height="22" alt=""> NVIDIA cuVS — CUDA · NVIDIA · GPU-native
 
 [github.com/rapidsai/cuvs](https://github.com/rapidsai/cuvs)
 
