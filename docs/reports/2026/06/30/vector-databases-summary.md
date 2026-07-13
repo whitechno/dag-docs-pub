@@ -2,6 +2,10 @@
 =============================================================
 June 30, 2026 (Updated July 10, 2026)
 
+<!-- description: A critically curated guide to 15 vector databases with 
+verified production adoption, momentum, and developer mindshare as of mid-2026. 
+-->
+
 A critically curated list — production-usage and momentum claims were checked
 against official case studies, customer pages, engineering blogs, release notes,
 and funding announcements through July 10, 2026. Vendor-reported metrics and
