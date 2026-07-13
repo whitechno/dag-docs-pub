@@ -3,8 +3,8 @@
 <desc id="document-description">A curated comparison of nine approximate-nearest-neighbor libraries, their strengths, best uses, and integrations, checked through July 10, 2026.</desc>
 <rect width="1500" height="1710" fill="#F3F5F9"/>
 <text x="750.0" y="92" text-anchor="middle" font-size="46" font-weight="800" fill="#0F172A">9 Vector Search Libraries Worth Knowing</text>
-<text x="750.0" y="132" text-anchor="middle" font-size="19" fill="#475569">ANN engines you embed, not databases you run — the components inside most vector databases</text>
-<text x="750.0" y="162" text-anchor="middle" font-size="14.5" fill="#64748B">Companion to “15 Vector Databases That Matter in Mid-2026” — adoption and traction checked through July 10, 2026</text>
+<text x="750.0" y="132" text-anchor="middle" font-size="19" fill="#475569">ANN engines you embed, not databases you run — the components inside most vector databases.</text>
+<text x="750.0" y="162" text-anchor="middle" font-size="14.5" fill="#64748B">Adoption and traction checked through July 10, 2026. Companion to “15 Vector Databases That Matter in Mid-2026”. Created by whitechno.github.io</text>
 <rect x="690.0" y="182" width="120" height="5" rx="2.5" fill="#6366F1"/>
 <g>
 <rect x="42" y="236" width="456" height="432" rx="14" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>

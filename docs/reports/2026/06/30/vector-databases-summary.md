@@ -10,7 +10,7 @@ third-party estimates are labeled as such. Source links follow each entry.
 See the companion
 [_Vector Databases Infographic_](vector-databases-infographic.svg):
 
-<img src="vector-databases-infographic.svg" width="550" alt="">
+<img src="vector-databases-infographic.svg" width="650" alt="">
 
 ANN *libraries* — engines you embed, not databases you run — are covered
 separately: see [_Vector Search Libraries Summary_](
@@ -53,8 +53,8 @@ vectors, <20ms P50), Melange (patent search).
 [turbopuffer.com](https://turbopuffer.com/)
 
 turbopuffer is a serverless vector + full-text/hybrid search engine built from
-first principles on object storage (S3/GCS) with NVMe/RAM caching, founded by
-Simon Eskildsen (ex-Shopify). The architecture makes huge, mostly cold,
+the first principles on object storage (S3/GCS) with NVMe/RAM caching, founded
+by Simon Eskildsen (ex-Shopify). The architecture makes huge, mostly cold,
 multi-tenant namespace workloads cost roughly one-tenth as much as
 RAM/disk-replica vector DBs while keeping warm queries at sub-10ms p50. It runs
 4T+ documents, 10M+ writes/s, and 25K+ queries/s in production, and reached an

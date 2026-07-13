@@ -35,7 +35,7 @@ brute-force, IVF partitioning, product quantization, HNSW, Intel SVS/Vamana, and
 GPU variants — that can be combined and tuned for billion-scale search. Since
 v1.10 its GPU indexes have been co-developed with NVIDIA via cuVS; current
 builds can also use Intel SVS graph implementations. FAISS can serialize indexes
-and memory-map on-disk IVF data, but provides no transactional database or
+and memory-map on-disk IVF data but provides no transactional database or
 production serving layer.
 
 **Best fit:** large-scale offline/batch retrieval, RAG backends, and embedding
