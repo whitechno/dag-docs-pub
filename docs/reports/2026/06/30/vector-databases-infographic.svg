@@ -184,7 +184,7 @@
 <line x1="64" y1="796" x2="476" y2="796" stroke="#EDF1F6" stroke-width="1.5"/>
 <text x="64" y="822" font-size="15" fill="#334155">Open-source distributed vector database (LF AI &amp;</text>
 <text x="64" y="843" font-size="15" fill="#334155">Data) whose compute and storage scale</text>
-<text x="64" y="864" font-size="15" fill="#334155">independently as microservices. Widest index</text>
+<text x="64" y="864" font-size="15" fill="#334155">independently as microservices. Wide index</text>
 <text x="64" y="885" font-size="15" fill="#334155">selection — HNSW, IVF, DiskANN, GPU-accelerated</text>
 <text x="64" y="906" font-size="15" fill="#334155">CAGRA — plus hybrid sparse / dense search at</text>
 <text x="64" y="927" font-size="15" fill="#334155">huge scale. 3.0 beta adds zero-copy lake queries.</text>
@@ -282,7 +282,7 @@
 <text x="64" y="1383" font-size="15" fill="#334155">analytics, and training alike. $30M Series A in</text>
 <text x="64" y="1404" font-size="15" fill="#334155">June 2025; distributed search reached 10B-vector</text>
 <text x="64" y="1425" font-size="15" fill="#334155">scale in 2026 vendor benchmarks.</text>
-<text x="64" y="1456" font-size="15" fill="#334155"><tspan font-weight="700" fill="#C2410C">Best for:</tspan> Local-first AI, edge deployments, and</text>
+<text x="64" y="1456" font-size="15" fill="#334155"><tspan font-weight="700" fill="#C2410C">Best for:</tspan> Local-first AI, embedded RAG, and</text>
 <text x="64" y="1477" font-size="15" fill="#334155">petabyte-scale multimodal data-lake workloads.</text>
 <line x1="64" y1="1517" x2="476" y2="1517" stroke="#EDF1F6" stroke-width="1.5"/>
 <text x="64" y="1541" font-size="13.5" fill="#475569"><tspan font-weight="700" fill="#0F172A">In production:</tspan> <tspan font-weight="600">Midjourney · Runway · Netflix ·</tspan></text>
