@@ -89,8 +89,8 @@
 <text x="1024" y="408" font-size="15" fill="#334155">a training-free quantizer with near-optimal</text>
 <text x="1024" y="429" font-size="15" fill="#334155">distortion. Vectors are searchable the moment</text>
 <text x="1024" y="450" font-size="15" fill="#334155">they are ingested: no train step, no tuning, no</text>
-<text x="1024" y="471" font-size="15" fill="#334155">rebuilds, with SIMD kernels beating FAISS</text>
-<text x="1024" y="492" font-size="15" fill="#334155">FastScan by 10–19% at ~8x memory compression.</text>
+<text x="1024" y="471" font-size="15" fill="#334155">rebuilds, with SIMD kernels reported to beat</text>
+<text x="1024" y="492" font-size="15" fill="#334155">FAISS FastScan by 10–19% at ~8x compression.</text>
 <text x="1024" y="513" font-size="15" fill="#334155">Very new: single maintainer, no named enterprise</text>
 <text x="1024" y="534" font-size="15" fill="#334155">users yet.</text>
 <text x="1024" y="565" font-size="15" fill="#334155"><tspan font-weight="700" fill="#CE422B">Best for:</tspan> Memory-constrained local / edge RAG,</text>
