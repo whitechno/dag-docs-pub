@@ -71,6 +71,8 @@ which adds a custom filter panel to the top of the interface.
 - **[Hacker News API](https://github.com/HackerNews/API):** The official public
   API, useful if we want to build our own filtering or sorting tools.
 
+---
+
 ## Alternatives to Hacker News
 
 Depending on what we are looking for, whether it's breaking news, technical
@@ -139,6 +141,8 @@ specific moderation style and lack of typical social media features (like
 gamified profiles or excessive notification bells). Many of the sites above,
 especially **Lobsters**, are frequently cited as the best alternatives because
 they replicate this "discussion-first, bloat-second" philosophy.
+
+---
 
 ## Reading on iPhone
 
