@@ -2,6 +2,10 @@ Hacker News Alternatives
 ========================
 June 8, 2026
 
+<!-- description: Hacker News alternatives and power-user techniques: 
+     sorting extensions, Algolia search filters, and the best apps for reading 
+     HN and its alternatives on iPhone. -->
+
 While [Hacker News](https://news.ycombinator.com/) is widely regarded as the
 gold standard for long-form discussion on computer science and entrepreneurship,
 several other sites are highly respected within the tech community for news,
@@ -240,14 +244,11 @@ method is to use a **dedicated RSS reader app** like
    a clean, readable layout, often allowing us to save articles for offline
    reading or sync our progress across devices.
 
-[hn-sorted]:
-https://chromewebstore.google.com/detail/hacker-news-sorted/djkcnbncofmjekhlhemlkinfpkamlkaj
+[hn-sorted]: https://chromewebstore.google.com/detail/hacker-news-sorted/djkcnbncofmjekhlhemlkinfpkamlkaj
 
-[hack-app]:
-https://apps.apple.com/us/app/hack-for-hacker-news-yc-reader/id1464477788
+[hack-app]: https://apps.apple.com/us/app/hack-for-hacker-news-yc-reader/id1464477788
 
-[hn-latest-app]:
-https://apps.apple.com/us/app/hacker-news-latest-in-tech/id1573004386
+[hn-latest-app]: https://apps.apple.com/us/app/hacker-news-latest-in-tech/id1573004386
 
 [dev-app]: https://apps.apple.com/us/app/dev-to/id1536933197
 
@@ -255,5 +256,4 @@ https://apps.apple.com/us/app/hacker-news-latest-in-tech/id1573004386
 
 [hackernoon-app]: https://apps.apple.com/us/app/hackernoon/id6447998105
 
-[ph-app]:
-https://help.producthunt.com/en/articles/6494278-are-ios-and-android-available
+[ph-app]: https://help.producthunt.com/en/articles/6494278-are-ios-and-android-available
