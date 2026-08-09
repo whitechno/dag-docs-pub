@@ -1,11 +1,11 @@
 About docs-style rules in .claude/
 ==================================
-July 14, 2026
+July 10, 2026
 
 <!--
-How we use Claude Code's .claude/rules/ to keep a consistent prose style in
-docs/**/*.md, and the docs-style-check / docs-style-fix skills that add a
-deterministic script check on top of the rule. 
+How we use Claude Code's .claude/rules/ in this project to keep a consistent 
+prose style in docs/**/*.md, and the docs-style-check / docs-style-fix skills 
+that add a deterministic script check on top of the rule. 
 A full technical review of the .claude/ directory is in
 docs/reports/2026/07/13/dot-claude-folder-tech-note.md.
 -->
@@ -68,7 +68,7 @@ including untracked files.
 Usage examples (in Claude Code prompt):
 ```
 /docs-style-check
-/docs-style-check docs/reports/2026/07/14/claude-rules-docs-style.md
+/docs-style-check docs/reports/2026/07/10/claude-rules-docs-style.md
 /docs-style-fix
 /docs-style-fix docs/site/hacker-news-alt.md
 Check docs style in the report we just edited
