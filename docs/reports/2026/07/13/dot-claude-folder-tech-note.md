@@ -567,16 +567,26 @@ idea from one file to a directory tree:
   `.agents/AGENTS.md`, `.agents/mcp-settings.json`, and `.agents/skills/`
   at both repository and home-directory scope.
 
-Neither has organizational backing, and no tool is documented as reading
-`.agents/` natively today. Both are best read as an observation that agent
-configuration has outgrown a single file, which is the same observation
-`.claude/rules/` and `.claude/skills/` respond to.
+Neither proposal has organizational backing, and neither describes what any tool
+actually does. The development worth noting is that the name has been adopted
+anyway, independently of both drafts, by three tools so far. Google's
+Antigravity CLI uses `.agents/` as its whole project directory, reading
+`.agents/rules/`, `.agents/skills/`, `.agents/agents/`,
+`.agents/workflows/`, and `.agents/mcp_config.json`. OpenHands has moved its
+skills to `.agents/skills/` and `~/.agents/skills/`, keeping
+`.openhands/microagents/` only for backward compatibility. Cline reads
+`~/.agents/AGENTS.md` as a global rules file. None of the three matches either
+draft, and only Antigravity treats `.agents/` as a full configuration root, so
+the directory name is converging considerably faster than its contents. All of
+it is best read as an observation that agent configuration has outgrown a single
+file, which is the same observation `.claude/rules/` and
+`.claude/skills/` respond to.
 
 So: is `.agents/` compatible with `.claude/`? In the weak sense, yes. Claude
 Code ignores every path it does not recognize, so a `.agents/` directory sits in
 a repository without conflict, and a project can carry both. In the strong
-sense, no: nothing in `.agents/` is loaded, and its contents have no effect
-until we bridge them explicitly.
+sense, no: Claude Code loads nothing from `.agents/`, and its contents have no
+effect until we bridge them explicitly.
 
 Bridging is cheap where the formats already agree. `.agents/skills/` in both
 proposals uses `SKILL.md` directories, which is the same Agent Skills standard
@@ -602,6 +612,16 @@ duplicate wherever the formats coincide. Adopting `.agents/` as a layout is a
 reasonable bet on where things are heading, but it should be treated as
 organization for our own benefit, not as configuration any tool will honor.
 
+## Equivalents in other tools
+
+Every other agentic coding tool has its own version of the two surfaces
+described above: an instruction file injected into the prompt, and a directory
+holding what the file cannot express. The file has largely standardized on
+`AGENTS.md`; the directories have not standardized at all. A tool-by-tool
+survey, covering Codex, Antigravity CLI, Cursor, Copilot, Devin, Junie, Cline,
+Perplexity, OpenClaw, Hermes, and a dozen others, with what ports between them
+and what does not, is in `docs/reports/2026/07/12/ai-cli-config-dir.md`.
+
 ## References
 
 - Directory overview: https://code.claude.com/docs/en/claude-directory.md
@@ -615,3 +635,8 @@ organization for our own benefit, not as configuration any tool will honor.
 - Agent Skills:        https://agentskills.io
 - dotagents proposal:  https://github.com/bgreenwell/dotagents
 - Agents Standard:     https://agentsstandard.com/
+
+Instruction files and configuration directories in other tools, with per-tool
+sources:
+
+- docs/reports/2026/07/12/ai-cli-config-dir.md
