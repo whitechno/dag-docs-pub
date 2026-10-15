@@ -37,3 +37,9 @@ https://doi.org/10.1002/sim.8086
 PDF downloaded from PubMed Central (open access):
 <https://pmc.ncbi.nlm.nih.gov/articles/PMC6492164/>
 Local copy: `morris-white-crowther-2019-simulation-studies.pdf`
+
+### Additional references
+
+- https://en.wikipedia.org/wiki/Contingency_table
+- https://en.wikipedia.org/wiki/Fisher%27s_exact_test
+- https://en.wikipedia.org/wiki/Lady_tasting_tea
