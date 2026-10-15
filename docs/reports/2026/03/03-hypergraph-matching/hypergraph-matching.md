@@ -8,6 +8,12 @@ By Henrik Reinstädtler, Christian Schulz, Nodari Sitchinava, Fabian Walliser
 Submitted on 26 Feb 2026
 
 
+Semi-streaming algorithm for the hypergraph matching problem from HeiHGM:
+https://github.com/HeiHGM/Streaming
+
+Greedy algorithm for hypergraph matching:
+https://github.com/HeiHGM/Streaming/blob/main/app/algorithms/streaming/matching/greedy.cc
+
 Technical Summary
 -----------------
 
